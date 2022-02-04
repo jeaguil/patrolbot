@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,6 +56,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "pbdash.urls"
+
+STATIC_ROOT = Path(__file__).resolve().parent.parent / "static"
+
+# STATICFILES_DIRS = [
+#     Path(__file__).resolve().parent.parent / "static",
+# ]
 
 TEMPLATES = [
     {

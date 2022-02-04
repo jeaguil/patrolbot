@@ -1,0 +1,85 @@
+.wc-body {
+    background-color: #fff;
+}
+
+.wc-body .wc-main-container {
+    background-color: rgb(21, 16, 78);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left:0;
+    top: 0;
+}
+
+.wc-main-sheet {
+    margin-left: 10%;
+    margin-top: 7%;
+    text-align: left;
+}
+
+.wc-main-text {
+    color: #fff;
+    font-size: 6rem;
+    font-weight: 700;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 70%; 
+}
+
+.wc-login-container {
+    text-align: right;
+    padding-right: 70px;
+    padding-top: 20px;
+}
+
+.button {
+    background-color: #3b3c9b;
+    border: none;
+    color: white;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 10px 4px;
+}
+
+.wc-login-bttn {
+    border-radius: 20px;
+}
+
+.button2 {
+    background-color: white;
+    border: none;
+    color: black;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    margin-left: 20px;
+}
+
+.wc-login-bttn2 {
+    border-radius: 20px;
+}
+
+footer {
+    background-color: rgb(53, 55, 59);
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+}
+
+footer .wc-footer-text {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 100;
+    text-align: center;
+    padding: 20px;
+}
