@@ -24,7 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "*!zrl!r8s)gb+vh+%00^ei)j+yrhvam(20s4ot#l@&vt&e24l="
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+# Good resouce for changing domain name:
+# https://duckduckgo.com/?q=elasticbeanstalk+domain+name&iax=videos&ia=videos&iai=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DBeOKTpFsuvk
 
 ALLOWED_HOSTS = [
     "django-env.eba-ewszhepd.us-west-2.elasticbeanstalk.com",
@@ -57,11 +59,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "pbdash.urls"
 
-STATIC_ROOT = Path(__file__).resolve().parent.parent / "static"
-
-# STATICFILES_DIRS = [
-#     Path(__file__).resolve().parent.parent / "static",
-# ]
+if not DEBUG:
+    STATIC_ROOT = Path(__file__).resolve().parent.parent / "static"
+else:
+    STATICFILES_DIRS = [
+        Path(__file__).resolve().parent.parent / "static",
+    ]
 
 TEMPLATES = [
     {
@@ -130,3 +133,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = "/static/"
+
+LOGIN_REDIRECT_URL = "dashboard"
