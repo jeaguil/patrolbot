@@ -1,1 +1,56 @@
-<h1>Welcome to the Dashboard. <?php echo $_SESSION['username']; ?></h1>
+{% load static %}
+<!DOCTYPE html>
+
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<div class="dash-sidenav">
+    <div class="dash-sidenav-content">
+        <a href="./"><i class="fa fa-fw fa-home"></i> Home</a>
+        <a href="#robo-config"><i class="fa fa-fw fa-cogs"></i> RoboConfig</a>
+        <a href="#settings"><i class="fa fa-fw fa-wrench"></i> Settings</a>
+    </div>
+</div>
+
+{% comment %} Page content {% endcomment %}
+<body class="dash-main">
+    <header>
+        <div class="dash-logout">
+            <a href="#" class="button dash-logout">Logout</a>
+        </div>
+        <h1>Welcome to the Patrol Bot Dashboard</h1>
+    </header>
+    <div class="main-content">
+        <div class="main-content-camera">
+            <h2>Robot Camera Feed</h2>
+            <div>
+                <a href="#" target="_blank" class="button camera-buttons">Start Camera</a>
+                <a href="#" target="_blank" class="button camera-buttons">Stop Camera</a>
+            </div>
+        </div>
+        <div class="main-context-logs">
+            <h2>Robot Context Logs</h2>
+            <div>
+                <a href="#" target="_blank" class="button log-buttons">Save Log File</a>
+                <a href="#" target="_blank" class="button log-buttons">Save Alert File</a>
+            </div>
+        </div>
+    </div>
+    <div class="main-content-maps">
+        <h2>Robot Maps</h2>
+        <div class="map-container">
+            <div class="map-container-map">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p class="dash-footer-text">
+            A Robotic Test Execution Framework built by
+                Team 8: PatrolBot for CS 426 Senior Project in Computer Science, Spring 2022, at UNR, CSE Department
+        </p>
+    </footer>
+</body>

@@ -25,12 +25,10 @@ SECRET_KEY = "*!zrl!r8s)gb+vh+%00^ei)j+yrhvam(20s4ot#l@&vt&e24l="
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-# Good resouce for changing domain name:
-# https://duckduckgo.com/?q=elasticbeanstalk+domain+name&iax=videos&ia=videos&iai=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DBeOKTpFsuvk
 
 ALLOWED_HOSTS = [
+    # Production domain name:
     "django-env.eba-ewszhepd.us-west-2.elasticbeanstalk.com",
-    "127.0.0.1",
 ]
 
 
@@ -65,6 +63,7 @@ else:
     STATICFILES_DIRS = [
         Path(__file__).resolve().parent.parent / "static",
     ]
+    ALLOWED_HOSTS += ["127.0.0.1"]  # Default local host
 
 TEMPLATES = [
     {

@@ -1,0 +1,142 @@
+* {
+    font-family: courier;
+}
+
+/* The sidebar menu */
+.dash-sidenav {
+    width: 200px;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+/* .dash-sidenav-content {
+    margin-top: 100px;
+} */
+
+/* The navigation menu links */
+.dash-sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+}
+
+/* When you mouse over the navigation links, change their colo */
+.dash-sidenav a:hover {
+    color: #f1f1f1;
+}
+
+/* On smaller screens, where the height is less than 450px, change the style
+of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .dash-sidenav {padding-top: 15px;}
+    .dash-sidenav a {font-size: 18px;}
+}
+
+/* Style page content */
+.dash-main {
+    margin-left: 200px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.dash-main header {
+    background-color: rgb(156, 49, 49);
+    /* background-color: whitesmoke; */
+    /* position: relative; */
+}
+
+header h1 {
+    font-size: 3.5em;
+    font-weight: 500;
+}
+
+.dash-logout {
+    background-color: #818181;
+    /* background-color: whitesmoke; */
+    text-align: right;
+    padding-right: 50px
+}
+
+.button {
+    background-color: #111;
+    border: none;
+    color: white;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 10px 4px;
+}
+
+.dash-logout {
+    border-radius: 20px;
+}
+
+.camera-buttons { 
+    border-radius: 100px;
+    background-color: rgb(146, 8, 8) !important;
+}
+
+.log-buttons { 
+    border-radius: 100px;
+    background-color: rgb(104, 31, 82) !important;
+}
+
+.dash-main .main-content {
+    background-color: rgb(167, 167, 167);
+    position: relative;
+    padding: 0;
+    margin: 0;
+    height: 800px;
+}
+
+.main-content-camera {
+    background-color: aqua;
+    /* display: inline-block; */
+    float: left;
+    width: 50%;
+}
+
+.main-context-logs {
+    background-color: rgb(20, 100, 100);
+    /* display: inline-block; */
+    float: left;
+    width: 50%;
+}
+
+.dash-main .main-content-maps {
+    background-color: rgb(21, 161, 68);
+    position: relative;
+    padding: 0;
+    margin: 0;
+    height: 800px;
+}
+
+footer {
+    background-color: rgb(53, 55, 59);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+    margin-left: 200px;
+}
+
+footer .dash-footer-text {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 100;
+    text-align: center;
+    padding: 20px;
+}
