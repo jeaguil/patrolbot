@@ -1,10 +1,10 @@
-* {
-    font-family: courier;
+:root {
+    --side-nav-size: 150px;
 }
 
 /* The sidebar menu */
 .dash-sidenav {
-    width: 200px;
+    width: var(--side-nav-size);
     height: 100%;
     position: fixed;
     z-index: 1;
@@ -15,9 +15,9 @@
     padding-top: 20px;
 }
 
-/* .dash-sidenav-content {
-    margin-top: 100px;
-} */
+.dash-sidenav-content {
+    margin-top: 50px;
+}
 
 /* The navigation menu links */
 .dash-sidenav a {
@@ -42,25 +42,30 @@ of the sidebar (less padding and a smaller font size) */
 
 /* Style page content */
 .dash-main {
-    margin-left: 200px;
+    margin-left: var(--side-nav-size);
     padding-left: 10px;
     padding-right: 10px;
 }
 
 .dash-main header {
-    background-color: rgb(156, 49, 49);
-    /* background-color: whitesmoke; */
+    background-color: whitesmoke;
     /* position: relative; */
 }
 
 header h1 {
     font-size: 3.5em;
-    font-weight: 500;
-}
+    font-weight: 800;
+    padding-top: 0;
+    margin-top: 0;
+    font-family: "Open-Sans";
+ }
+
+ header h1 span {
+     border-bottom: 4px solid black;
+ }
 
 .dash-logout {
-    background-color: #818181;
-    /* background-color: whitesmoke; */
+    background-color: whitesmoke;
     text-align: right;
     padding-right: 50px
 }
@@ -78,22 +83,31 @@ header h1 {
     margin: 10px 4px;
 }
 
+.button:hover {
+    background-color: #3b3c9b;
+    cursor: pointer;
+}
+
 .dash-logout {
     border-radius: 20px;
 }
 
 .camera-buttons { 
-    border-radius: 100px;
-    background-color: rgb(146, 8, 8) !important;
+    border-radius: 20px;
+    background-color: #111;
+    margin-top: 0;
+    margin-left: 0;
 }
 
 .log-buttons { 
-    border-radius: 100px;
-    background-color: rgb(104, 31, 82) !important;
+    border-radius: 20px;
+    background-color: #111;
+    margin-top: 0;
+    margin-left: 0;
 }
 
 .dash-main .main-content {
-    background-color: rgb(167, 167, 167);
+    background-color: rgb(207, 207, 207);
     position: relative;
     padding: 0;
     margin: 0;
@@ -101,21 +115,21 @@ header h1 {
 }
 
 .main-content-camera {
-    background-color: aqua;
+    /* background-color: aqua; */
     /* display: inline-block; */
     float: left;
     width: 50%;
 }
 
 .main-context-logs {
-    background-color: rgb(20, 100, 100);
+    /* background-color: rgb(20, 100, 100); */
     /* display: inline-block; */
     float: left;
     width: 50%;
 }
 
 .dash-main .main-content-maps {
-    background-color: rgb(21, 161, 68);
+    background-color: rgb(207, 207, 207);
     position: relative;
     padding: 0;
     margin: 0;
@@ -127,15 +141,15 @@ footer {
     position: fixed;
     left: 0;
     bottom: 0;
-    height: 100px;
+    height: 80px;
     width: 100%;
     overflow: hidden;
-    margin-left: 200px;
+    margin-left: var(--side-nav-size);
 }
 
 footer .dash-footer-text {
     color: #fff;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 100;
     text-align: center;
     padding: 20px;
