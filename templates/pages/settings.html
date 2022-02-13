@@ -9,8 +9,59 @@
 
 <div class="dash-sidenav">
     <div class="dash-sidenav-content">
-        <a href="../"><i class="fa fa-fw fa-home"></i> Home</a>
-        <a href="../robot"><i class="fa fa-fw fa-cogs"></i> Robot</a>
-        <a href="./"><i class="fa fa-fw fa-wrench"></i> Settings</a>
+        <p>PatrolBot</p>
+        <a href="../"><i class="fa fa-fw fa-home"></i><span>Dashboard Overview</span></a>
+        <a href="../robot"><i class="fa fa-fw fa-cogs"></i><span>Robot</span></a>
+        <a href="./"><i class="fa fa-fw fa-wrench"></i><span>Settings</span></a>
     </div>
 </div>
+
+<body class="dash-main">
+    <header>
+        <div class="dash-logout">
+            <a href="/accounts/logout" class="button dash-logout">Logout</a>
+        </div>
+        <h1>Dashboard Settings</h1>
+    </header>
+    <div class"settings-categories">
+        <div class="camera-settings-container">
+            <h2>Video Feed Configuraton</h2>
+            <div class="camera-content-text">
+                <div>
+                    <p style="display: inline-block; font-weight: bold;">Bounding box overlay:</p>
+                    <input type="checkbox" id="enable-overlay" name="enable-overlay">
+                </div>
+                <div>
+                    <p style="display: inline-block; font-weight: bold;">Run object detection model:</p>
+                    <input type="checkbox" id="obj-detection" name="obj-detection">
+                </div>
+            </div>
+        </div>
+        <div class="model-settings-container">
+            <h2>Model Configuration</h2>
+            <div class="model-content-text">
+                <div class="model-context-text-heading">
+                    <h4>Objects detected by the model:</h4>
+                </div>
+                <div class="model-context-text-options">
+                    <div>
+                        <input type="checkbox" id="people" name="people">
+                        <p style="display: inline-block;">People</p>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="bike" name="bike">
+                        <p style="display: inline-block;">Bike</p>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="angle-grinders" name="angle-grinders">
+                        <p style="display: inline-block;">Angle Grinders</p>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="bolt-cutters" name="bolt-cutters">
+                        <p style="display: inline-block;">Bolt Cutters</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
