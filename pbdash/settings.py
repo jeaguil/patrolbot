@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Created apps ->
     "pages",
+    "model",
 ]
 
 MIDDLEWARE = [
