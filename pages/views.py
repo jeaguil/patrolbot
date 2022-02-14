@@ -18,3 +18,7 @@ def dashboard_settings_view(request):
 
 def dashboard_robot_view(request):
     return render(request, "pages/robot.html", {})
+
+
+def dashboard_recordings_view(request):
+    return render(request, "pages/recordings.html", {})

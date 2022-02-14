@@ -14,4 +14,5 @@ urlpatterns = [
         views.dashboard_robot_view,
         name="robot",
     ),
+    path("dashboard/recordings/", views.dashboard_recordings_view, name="recordings"),
 ]

@@ -173,3 +173,25 @@ header h1 {
     width: 30%;
     float: left;
 }
+
+.robot-main-container h2{
+    font-family: var(--dash-font);
+}
+
+.robot-main-container p{
+    font-family: var(--dash-font);
+}
+
+.robot-config-container {
+    padding: 20px;
+    border: rgb(175, 175, 175) 2px solid;
+    border-radius: 20px;
+    padding-top: 5px;
+}
+
+.robot-anatomy-container {
+    padding: 20px;
+    border: rgb(175, 175, 175) 2px solid;
+    border-radius: 20px;
+    padding-top: 5px;
+}
