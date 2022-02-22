@@ -107,11 +107,31 @@ header h1 {
     color: #111;
 }
 
+.mode-buttons {
+    border-radius: 10px;
+    background-color: rgb(97, 89, 89);
+    margin-top: 0;
+    margin-left: 0;
+    color: rgb(255, 255, 255);
+}
+
 .dash-main .main-content {
     position: relative;
     padding: 0;
     margin: 0;
     height: 800px;
+}
+
+.main-content-robomode {
+    height: 100px;
+    border: rgb(175, 175, 175) 2px solid;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.main-content-robomode h2 {
+    border-bottom: rgb(175, 175, 175) 0.5px solid;
+    font-family: var(--dash-font);
 }
 
 .main-content-camera {
