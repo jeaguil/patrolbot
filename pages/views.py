@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+import folium
 
 
 def welcome_view(request):
@@ -7,7 +8,28 @@ def welcome_view(request):
 
 def dashboard_view(request):
     if request.user.is_authenticated:
-        return render(request, "pages/dashboard.html", {})
+        robo_coords = [39.54244129476235, -119.81597984878438]
+
+        f = folium.Figure(width="100%", height=700)
+        # create map object
+        m = folium.Map(
+            location=robo_coords,
+            zoom_start=20,
+            dragging=False,
+            scrollWheelZoom=False,
+            attributionControl=False,
+            zoom_control=False,
+        ).add_to(f)
+        folium.Marker(robo_coords).add_to(m)
+
+        # get html representation of map object
+        m = m._repr_html_()
+
+        # render map in context for template
+        context = {
+            "m": m,
+        }
+        return render(request, "pages/dashboard.html", context)
     else:
         return redirect("/")
 

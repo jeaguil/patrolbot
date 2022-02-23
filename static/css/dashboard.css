@@ -161,6 +161,10 @@ header h1 {
     padding: 20px;
 }
 
+.gps-map {
+    padding: 10px;
+}
+
 .main-content-maps h2 {
     border-bottom: rgb(175, 175, 175) 0.5px solid;
     font-family: var(--dash-font);
