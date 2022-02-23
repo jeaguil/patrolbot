@@ -169,11 +169,12 @@ header h1 {
 
 textarea {
     resize: none;
-    padding: 50px;
+    padding: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
     height: 100%;
+    width: 90%;
 }
 
 .main-context-logs {

@@ -45,22 +45,21 @@
         <div class="main-content-loggers">
             <div class="logs-child">
                 <h4>Action Logs</h4>
-                <textarea id="action-logger" title="Action Logs" autofocus readonly></textarea>
+                <textarea id="action-logger" title="Action Logs" autofocus readonly>
+                    {% for event in action_logger %}
+                        {{event|safe}}
+                    {% endfor%}
+                </textarea>
             </div>
             <div class="logs-child">
                 <h4>Security Alerts Logs</h4>
-                <textarea id="security-logger" title="Secuirty Alerts Logs" autofocus readonly></textarea>
+                <textarea id="security-logger" title="Secuirty Alerts Logs" autofocus readonly>
+                    {% for sec_event in security_logger %}
+                        {{sec_event|safe}}
+                    {% endfor%}
+                </textarea>
             </div>
         </div>
-        {% comment %} <script>
-            function input(){
-                var text="here the text you want to input.";
-                document.forms.form1.area.value += text;
-            }
-        </script>
-        <form name="form1">
-            Click<input onclick="input()" type="button" value="BUTTON" id="button"><br>
-            <textarea name="area"></textarea> {% endcomment %}
     </div>
     <div class="main-content-maps">
         <h2>GPS location</h2>

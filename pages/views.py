@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 import folium
+from . import loggers
 
 
 def welcome_view(request):
@@ -28,6 +29,8 @@ def dashboard_view(request):
         # render map in context for template
         context = {
             "m": m,
+            "action_logger": loggers.action_logs,
+            "security_logger": loggers.security_alerts_logs,
         }
         return render(request, "pages/dashboard.html", context)
     else:
