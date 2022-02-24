@@ -5,6 +5,22 @@
     <title>Dashboard - PatrolBot</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script>
+        function saveTextAsFile(element_id,file_name)
+           {
+            var text = document.getElementById(element_id).value;
+            text = text.replace(/\n/g, "\r\n");
+            var blob = new Blob([text], { type: "text/plain"});
+            var anchor = document.createElement("a");
+            anchor.download = file_name;
+            anchor.href = window.URL.createObjectURL(blob);
+            anchor.target ="_blank";
+            anchor.style.display = "none";
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+           };
+    </script>
 </head>
 
 <div class="dash-sidenav">
@@ -39,8 +55,8 @@
         <div>
             <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Start camera</a>
             <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Stop camera</a>
-            <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Save log file</a>
-            <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Save security alert file</a>
+            <button type="button" onclick="saveTextAsFile('action-logger','action_logs.txt')" class="button feed-buttons">Save log file</button>
+            <button type="button" onclick="saveTextAsFile('security-logger','security_alerts.txt')" class="button feed-buttons">Save security alert file</a>
         </div>
         <div class="main-content-loggers">
             <div class="logs-child">
