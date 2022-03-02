@@ -1,6 +1,8 @@
+from django.http import StreamingHttpResponse
 from django.shortcuts import render, redirect
 import folium
 from . import loggers
+from . import camera
 
 
 def welcome_view(request):
@@ -47,3 +49,16 @@ def dashboard_robot_view(request):
 
 def dashboard_recordings_view(request):
     return render(request, "pages/recordings.html", {})
+
+
+def gen(cam):
+    while True:
+        frame = cam.get_frame()
+        yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n\r\n")
+
+
+def phone_feed_view(request):
+    return StreamingHttpResponse(
+        gen(camera.IPPhoneCamera()),
+        content_type="multipart/x-mixed-replace;boundary=frame",
+    )

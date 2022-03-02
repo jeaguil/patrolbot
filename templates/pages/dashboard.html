@@ -58,23 +58,30 @@
             <button type="button" onclick="saveTextAsFile('action-logger','action_logs.txt')" class="button feed-buttons">Save log file</button>
             <button type="button" onclick="saveTextAsFile('security-logger','security_alerts.txt')" class="button feed-buttons">Save security alert file</a>
         </div>
-        <div class="main-content-loggers">
-            <div class="logs-child">
-                <h4>Action Logs</h4>
-                <textarea id="action-logger" title="Action Logs" autofocus readonly>
-                    {% for event in action_logger %}
-                        {{event|safe}}
-                    {% endfor%}
-                </textarea>
+        <div class="camera-content-contain">
+            <div class="main-content-loggers">
+                <div class="logs-child">
+                    <h4>Action Logs</h4>
+                    <textarea id="action-logger" title="Action Logs" autofocus readonly>
+                        {% for event in action_logger %}
+                            {{event|safe}}
+                        {% endfor%}
+                    </textarea>
+                </div>
+                <div class="logs-child">
+                    <h4>Security Alerts Logs</h4>
+                    <textarea id="security-logger" title="Secuirty Alerts Logs" autofocus readonly>
+                        {% for sec_event in security_logger %}
+                            {{sec_event|safe}}
+                        {% endfor%}
+                    </textarea>
+                </div>
             </div>
-            <div class="logs-child">
-                <h4>Security Alerts Logs</h4>
-                <textarea id="security-logger" title="Secuirty Alerts Logs" autofocus readonly>
-                    {% for sec_event in security_logger %}
-                        {{sec_event|safe}}
-                    {% endfor%}
-                </textarea>
-            </div>
+            <div class="main-content-camera-feed">
+                <div class="camera-feed-child">
+                    <h4>Camera Feed</h4>
+                    <img src="{% url 'phone_feed' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%" allowfullscreen ></iframe>
+                </div>
         </div>
     </div>
     <div class="main-content-maps">
