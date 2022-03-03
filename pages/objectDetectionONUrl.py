@@ -1,8 +1,21 @@
+# import AWS SDK
 import boto3
+
+# import items for object detection
 import cv2
 import os
 import torch
 import numpy as np
+
+# import items for action detection
+import matplotlib.pyplot as plt
+import mxnet as mx
+from mxnet import gluon, nd, image
+from mxnet.gluon.data.vision import transforms
+from gluoncv.data.transforms import video
+from gluoncv import utils
+from gluoncv.model_zoo import get_model
+import torchvision.transforms as T
 
 # name given to stream
 STREAM_NAME = "MacStream"
@@ -39,18 +52,39 @@ def hls_stream():
 
     return url
 
-# run yolo based on video stream from kinesis
-def runYolo(url):
-    vcap = cv2.VideoCapture(url)
+# run yolo and action detection based on video stream from kinesis
+def runModels(url):
+    #vcap = cv2.VideoCapture(url)
+    vcap = cv2.VideoCapture(0)
 
     # Torch code adapted from https://github.com/akash-agni/Real-Time-Object-Detection/blob/main/Object_Detection_Youtube.py
-    model_weight_path = os.path.join(os.getcwd(), 'PatrolBot/model_weights/best.pt')
+    model_weight_path = os.path.join(os.getcwd(), 'Documents/CS426/PatrolBot/model_weights/best.pt')
     model = torch.hub.load('ultralytics/yolov5', 'custom', model_weight_path)
     
     # Extract the names of the classes for trained the YoloV5 model
     classes = model.names
     class_ids = [0,1,2,3]
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
+
+    # get list of frame numbers for fast portion of neural network
+    fast_frame_id_list = range(0, 64, 2)
+    # get list of frame numbers for slow portion of neural network
+    slow_frame_id_list = range(0, 64, 16)
+    # combine the two lists
+    frame_id_list = list(fast_frame_id_list) + list(slow_frame_id_list)
+
+    # frames captured initially set to 0
+    frameCounter = 0
+    # declare a list of frames
+    clip_input = []
+    # declare a list of slow frames
+    slow_input = []
+
+    # code adapted from https://cv.gluon.ai/build/examples_action_recognition/demo_slowfast_kinetics400.html
+    # Load trained Slow Fast Model
+    model_name = 'slowfast_4x16_resnet50_kinetics400'
+    net = get_model(model_name, nclass=400, pretrained=True)
+    print('%s model is successfully loaded.' % model_name) 
 
     while(True):
         # Capture frame-by-frame
@@ -62,6 +96,77 @@ def runYolo(url):
 
             # Flip video frame, so it isn't reversed
             image = cv2.flip(image, 1)
+
+            # if the current frame was selected by the frame_id_list
+            # add the frame to the list of frames
+            if frameCounter in frame_id_list:
+                # frame is originally 720 x 1280 x 3
+                # form is height x width x dimensions
+                # resize frame to required 224 x 224
+                frame = cv2.resize(frame, (224, 224))
+                # convert frame to tensor
+                imgTensor = T.ToTensor()(frame)
+                # create a transformation
+                # normalize by mean and standard deviation
+                transform = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+                # apply transformation to tensor
+                normalizedTensor = transform(imgTensor)
+                # change tensor back to numpy array
+                frame = normalizedTensor.cpu().detach().numpy()
+                # frame has format 224 x 224 x 3
+                # append the frame to the list of frames
+                clip_input.append(frame)
+
+                # if the frame is in the list of slow frame numbers
+                # append to the slow input list
+                if frameCounter in slow_frame_id_list:
+                    slow_input.append(frame)
+                 
+        
+            # increment frame counter to keep track  
+            frameCounter += 1
+
+            # if there are enough frames to run the action detection
+            # apply it
+            if frameCounter >= 70:
+                # combine the video frames into one list
+                # goes from 32 x 3 x 224 x 224 to 36 x 3 x 224 x 224
+                clip_input = np.vstack((clip_input, slow_input)) 
+                # join arrays on first axis
+                clip_input = np.stack(clip_input, axis=0)
+                # add a new dimensions and reshape
+                clip_input = clip_input.reshape((-1,) + (36,3,224,224))
+                # finally array into 1 x 3 x 36 x 224 x 224
+                # form is channels x frames x height x width
+                clip_input = np.transpose(clip_input, (0, 2, 1, 3, 4))
+
+                # make the prediction based on the frames
+                pred = net(nd.array(clip_input))
+
+                actionClasses = net.classes
+                topK = 5
+                ind = nd.topk(pred, k=topK)[0].astype('int')
+                predictions = []
+
+                # collect the top 5 predictions
+                for i in range(topK):
+                    predictions.append([actionClasses[ind[i].asscalar()],nd.softmax(pred)[0][ind[i]].asscalar()])
+
+                # extract the action with the highest confidence level
+                bestPrediction=predictions[0]
+                bestAction = bestPrediction[0]
+                bestConfidence = bestPrediction[1]
+
+                # print out best action for stats
+                #print(bestAction, " with confidence ", bestConfidence)
+
+                # reset frame counter to 0
+                frameCounter = 0
+                # empty the frames lists so they can be collected again
+                # declare a list of frames
+                clip_input = []
+                # declare a list of slow frames
+                slow_input = []
 
             # If model is turned on and the object is initialized
             # run object detection on each frame
@@ -98,7 +203,6 @@ def runYolo(url):
                     label = classes[class_number]
                     x1, y1, x2, y2 = int(row[0]*x_shape), int(row[1]*y_shape), int(row[2]*x_shape), int(row[3]*y_shape)
 
-
                     # append coords and label so it can be analyzed
                     objectsFound.append([x1, y1, x2, y2, label])
 
@@ -130,4 +234,4 @@ def runYolo(url):
 
 if __name__ == '__main__':
     url = hls_stream()
-    runYolo(url)
+    runModels(url)
