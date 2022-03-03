@@ -9,6 +9,17 @@ def welcome_view(request):
     return render(request, "pages/welcome.html", {})
 
 
+def update_logs(request):
+    return render(
+        request,
+        "pages/log_body.html",
+        {
+            "action_logs": loggers.action_logs,
+            "security_logs": loggers.security_alerts_logs,
+        },
+    )
+
+
 def dashboard_view(request):
     if request.user.is_authenticated:
         robo_coords = [39.54244129476235, -119.81597984878438]

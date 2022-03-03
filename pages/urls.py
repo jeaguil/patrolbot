@@ -17,4 +17,5 @@ urlpatterns = [
     path("dashboard/recordings/", views.dashboard_recordings_view, name="recordings"),
     # camera urls->
     path("phone_feed", views.phone_feed_view, name="phone_feed"),
+    path("update_logs", views.update_logs, name="update_logs"),
 ]

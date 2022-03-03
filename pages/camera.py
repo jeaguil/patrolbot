@@ -2,6 +2,8 @@ import cv2
 import os
 import urllib.request
 import numpy as np
+import datetime
+import threading
 
 from django.conf import settings
 
@@ -11,6 +13,8 @@ face_detect_cam = cv2.CascadeClassifier(
         settings.BASE_DIR, "opencv_haarcascade_data/haarcascade_frontalface_data.xml"
     )
 )
+
+log_objs = True
 
 
 # class VideoCamera(object):
@@ -66,7 +70,16 @@ class IPPhoneCamera(object):
         faces_detected = face_detect_cam.detectMultiScale(gray, 1.3, 5)
         for (x, y, w, h) in faces_detected:
             cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            # update_logs("obj detected")
+
         resize = cv2.resize(image, (640, 480), interpolation=cv2.INTER_LINEAR)
         frame_flip = cv2.flip(resize, 1)
         ret, jpeg = cv2.imencode(".jpg", frame_flip)
         return jpeg.tobytes()
+
+
+def update_logs(notice: str):
+    threading.Timer(10.0, update_logs).start()
+    time_of_event = datetime.now()
+    new_log = time_of_event.strftime("%H:%M:%S") + notice
+    action_logs += new_log
