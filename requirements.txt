@@ -13,3 +13,8 @@ pytz==2021.3
 requests==2.27.1
 sqlparse==0.4.2
 urllib3==1.26.8
+boto3==1.21.10
+torch==1.9.0
+torchvision=0.10.0
+mxnet==1.8.0
+gluoncv==0.10.4
