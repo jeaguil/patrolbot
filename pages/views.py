@@ -61,6 +61,8 @@ def dashboard_robot_view(request):
 def dashboard_recordings_view(request):
     return render(request, "pages/recordings.html", {})
 
+def dashboard_robot_manual_view(request):
+    return render(request, "pages/robot_manual.html", {})
 
 def gen(cam):
     while True:
