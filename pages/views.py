@@ -69,6 +69,15 @@ def dashboard_recordings_view(request):
 
 
 def dashboard_robot_manual_view(request):
+    if request.method == 'POST':
+        if 'forward_command' in request.POST:
+            print("forward movement requested")
+        elif 'backward_command' in request.POST:
+            print("backward movement requested")
+        elif 'turn_left_command' in request.POST:
+            print("left rotation requested")
+        elif 'turn_right_command' in request.POST:
+            print("right rotation requested")
     return render(request, "pages/robot_manual.html", {})
 
 

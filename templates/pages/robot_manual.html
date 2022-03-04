@@ -24,4 +24,13 @@
         </div>
         <h1><span>Manual Robot Controls</span></h1>
     </header>
+    <div class="robot-controls-container">
+        <form method="post">
+            {% csrf_token %}
+            <button name="forward_command">Forward</button>
+            <button name="backward_command">Backward</button>
+            <button name="turn_left_command">Turn Left</button>
+            <button name="turn_right_command">Turn Right</button>
+        </form>
+    </div>
 </body>
