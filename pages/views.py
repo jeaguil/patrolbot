@@ -2,12 +2,14 @@ from django.http import StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import folium
+import threading
+import numpy as np
 from . import loggers
 from . import camera
 
 # mxnet and gluoncv must be built from source
 # install CPU version of mxnet and gluoncv before running this
-# from . import detection
+from . import detection
 
 
 def welcome_view(request):
@@ -95,10 +97,18 @@ def phone_feed_view(request):
 
 
 def kinesis_stream_view(request):
-    # retrieves url on hls stream
-    # url = detection.hls_stream()
-    # return StreamingHttpResponse(
-    #     gen(detection.KinesisStream(url)),
-    #     content_type="multipart/x-mixed-replace;boundary=frame",
-    # )
-    pass
+     # retrieves url on hls stream
+     url = detection.hls_stream()
+     # create yolo model
+     yolo = detection.get_yolo()
+     classes = yolo.names
+     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
+     # create action detection model
+     action = detection.get_action_model()
+     # create thread to run action detection
+     thread = threading.Thread(target = detection.run_action_detection, args = (url, action))
+     thread.start()
+     return StreamingHttpResponse(
+         gen(detection.KinesisStream(url, yolo, COLORS)),
+         content_type="multipart/x-mixed-replace;boundary=frame",
+     )
