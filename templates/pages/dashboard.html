@@ -97,7 +97,8 @@
             <div class="main-content-camera-feed">
                 <div class="camera-feed-child">
                     <h4>Camera Feed</h4>
-                    <img src="{% url 'phone_feed' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%" allowfullscreen ></iframe>
+                    {% comment %} <img src="{% url 'phone_feed' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%" allowfullscreen ></iframe> {% endcomment %}
+                    <img src="{% url 'kinesis_stream' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%" allowfullscreen ></iframe>
                 </div>
         </div>
     </div>

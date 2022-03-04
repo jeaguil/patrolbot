@@ -17,6 +17,8 @@ from gluoncv import utils
 from gluoncv.model_zoo import get_model
 import torchvision.transforms as T
 
+from django.conf import settings
+
 # name given to stream
 STREAM_NAME = "MacStream"
 AWS_REGION = "us-east-1"
@@ -24,6 +26,23 @@ AWS_REGION = "us-east-1"
 ACCESS_KEY = "AKIAST56MMSDTPOIKMTM"
 # secrety key assigned to stream
 SECRET_KEY = "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"
+
+model_weights = os.path.join(
+    settings.BASE_DIR, "model_weights/BoltCutterUpdateWeights.pt"
+)
+
+
+class KinesisStream(object):
+    def __init__(self, url):
+        self.video = cv2.VideoCapture(0)
+        self.url = url
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        runModels(self.url)
+
 
 # function code adapted
 # from https://stackoverflow.com/questions/64030998/how-can-you-effectively-pull-an-amazon-kinesis-video-stream-for-custom-python-pr
@@ -66,9 +85,7 @@ def runModels(url):
     vcap = cv2.VideoCapture(0)
 
     # Torch code adapted from https://github.com/akash-agni/Real-Time-Object-Detection/blob/main/Object_Detection_Youtube.py
-    model_weight_path = os.path.join(
-        os.getcwd(), "Documents/CS426/PatrolBot/model_weights/best.pt"
-    )
+    model_weight_path = model_weights
     model = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 
     # Extract the names of the classes for trained the YoloV5 model
@@ -265,8 +282,3 @@ def runModels(url):
     cv2.destroyAllWindows()
     print("Video stop")
     """
-
-
-# if __name__ == "__main__":
-#     url = hls_stream()
-#     runModels(url)

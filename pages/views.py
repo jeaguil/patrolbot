@@ -1,8 +1,13 @@
 from django.http import StreamingHttpResponse
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 import folium
 from . import loggers
 from . import camera
+
+# mxnet and gluoncv must be built from source
+# install CPU version of mxnet and gluoncv before running this
+# from . import detection
 
 
 def welcome_view(request):
@@ -20,6 +25,7 @@ def update_logs(request):
     )
 
 
+@login_required
 def dashboard_view(request):
     if request.user.is_authenticated:
         robo_coords = [39.54244129476235, -119.81597984878438]
@@ -61,8 +67,10 @@ def dashboard_robot_view(request):
 def dashboard_recordings_view(request):
     return render(request, "pages/recordings.html", {})
 
+
 def dashboard_robot_manual_view(request):
     return render(request, "pages/robot_manual.html", {})
+
 
 def gen(cam):
     while True:
@@ -75,3 +83,13 @@ def phone_feed_view(request):
         gen(camera.IPPhoneCamera()),
         content_type="multipart/x-mixed-replace;boundary=frame",
     )
+
+
+def kinesis_stream_view(request):
+    # retrieves url on hls stream
+    # url = detection.hls_stream()
+    # return StreamingHttpResponse(
+    #     gen(detection.KinesisStream(url)),
+    #     content_type="multipart/x-mixed-replace;boundary=frame",
+    # )
+    pass
