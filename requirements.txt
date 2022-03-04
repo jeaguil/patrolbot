@@ -13,8 +13,11 @@ requests==2.27.1
 sqlparse==0.4.2
 urllib3==1.26.8
 boto3==1.21.10
+-f https://download.pytorch.org/whl/torch_stable.html
 torch==1.7.0+cpu
+-f https://download.pytorch.org/whl/torch_stable.html
 torchvision==0.8.1+cpu
+-f https://dist.mxnet.io/python/all
 mxnet==1.9.0
 gluoncv==0.10.4
 PyYAML==6.0
