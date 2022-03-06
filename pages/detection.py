@@ -20,7 +20,7 @@ import torchvision.transforms as T
 from django.conf import settings
 
 # name given to stream
-STREAM_NAME = "MacStream"
+STREAM_NAME = "RaspbianPiStream"
 AWS_REGION = "us-east-1"
 # access key assigned to stream
 ACCESS_KEY = "AKIAST56MMSDTPOIKMTM"
