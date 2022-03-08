@@ -12,6 +12,8 @@ from . import camera
 # install CPU version of mxnet and gluoncv before running this
 from . import detection
 
+from picode import pi_publisher
+
 
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
@@ -65,19 +67,20 @@ def dashboard_robot_view(request):
 
 
 def dashboard_recordings_view(request):
+    print("recordings view")
     return render(request, "pages/recordings.html", {})
 
 
 def dashboard_robot_manual_view(request):
     if request.method == "POST":
         if "forward_command" in request.POST:
-            print("forward movement requested")
+            pi_publisher.forward()
         elif "backward_command" in request.POST:
-            print("backward movement requested")
+            pi_publisher.backward()
         elif "turn_left_command" in request.POST:
-            print("left rotation requested")
+            pi_publisher.turn_left()
         elif "turn_right_command" in request.POST:
-            print("right rotation requested")
+            pi_publisher.turn_right()
     return render(request, "pages/robot_manual.html", {})
 
 

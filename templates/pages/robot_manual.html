@@ -27,10 +27,10 @@
     <div class="robot-controls-container">
         <form method="post">
             {% csrf_token %}
-            <button type="button" class="button feed-buttons" name="forward_command">Forward</button>
-            <button type="button" class="button feed-buttons" name="backward_command">Backward</button>
-            <button type="button" class="button feed-buttons" name="turn_left_command">Turn Left</button>
-            <button type="button" class="button feed-buttons" name="turn_right_command">Turn Right</button>
+            <button type="submit" class="button feed-buttons" name="forward_command">Forward</button>
+            <button type="submit" class="button feed-buttons" name="backward_command">Backward</button>
+            <button type="submit" class="button feed-buttons" name="turn_left_command">Turn Left</button>
+            <button type="submit" class="button feed-buttons" name="turn_right_command">Turn Right</button>
         </form>
     </div>
 </body>
