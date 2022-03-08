@@ -56,11 +56,11 @@
         <div class="dash-logout">
             <a href="/accounts/logout" class="button dash-logout">Logout</a>
         </div>
-        <h1><span>Welcome to the Patrol Bot Dashboard</span></h1>
+        <h1><span>PatrolBot Dashboard</span></h1>
     </header>
     <div class="main-content-robomode">
-        <h2>Current traversal mode:<span style="color:green;"> Manual</span>
-            <span style="color:grey;"> Auto</span>
+        <h2>Current Traversal Mode:<span style="color:rgb(72, 172, 72);"> Manual</span>
+            <span style="color:rgb(243, 112, 112);"> Auto</span>
         </h2>
         <div>
             <button type="button" onclick="location.href='robot_manual';" class="button mode-buttons">
@@ -69,7 +69,7 @@
         </div>
     </div>
     <div class="main-content-camera">
-        <h2>Robot camera feed</h2>
+        <h2>Robot Camera Feed</h2>
         <div>
             <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Start camera</a>
                 <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Stop camera</a>
@@ -111,7 +111,7 @@
         </div>
     </div>
     <div class="main-content-maps">
-        <h2>GPS location</h2>
+        <h2>GPS Location</h2>
         <div class="gps-map">
             {{m|safe}}
         </div>
