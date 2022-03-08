@@ -110,6 +110,11 @@ def run_action_detection(url, net):
     clip_input = []
     # declare a list of slow frames
     slow_input = []
+
+    # make a list of all potentially dangerous actions to detect
+    dangerousActions = ['crying', 'drop_kicking', 'headbutting',
+                        'punching_bag', 'punching_person_-boxing-', 'wrestling']
+
     while True:
         vcap = cv2.VideoCapture(url)
         # Capture frame-by-frame
@@ -186,6 +191,11 @@ def run_action_detection(url, net):
                 bestAction = bestPrediction[0]
                 bestConfidence = bestPrediction[1]
 
+                # if a dangerous action is detected
+                if bestAction in dangerousActions and bestConfidence >= .5:
+                    # send the alert to the alerts page
+                    pass
+
                 # print out best action for stats
                 print(bestAction, " with confidence ", bestConfidence)
 
@@ -258,12 +268,18 @@ def runYolo(url, model, colors):
                     int(row[3] * y_shape),
                 )
 
+                # if malicious item detected, send alert
+                if label == "Angle Grinder" or label == 'Bolt Cutters':
+                    # send an alert to the alerts log
+                    pass
+
                 # append coords and label so it can be analyzed
                 objectsFound.append([x1, y1, x2, y2, label])
 
                 # If global enable flag is set true then show boxes
                 # Draw bounding box
-                cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+                cv2.rectangle(image, (int(x1), int(y1)),
+                              (int(x2), int(y2)), color, 2)
                 # Give bounding box a text label
                 cv2.putText(
                     image,
@@ -275,6 +291,49 @@ def runYolo(url, model, colors):
                     2,
                 )
 
+                # send objected detected to log page
+                pass
+
+        # ensure there are enough objects for action detection algorithm
+        if len(objectsFound) >= 2:
+            # iterate over items found
+            for index in range(len(objectsFound)):
+                # check if first object is malicious
+                if objectsFound[index][4] == 'Angle Grinder' or objectsFound[index][4] == 'Bolt Cutters':
+
+                    # check if it is bike was detected in same frame
+                    for index2 in range(len(objectsFound)):
+                        if objectsFound[index2][4] == 'Bike':
+                            x1, y1, x2, y2, label1 = objectsFound[index]
+                            x3, y3, x4, y4, label2 = objectsFound[index2]
+                            box1 = [x1, y1, x2, y2]
+                            box2 = [x3, y3, x4, y4]
+                            # if interseciton is greater than 50 percent
+                            # send a threat alert to alert logs
+                            iou = iou(box1, box2)
+                            if iou >= 0.05:
+                                pass
+
         # return the resulting image
         _, jpeg = cv2.imencode(".jpg", image)
         return jpeg.tobytes()
+
+# code from https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
+    def iou(self, boxA, boxB):
+        # determine the (x, y)-coordinates of the intersection rectangle
+        xA = max(boxA[0], boxB[0])
+        yA = max(boxA[1], boxB[1])
+        xB = min(boxA[2], boxB[2])
+        yB = min(boxA[3], boxB[3])
+        # compute the area of intersection rectangle
+        interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+        # compute the area of both the prediction and ground-truth
+        # rectangles
+        boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+        boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+        # compute the intersection over union by taking the intersection
+        # area and dividing it by the sum of prediction + ground-truth
+        # areas - the interesection area
+        iou = interArea / float(boxAArea + boxBArea - interArea)
+        # return the intersection over union value
+        return iou
