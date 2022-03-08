@@ -110,6 +110,16 @@ header h1 {
     border: rgb(212, 212, 212) solid 2px;
 }
 
+.logs-buttons { 
+    border-radius: 10px;
+    background-color: rgb(250, 250, 250);
+    margin-top: 0;
+    margin-left: 30px;
+    float: right;
+    color: #111;
+    border: rgb(212, 212, 212) solid 2px;
+}
+
 .mode-buttons {
     border-radius: 10px;
     background-color: rgb(250, 250, 250);
@@ -157,7 +167,7 @@ header h1 {
 }
 
 .main-content-camera-feed {
-    margin-left: 510px;
+    margin-right: 510px;
     height: 500px;
 }
 
@@ -168,7 +178,7 @@ header h1 {
 }
 
 .main-content-loggers {
-    float: left;
+    float: right;
     height: 500px;
 }
 
@@ -179,6 +189,7 @@ header h1 {
 }
 
 .logs-child h4 {
+    text-align: center;
     padding: 0;
     font-family: var(--dash-font);
 }
@@ -200,8 +211,6 @@ textarea {
 
 .main-content-maps {
     position: relative;
-    padding: 0;
-    margin: 0;
     height: 800px;
     border: rgb(175, 175, 175) 2px solid;
     border-radius: 20px;
@@ -209,7 +218,7 @@ textarea {
 }
 
 .gps-map {
-    padding: 10px;
+    padding: 0;
 }
 
 .main-content-maps h2 {

@@ -71,14 +71,14 @@ def dashboard_recordings_view(request):
 
 
 def dashboard_robot_manual_view(request):
-    if request.method == 'POST':
-        if 'forward_command' in request.POST:
+    if request.method == "POST":
+        if "forward_command" in request.POST:
             print("forward movement requested")
-        elif 'backward_command' in request.POST:
+        elif "backward_command" in request.POST:
             print("backward movement requested")
-        elif 'turn_left_command' in request.POST:
+        elif "turn_left_command" in request.POST:
             print("left rotation requested")
-        elif 'turn_right_command' in request.POST:
+        elif "turn_right_command" in request.POST:
             print("right rotation requested")
     return render(request, "pages/robot_manual.html", {})
 
@@ -97,18 +97,18 @@ def phone_feed_view(request):
 
 
 def kinesis_stream_view(request):
-     # retrieves url on hls stream
-     url = detection.hls_stream()
-     # create yolo model
-     yolo = detection.get_yolo()
-     classes = yolo.names
-     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
-     # create action detection model
-     action = detection.get_action_model()
-     # create thread to run action detection
-     thread = threading.Thread(target = detection.run_action_detection, args = (url, action))
-     thread.start()
-     return StreamingHttpResponse(
-         gen(detection.KinesisStream(url, yolo, COLORS)),
-         content_type="multipart/x-mixed-replace;boundary=frame",
-     )
+    # retrieves url on hls stream
+    url = detection.hls_stream()
+    # create yolo model
+    yolo = detection.get_yolo()
+    classes = yolo.names
+    COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
+    # create action detection model
+    action = detection.get_action_model()
+    # create thread to run action detection
+    thread = threading.Thread(target=detection.run_action_detection, args=(url, action))
+    thread.start()
+    return StreamingHttpResponse(
+        gen(detection.KinesisStream(url, yolo, COLORS)),
+        content_type="multipart/x-mixed-replace;boundary=frame",
+    )

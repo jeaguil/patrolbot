@@ -7,36 +7,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
-        function saveTextAsFile(element_id,file_name)
-           {
+        function saveTextAsFile(element_id, file_name) {
             var text = document.getElementById(element_id).value;
             text = text.replace(/\n/g, "\r\n");
-            var blob = new Blob([text], { type: "text/plain"});
+            var blob = new Blob([text], { type: "text/plain" });
             var anchor = document.createElement("a");
             anchor.download = file_name;
             anchor.href = window.URL.createObjectURL(blob);
-            anchor.target ="_blank";
+            anchor.target = "_blank";
             anchor.style.display = "none";
             document.body.appendChild(anchor);
             anchor.click();
             document.body.removeChild(anchor);
-           };
+        };
 
 
-        function update_log(){
+        function update_log() {
             $("#log_test").load(
                 "{% url 'update_logs' %}",
             )
         };
 
-        $(document).ready(function(){
-            $("#").click(function(){
+        $(document).ready(function () {
+            $("#").click(function () {
                 $(".log_body").html("").load(
                     "./log_body.html",
                 )
             })
         })
-        
+
     </script>
 </head>
 
@@ -51,6 +50,7 @@
 </div>
 
 {% comment %} Page content {% endcomment %}
+
 <body class="dash-main">
     <header>
         <div class="dash-logout">
@@ -60,20 +60,23 @@
     </header>
     <div class="main-content-robomode">
         <h2>Current traversal mode:<span style="color:green;"> Manual</span>
-            <span style="color:grey;"> Auto</span></h2>
-            <div>
-                <button type="button" onclick="location.href='robot_manual';" class="button mode-buttons">
+            <span style="color:grey;"> Auto</span>
+        </h2>
+        <div>
+            <button type="button" onclick="location.href='robot_manual';" class="button mode-buttons">
                 <i class="fa fa-fw fa-play"></i>
                 <span>Enter Manual Mode</span>
-            </div>
+        </div>
     </div>
     <div class="main-content-camera">
         <h2>Robot camera feed</h2>
         <div>
             <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Start camera</a>
-            <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Stop camera</a>
-            <button type="button" onclick="saveTextAsFile('action-logger','action_logs.txt')" class="button feed-buttons">Save log file</button>
-            <button type="button" onclick="saveTextAsFile('security-logger','security_alerts.txt')" class="button feed-buttons">Save security alert file</a>
+                <button type="button" onclick="alert('In Progress...')" class="button feed-buttons">Stop camera</a>
+                    <button type="button" onclick="saveTextAsFile('security-logger','security_alerts.txt')"
+                        class="button logs-buttons">Save security alert file</a>
+                        <button type="button" onclick="saveTextAsFile('action-logger','action_logs.txt')"
+                            class="button logs-buttons">Save log file</button>
         </div>
         <div class="camera-content-contain">
             <div class="main-content-loggers">
@@ -97,9 +100,14 @@
             <div class="main-content-camera-feed">
                 <div class="camera-feed-child">
                     <h4>Camera Feed</h4>
-                    {% comment %} <img src="{% url 'phone_feed' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%" allowfullscreen ></iframe> {% endcomment %}
-                    <img src="{% url 'kinesis_stream' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%" allowfullscreen ></iframe>
+                    {% comment %} <img src="{% url 'phone_feed' %}" alt="No Video Feed"
+                        onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%"
+                        allowfullscreen></iframe> {% endcomment %}
+                    <img src="{% url 'kinesis_stream' %}" alt="No Video Feed"
+                        onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="100%"
+                        allowfullscreen></iframe>
                 </div>
+            </div>
         </div>
     </div>
     <div class="main-content-maps">
