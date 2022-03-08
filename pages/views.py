@@ -1,8 +1,9 @@
-from django.http import StreamingHttpResponse
+from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import folium
 import threading
+from datetime import datetime
 import numpy as np
 from . import loggers
 from . import camera
@@ -16,15 +17,14 @@ def welcome_view(request):
     return render(request, "pages/welcome.html", {})
 
 
-def update_logs(request):
-    return render(
-        request,
-        "pages/log_body.html",
-        {
-            "action_logs": loggers.action_logs,
-            "security_logs": loggers.security_alerts_logs,
-        },
-    )
+def logdata_view(request):
+    time_of_request = datetime.now()
+    data = {
+        "time_of_request": time_of_request.strftime("%Y-%m-%d_%I%M%p"),
+        "action_logs": loggers.action_logs,
+        "security_logs": loggers.security_alerts_logs,
+    }
+    return JsonResponse(data)
 
 
 @login_required
@@ -50,8 +50,6 @@ def dashboard_view(request):
         # render map in context for template
         context = {
             "m": m,
-            "action_logger": loggers.action_logs,
-            "security_logger": loggers.security_alerts_logs,
         }
         return render(request, "pages/dashboard.html", context)
     else:

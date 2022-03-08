@@ -22,6 +22,6 @@ urlpatterns = [
     ),
     # camera urls->
     path("phone_feed", views.phone_feed_view, name="phone_feed"),
-    path("update_logs", views.update_logs, name="update_logs"),
     path("kinesis_stream", views.kinesis_stream_view, name="kinesis_stream"),
+    path("logdata", views.logdata_view, name="logdata"),
 ]
