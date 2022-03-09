@@ -19,6 +19,10 @@ import torchvision.transforms as T
 
 from django.conf import settings
 
+# import items for updating action and security loggers
+from . import loggers
+from datetime import datetime
+
 # name given to stream
 STREAM_NAME = "RaspbianPiStream"
 AWS_REGION = "us-east-1"
@@ -194,7 +198,9 @@ def run_action_detection(url, net):
                 # if a dangerous action is detected
                 if bestAction in dangerousActions and bestConfidence >= .5:
                     # send the alert to the alerts page
-                    pass
+                    time_of_event = datetime.now()
+                    current_time = time_of_event.strftime("%H:%M:%S")
+                    loggers.security_alerts_logs += ["Potential Threat Computed: " + current_time + " " + bestAction + " with confidence level of: " + str(bestConfidence) + "\n"]
 
                 # print out best action for stats
                 print(bestAction, " with confidence ", bestConfidence)
@@ -269,9 +275,12 @@ def runYolo(url, model, colors):
                 )
 
                 # if malicious item detected, send alert
-                if label == "Angle Grinder" or label == 'Bolt Cutters':
+                if label == "Angle Grinder" or label == "Bolt Cutters":
                     # send an alert to the alerts log
-                    pass
+                    time_of_event = datetime.now()
+                    current_time = time_of_event.strftime("%H:%M:%S")
+
+                    loggers += [current_time + ": " + label + " detected" + "\n"]
 
                 # append coords and label so it can be analyzed
                 objectsFound.append([x1, y1, x2, y2, label])
@@ -312,7 +321,11 @@ def runYolo(url, model, colors):
                             # send a threat alert to alert logs
                             iou = iou(box1, box2)
                             if iou >= 0.05:
-                                pass
+                                time_of_event = datetime.now()
+                                current_time = time_of_event.strftime("%H:%M:%S")
+                                loggers.security_alerts_logs += [
+                                    "Potential Threat Computed with confidence level of " + iou + " " + current_time + ": "+ label1 + " and "+ label2 + " detected" + "\n"
+                                ]
 
         # return the resulting image
         _, jpeg = cv2.imencode(".jpg", image)
