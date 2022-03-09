@@ -1,11 +1,16 @@
 import time
+import os
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
-root_ca_path = '/home/michael/PatrolBot/aws/AmazonRootCA1.pem'
-private_key_path = '/home/michael/PatrolBot/aws/private.pem.key'
-certificate_path = '/home/michael/PatrolBot/aws/certificate.pem.crt'
+root_ca_path1 = '/certificates/AmazonRootCA1.pem'
+private_key_path1 = '/certificates/private.pem.key'
+certificate_path1 = '/certificates/certificate.pem.crt'
 
 def forward():
+    file_path = os.getcwd()
+    root_ca_path = file_path + root_ca_path1
+    private_key_path = file_path + private_key_path1
+    certificate_path = file_path + certificate_path1
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
 
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
@@ -24,6 +29,10 @@ def forward():
     )
 
 def backward():
+    file_path = os.getcwd()
+    root_ca_path = file_path + root_ca_path1
+    private_key_path = file_path + private_key_path1
+    certificate_path = file_path + certificate_path1
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
 
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
@@ -42,6 +51,10 @@ def backward():
     )
 
 def turn_left():
+    file_path = os.getcwd()
+    root_ca_path = file_path + root_ca_path1
+    private_key_path = file_path + private_key_path1
+    certificate_path = file_path + certificate_path1
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
 
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
@@ -60,6 +73,10 @@ def turn_left():
     )
 
 def turn_right():
+    file_path = os.getcwd()
+    root_ca_path = file_path + root_ca_path1
+    private_key_path = file_path + private_key_path1
+    certificate_path = file_path + certificate_path1
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
 
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
