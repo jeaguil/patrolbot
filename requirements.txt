@@ -24,4 +24,4 @@ PyYAML==6.0
 seaborn==0.11.2
 awsiotsdk==1.9.2
 awscrt==0.13.3
-AWSIoTPythonSDK==1.0.0
+AWSIoTPythonSDK==1.4.9
