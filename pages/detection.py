@@ -280,7 +280,7 @@ def runYolo(url, model, colors):
                     time_of_event = datetime.now()
                     current_time = time_of_event.strftime("%H:%M:%S")
 
-                    loggers += [current_time + ": " + label + " detected" + "\n"]
+                    loggers.action_logs += ["Malicious item detected at " + current_time + ": " + label + " detected" + "\n"]
 
                 # append coords and label so it can be analyzed
                 objectsFound.append([x1, y1, x2, y2, label])
@@ -301,7 +301,9 @@ def runYolo(url, model, colors):
                 )
 
                 # send objected detected to log page
-                pass
+                time_of_event = datetime.now()
+                current_time = time_of_event.strftime("%H:%M:%S")
+                loggers.action_logs += [current_time + ": " + label + " detected" + "\n"]
 
         # ensure there are enough objects for action detection algorithm
         if len(objectsFound) >= 2:
