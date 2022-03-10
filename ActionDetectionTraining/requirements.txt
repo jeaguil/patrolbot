@@ -1,0 +1,10 @@
+# For mxnet
+!pip install --upgrade mxnet
+!pip install mxnet-cu101
+
+# For pytorch
+!pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+
+#for decord
+!pip install decord --user
+!pip install --upgrade gluoncv
