@@ -1,10 +1,12 @@
 :root {
-    --side-nav-size: 250px;
+    --side-nav-size: 150px;
     --font-color-sidenav: #5a5a5a;
     --font-color-dash: #ffffff;
-    --dash-font: "Helvetica";
-    --container-background-color: #3b3c9b;
-    --contianer-border-color: #dddddd;
+    --dash-font: "Roboto";
+    --container-background-color: #181818;
+    --container-main-background-color: #252525; 
+    --contianer-border-color: #2e2e2e;
+    --header-background-color: #181818;
 }
 
 /* The sidebar menu */
@@ -12,12 +14,11 @@
     width: var(--side-nav-size);
     height: 100%;
     position: fixed;
-    z-index: 1;
     top: 0;
     left: 0;
     background-color: var(--container-background-color);
     overflow-x: hidden;
-    padding-top: 20px;
+    padding-top: 70px;
     font-family: var(--dash-font);
 }
 
@@ -30,7 +31,7 @@
     /* text-decoration: none; */
     font-size: 20px;
     display: block;
-    color: var(--font-color-dash);
+    color: #cacaca;
 }
 
 /* The navigation menu links */
@@ -38,7 +39,7 @@
     padding: 10px 10px 6px 16px;
     text-decoration: none;
     font-size: 20px;
-    color: var(--font-color-dash);
+    color: #727272;
     display: block;
 }
 
@@ -58,34 +59,51 @@ of the sidebar (less padding and a smaller font size) */
     .dash-sidenav a {font-size: 18px;}
 }
 
+
 /* Style page content */
 .dash-main {
     margin-left: var(--side-nav-size);
-    padding-left: 10px;
-    padding-right: 10px;
-    background: var(--container-background-color);
+    background: var(--container-main-background-color);
+    margin-top: 50px;
 }
 
-header h1 {
-    font-size: 3.5em;
-    padding-top: 0;
+/* header h1 {
+    font-size: 2.5em;
+    padding-top: 10px;
+    padding-right: 10px;
     margin-top: 0;
+    top: 0;
     text-align: center;
     font-family: var(--dash-font);
     color: var(--font-color-dash);
-    border-bottom: var(--contianer-border-color) 2px solid;
+    z-index: 999;
+} */
+
+header span {
+    color: rgb(131, 131, 131);
+    font-family: 'Courier New', Courier, monospace;
+    padding-left: 10px;
 }
 
-.dash-logout {
-    text-align: right;
-    padding-right: 50px
+header {
+    background-color: var(--header-background-color);
+    position: fixed;
+    top:0;
+    right: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 1;
+}
+
+header a {
+    float: right;
 }
 
 .button {
-    background-color: #111;
+    background-color: rgb(53, 53, 53);
     border: none;
     color: white;
-    padding: 14px;
+    padding: 8px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -96,41 +114,47 @@ header h1 {
 }
 
 .button:hover {
-    background-color: #e5eef1;
+    background-color: #3b3b3b;
     cursor: pointer;
 }
 
-.dash-logout {
-    border-radius: 10px;
+.log-dropdown-button {
+    background-color: #3b3b3b;
+    cursor: pointer;
+    color: white;
+}
+
+.dash-logout-button {
+    background-color: #3b3b3b;
+    cursor: pointer;
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    padding-right: 50px;
+}
+
+.btn:hover {
+    background-color: #474747;
 }
 
 .feed-buttons { 
     border-radius: 10px;
-    background-color: rgb(250, 250, 250);
     margin-top: 0;
     margin-left: 0;
-    color: #111;
-    border: rgb(212, 212, 212) solid 2px;
+    color: rgb(255, 255, 255);
 }
 
 .logs-buttons { 
-    border-radius: 10px;
-    background-color: rgb(250, 250, 250);
-    margin-top: 0;
-    margin-left: 30px;
-    float: right;
-    color: #111;
-    border: rgb(212, 212, 212) solid 2px;
+    background-color: #3b3b3b;
+    cursor: pointer;
+    color: white;
 }
 
 .mode-buttons {
     border-radius: 10px;
-    background-color: rgb(250, 250, 250);
     margin-top: 0;
     margin-left: 0;
-    color: #111;
-    border: rgb(212, 212, 212) solid 2px;
-    padding: 10px;
+    color: rgb(255, 255, 255);
 }
 
 .dash-main .main-content {
@@ -141,12 +165,23 @@ header h1 {
 }
 
 .main-content-robomode {
-    height: 100px;
     border: var(--contianer-border-color) 2px solid;
-    border-radius: 10px;
-    padding: 20px;
-    padding-top: 0;
+    padding: 10px;
     margin-bottom: 20px;
+}
+
+.main-content-robomode button { 
+    text-align: center;
+}
+
+.enter-manual-mode {
+    background-color: #3b3b3b;
+    cursor: pointer;
+    color: white;
+}
+
+.main-content-robomode-button-container {
+    padding:0;
 }
 
 .main-content-robomode h2 {
@@ -158,10 +193,9 @@ header h1 {
 .main-content-camera {
     height: 800px;
     border: var(--contianer-border-color) 2px solid;
-    border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     padding-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .main-content-camera h2 {
@@ -196,10 +230,8 @@ header h1 {
 }
 
 .main-content-maps {
-    position: relative;
     height: 770px;
     border: var(--contianer-border-color) 2px solid;
-    border-radius: 10px;
     padding: 20px;
     padding-top: 0;
 }
@@ -215,15 +247,14 @@ header h1 {
 }
 
 .camera-settings-container{
-    padding: 20px;
-    padding-top: 0;
-    border: var(--font-color-dash) 2px solid;
-    border-radius: 10px;
+    border: var(--contianer-border-color) 2px solid;
+    padding: 10px;
     margin-bottom: 20px;
 }
 
 .camera-settings-container h2{
-    font-style: var(--dash-font);
+    border-bottom: var(--contianer-border-color) 0.5px solid;
+    font-family: var(--dash-font);
     color: var(--font-color-dash);
 }
 .camera-content-text {
@@ -236,14 +267,19 @@ header h1 {
 }
 
 .model-settings-container {
-    padding: 20px;
-    padding-top: 0;
     border: var(--contianer-border-color) 2px solid;
-    border-radius: 10px;
+    padding: 10px;
+    height: 500px;
+}
+
+.mds-child {
+    float:left;
+    width:50%;
 }
 
 .model-settings-container h2{
-    font-style: var(--dash-font);
+    border-bottom: var(--contianer-border-color) 0.5px solid;
+    font-family: var(--dash-font);
     color: var(--font-color-dash);
 }
 
