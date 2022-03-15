@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import folium
 import threading
+import pytz
 from datetime import datetime
 import numpy as np
 from . import loggers
@@ -14,19 +15,32 @@ from . import detection
 
 from picode import pi_publisher
 
-
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
 
-
-def logdata_view(request):
-    time_of_request = datetime.now()
-    data = {
-        "time_of_request": time_of_request.strftime("%Y-%m-%d_%I%M%p"),
-        "action_logs": loggers.action_logs,
-        "security_logs": loggers.security_alerts_logs,
+def security_logs(request):
+    pacific_tz = pytz.timezone('US/Pacific')
+    time_of_request = datetime.now(pacific_tz).strftime("%Y-%M-%d")
+    data_for_request = {
+        "time_of_request": time_of_request,
+        "logs": loggers.security_notices,
+        "whichlogs": "threat_log",
     }
-    return JsonResponse(data)
+    return JsonResponse(data_for_request)
+
+def action_logs(request):
+    pacific_tz = pytz.timezone('US/Pacific')
+    time_of_request = datetime.now(pacific_tz).strftime("%Y-%M-%d")
+    
+    time_of_event = datetime.now(pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
+    loggers.objects_detected.append([time_of_event, "Object Detected"])
+
+    data_for_request = {
+        "time_of_request": time_of_request,
+        "logs": loggers.objects_detected,
+        "whichlogs": "action_log",
+    }
+    return JsonResponse(data_for_request)
 
 
 @login_required

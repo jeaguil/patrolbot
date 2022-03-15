@@ -26,30 +26,24 @@
             document.body.removeChild(element);
         }
 
-        function outputActionLogs() {
+        function outputLogs(type) {
             $.ajax({
-                url: "{% url 'logdata' %}",
+                url: (type == 0) ? "{% url 'action_log_data' %}" : "{% url 'security_log_data' %}",
                 success: function(data) {
-                    downloadLogs("ACTIONLOGS-" + data.time_of_request + ".txt", data.action_logs)
+                    var content = data.logs
+                    var csvContent = "Time, Event\n";
+                    content.forEach(function(row) {
+                        csvContent += row.join(",");
+                        csvContent += "\n";
+                    })
+                    var filename = data.whichlogs + "-" + data.time_of_request + ".csv";
+                    downloadLogs(filename, csvContent);
                 },
                 error: function(data) {
                     alert("Unable to output logs. Please try again later.")
                 },
             })
         }
-
-        function outputSecurityLogs() {
-            $.ajax({
-                url: "{% url 'logdata' %}",
-                success: function(data) {
-                    downloadLogs("SECURITYLOGS-" + data.time_of_request + ".txt", data.security_logs)
-                },
-                error: function(data) {
-                    alert("Unable to output logs. Please try again later.")
-                },
-            })
-        }
-
     </script>
 </head>
 
@@ -102,8 +96,8 @@
               Request logs
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <button class="dropdown-item" onclick="outputActionLogs()">Objects detected</button>
-              <button class="dropdown-item" onclick="outputSecurityLogs()">Security Threats</button>
+              <button class="dropdown-item" onclick="outputLogs(0)">Objects detected</button>
+              <button class="dropdown-item" onclick="outputLogs(1)">Security Threats</button>
             </div>
           </div>
         <div class="camera-content-contain">
