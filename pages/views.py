@@ -31,10 +31,6 @@ def security_logs(request):
 def action_logs(request):
     pacific_tz = pytz.timezone('US/Pacific')
     time_of_request = datetime.now(pacific_tz).strftime("%Y-%M-%d")
-    
-    time_of_event = datetime.now(pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
-    loggers.objects_detected.append([time_of_event, "Object Detected"])
-
     data_for_request = {
         "time_of_request": time_of_request,
         "logs": loggers.objects_detected,
