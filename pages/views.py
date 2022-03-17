@@ -15,6 +15,15 @@ from . import detection
 
 from picode import pi_publisher
 
+dashboard_video_configuration_settings = {
+    "bounding_box_overlay": "on", # by default, bounding box overlay is on
+}
+
+objects_detected_settings = {
+    "people": "on",
+    "bike": "on",
+}
+
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
 
@@ -68,8 +77,22 @@ def dashboard_view(request):
         return redirect("/")
 
 
+@login_required
 def dashboard_settings_view(request):
-    return render(request, "pages/settings.html")
+    if request.method == "POST":
+        # request list of all CHECKED checkboxes
+        # will not show unchecked checkboxes after post submission
+        dashboard_settings = request.POST.getlist("dashboard_settings")
+        if "enable_bb_overlay" in dashboard_settings or dashboard_video_configuration_settings["bounding_box_overlay"] == "off":
+            # enable bounding box overlay checkbox was checked
+            dashboard_video_configuration_settings["bounding_box_overlay"] = "on"
+        else:
+            # disable bounding box overlay checkbox was unchecked
+            dashboard_video_configuration_settings["bounding_box_overlay"] = "off"
+            
+        return render(request, "pages/settings.html", {"db_settings": dashboard_video_configuration_settings})
+        
+    return render(request, "pages/settings.html", {"db_settings": dashboard_video_configuration_settings})
 
 
 def dashboard_robot_view(request):
