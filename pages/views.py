@@ -69,7 +69,7 @@ def dashboard_view(request):
 
 
 def dashboard_settings_view(request):
-    return render(request, "pages/settings.html", {})
+    return render(request, "pages/settings.html")
 
 
 def dashboard_robot_view(request):
