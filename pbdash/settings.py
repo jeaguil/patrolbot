@@ -28,7 +28,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     # Production domain name:
-    "django-env.eba-ewszhepd.us-west-2.elasticbeanstalk.com",
+    "pbdash-env.eba-ewszhepd.us-west-2.elasticbeanstalk.com",
     "patrolbotdash.com",
 ]
 

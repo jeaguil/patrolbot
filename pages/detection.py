@@ -9,12 +9,7 @@ import pytz
 import numpy as np
 
 # import items for action detection
-import matplotlib.pyplot as plt
-import mxnet as mx
-from mxnet import gluon, nd, image
-from mxnet.gluon.data.vision import transforms
-from gluoncv.data.transforms import video
-from gluoncv import utils
+from mxnet import nd
 from gluoncv.model_zoo import get_model
 import torchvision.transforms as T
 
@@ -25,8 +20,8 @@ from . import loggers
 from datetime import datetime
 
 # name given to stream
-STREAM_NAME = "RaspbianPiStream"
-AWS_REGION = "us-east-1"
+STREAM_NAME = "MacStream"
+AWS_REGION = "us-west-2"
 # access key assigned to stream
 ACCESS_KEY = "AKIAST56MMSDTPOIKMTM"
 # secrety key assigned to stream
