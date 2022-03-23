@@ -94,16 +94,6 @@ def dashboard_settings_view(request):
         
     return render(request, "pages/settings.html", {"db_settings": dashboard_video_configuration_settings})
 
-
-def dashboard_robot_view(request):
-    return render(request, "pages/robot.html", {})
-
-
-def dashboard_recordings_view(request):
-    print("recordings view")
-    return render(request, "pages/recordings.html", {})
-
-
 def dashboard_robot_manual_view(request):
     if request.method == "POST":
         if "forward_command" in request.POST:

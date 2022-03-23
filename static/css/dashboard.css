@@ -67,18 +67,6 @@ of the sidebar (less padding and a smaller font size) */
     margin-top: 50px;
 }
 
-/* header h1 {
-    font-size: 2.5em;
-    padding-top: 10px;
-    padding-right: 10px;
-    margin-top: 0;
-    top: 0;
-    text-align: center;
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-    z-index: 999;
-} */
-
 header span {
     color: rgb(131, 131, 131);
     font-family: var(--dash-font);
@@ -301,37 +289,4 @@ header a {
     padding: 0;
     margin: 0;
     width: 30%;
-}
-
-.robot-main-container h2{
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.robot-main-container p{
-    font-family: var(--dash-font);
-}
-
-.robot-config-container {
-    padding: 20px;
-    border: var(--contianer-border-color) 2px solid;
-    border-radius: 20px;
-    padding-top: 5px;
-}
-
-.robot-config-container p{
-    font-style: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.robot-anatomy-container {
-    padding: 20px;
-    border: var(--contianer-border-color) 2px solid;
-    border-radius: 20px;
-    padding-top: 5px;
-}
-
-.robot-anatomy-container p{
-    font-style: var(--dash-font);
-    color: var(--font-color-dash);
 }
