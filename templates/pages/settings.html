@@ -41,36 +41,71 @@
                 <h2>Video Feed Configuraton</h2>
                 <div class="camera-content-text">
                     <div>
-                        <p style="display: inline-block; font-weight: bold;">Bounding Box Overlay (object detection model) :</p>
-                        {% for setting, value in db_settings.items %}
+                        <p style="display: inline-block;">Bounding Box Overlay (object detection model) :</p>
+                        {% for setting, value in db_video_settings.items %}
                             {% if setting == 'bounding_box_overlay'%}
-                                {% if value == 'on' %}
-                                    <input type="checkbox" value="enable_bb_overlay"
-                                    name="dashboard_settings"
-                                    checked="checked">
-                                {% else %}
-                                    <input type="checkbox" value="disable_bb_overlay"
-                                    name="dashboard_setings">
-                                {% endif %}
+                                <input type="hidden" name="dashboard_settings" value={{setting}}_off>
+                                <input type="checkbox" value="{{setting}}" name="dashboard_settings"
+                                {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
                             {% endif %}
                         {% endfor %}
+                        
                     </div>
                 </div>
             </div>
             <div class="model-settings-container">
                 <h2>Model Configuration</h2>
                 <div class="model-settings-contain-child">
-                    <div class="mds-child">
-                        <h4>Objects Detected by the Model:</h4>
+                    <div class="mds-child" style="width:100%">
+                        <h4 style="width:100%">Objects Detected by the Model:</h4>
                     </div>
                     <div class="mds-child">
-                        <div>
-                            <input type="checkbox" id="people" value="people" name="dashboard_settings">
-                            <p style="display: inline-block;">People</p>
+                        <div class="mds-child-text">
+                            <div class="child inline-block-mds-child">
+                                {% for setting, value in db_model_settings.items%}
+                                    {% if setting == 'detect_people'%}
+                                    <input type="hidden" name="dashboard_settings" value={{setting}}_off>
+                                        <input type="checkbox" value="{{settting}}" name="dashboard_settings"
+                                        {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="child inline-block-mds-child"><p>People</p></div>
+                            </div>
                         </div>
-                        <div>
-                            <input type="checkbox" id="bike" value="bike" name="dashboard_settings">
-                            <p style="display: inline-block;">Bike</p>
+
+                        <div class="mds-child-text">
+                            <div class="child inline-block-mds-child">
+                                {% for setting, value in db_model_settings.items%}
+                                    {% if setting == 'detect_bike'%}
+                                        <input type="hidden" name="dashboard_settings" value={{setting}}_off>
+                                        <input type="checkbox" value="{{setting}}" name="dashboard_settings"
+                                        {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="child inline-block-mds-child"><p>Bike</p></div>
+                        </div>
+
+                        <div class="mds-child-text">
+                            {% for setting, value in db_model_settings.items%}
+                                {% if setting == 'detect_angle_grinders'%}
+                                    <input type="hidden" name="dashboard_settings" value={{setting}}_off>
+                                    <input type="checkbox" value="{{setting}}" name="dashboard_settings"
+                                    {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="child inline-block-mds-child"><p style="white-space: nowrap;">Angle Grinders</p></div>
+                        </div>
+
+                        <div class="mds-child-text">
+                            {% for setting, value in db_model_settings.items%}
+                                {% if setting == 'detect_bolt_cutters'%}
+                                    <input type="hidden" name="dashboard_settings" value={{setting}}_off>
+                                    <input type="checkbox" value="{{setting}}" name="dashboard_settings"
+                                    {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="child inline-block-mds-child"><p style="white-space: nowrap;">Bolt Cutters</p></div>
                         </div>
                     </div>
                 </div>

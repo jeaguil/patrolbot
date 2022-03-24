@@ -266,7 +266,20 @@ header a {
 
 .mds-child {
     float:left;
-    width:50%;
+    width:100%;
+}
+
+.inline-block-mds-child {
+    display: inline-block;
+}
+
+.mds-child-text {
+    margin-left: 50px;
+}
+
+.mds-child-text p {
+    font-style: var(--dash-font);
+    color: var(--font-color-dash);
 }
 
 .model-settings-container h2{
