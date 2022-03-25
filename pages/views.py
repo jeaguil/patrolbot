@@ -100,7 +100,21 @@ def dashboard_settings_view(request):
     
         if request.method == "POST":
             # Update settings accordingly...
-                
+            
+            # Uncheck all settings
+            DashboardModelSettings.objects.all().order_by('id').update(switch=False)
+            DashboardVideoSettings.objects.all().order_by('id').update(switch=False)
+            
+            # Get list of checkbed box id's
+            video_settings_id_list = request.POST.getlist("dashboard_video_settings")
+            model_settings_id_list = request.POST.getlist("dashboard_model_settings")
+            
+            # Update the database
+            for i in video_settings_id_list:
+                DashboardVideoSettings.objects.filter(name_id=i).update(switch=True)
+            for i in model_settings_id_list:
+                DashboardModelSettings.objects.filter(name_id=i).update(switch=True)
+            
             return render(request, "pages/settings.html", {"video_settings": video_settings, "model_settings": model_settings})
         
         return render(request, "pages/settings.html", {"video_settings": video_settings, "model_settings": model_settings})
