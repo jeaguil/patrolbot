@@ -39,19 +39,31 @@
             {% csrf_token %}
             <div class="camera-settings-container">
                 <h2>Video Feed Configuraton</h2>
-                <div class="camera-content-text">
-                    <div>
-                        <p style="display: inline-block;">Bounding Box Overlay (object detection model) :</p>
-                        {% for setting, value in db_video_settings.items %}
-                            {% if setting == 'bounding_box_overlay'%}
-                                <input type="hidden" name="dashboard_settings" value={{setting}}_off>
-                                <input type="checkbox" value="{{setting}}" name="dashboard_settings"
-                                {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
-                            {% endif %}
+                <table class="table table-dark table-striped table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Setting</th>
+                            <th scope="col">Switch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for setting in video_settings%}
+                            <tr>
+                                <td>{{setting}}</td>
+                                <td>
+                                    {% if setting.switch %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked="checked" value="{{setting}}" name="dashboard_settings">
+                                    </div>
+                                    {% else %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="{{setting}}" name="dashboard_settings">
+                                    </div>
+                                    {% endif %}
+                            </tr>
                         {% endfor %}
-                        
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
             <div class="model-settings-container">
                 <h2>Model Configuration</h2>
@@ -60,53 +72,31 @@
                         <h4 style="width:100%">Objects Detected by the Model:</h4>
                     </div>
                     <div class="mds-child">
-                        <div class="mds-child-text">
-                            <div class="child inline-block-mds-child">
-                                {% for setting, value in db_model_settings.items%}
-                                    {% if setting == 'detect_people'%}
-                                    <input type="hidden" name="dashboard_settings" value={{setting}}_off>
-                                        <input type="checkbox" value="{{settting}}" name="dashboard_settings"
-                                        {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
-                                    {% endif %}
+                        <table class="table table-dark table-striped table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Setting</th>
+                                    <th scope="col">Switch</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for setting in model_settings%}
+                                    <tr>
+                                        <td>{{setting}}</td>
+                                        <td>
+                                            {% if setting.switch %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" checked="checked" value="{{setting}}" name="dashboard_settings">
+                                            </div>
+                                            {% else %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{setting}}" name="dashboard_settings">
+                                            </div>
+                                            {% endif %}
+                                    </tr>
                                 {% endfor %}
-                                <div class="child inline-block-mds-child"><p>People</p></div>
-                            </div>
-                        </div>
-
-                        <div class="mds-child-text">
-                            <div class="child inline-block-mds-child">
-                                {% for setting, value in db_model_settings.items%}
-                                    {% if setting == 'detect_bike'%}
-                                        <input type="hidden" name="dashboard_settings" value={{setting}}_off>
-                                        <input type="checkbox" value="{{setting}}" name="dashboard_settings"
-                                        {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <div class="child inline-block-mds-child"><p>Bike</p></div>
-                        </div>
-
-                        <div class="mds-child-text">
-                            {% for setting, value in db_model_settings.items%}
-                                {% if setting == 'detect_angle_grinders'%}
-                                    <input type="hidden" name="dashboard_settings" value={{setting}}_off>
-                                    <input type="checkbox" value="{{setting}}" name="dashboard_settings"
-                                    {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
-                                {% endif %}
-                            {% endfor %}
-                            <div class="child inline-block-mds-child"><p style="white-space: nowrap;">Angle Grinders</p></div>
-                        </div>
-
-                        <div class="mds-child-text">
-                            {% for setting, value in db_model_settings.items%}
-                                {% if setting == 'detect_bolt_cutters'%}
-                                    <input type="hidden" name="dashboard_settings" value={{setting}}_off>
-                                    <input type="checkbox" value="{{setting}}" name="dashboard_settings"
-                                    {% if value == 'on' %} checked='checked' {%else %} '' {%endif%}>
-                                {% endif %}
-                            {% endfor %}
-                            <div class="child inline-block-mds-child"><p style="white-space: nowrap;">Bolt Cutters</p></div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

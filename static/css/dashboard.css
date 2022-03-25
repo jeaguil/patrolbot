@@ -249,14 +249,6 @@ header a {
     font-family: var(--dash-font);
     color: var(--font-color-dash);
 }
-.camera-content-text {
-    margin-left: 50px
-}
-
-.camera-content-text p{
-    font-style: var(--dash-font);
-    color: var(--font-color-dash);
-}
 
 .model-settings-container {
     border: var(--contianer-border-color) 2px solid;
@@ -267,14 +259,6 @@ header a {
 .mds-child {
     float:left;
     width:100%;
-}
-
-.inline-block-mds-child {
-    display: inline-block;
-}
-
-.mds-child-text {
-    margin-left: 50px;
 }
 
 .mds-child-text p {
