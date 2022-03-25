@@ -1,6 +1,7 @@
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .models import DashboardModelSettings, DashboardVideoSettings
 import folium
 import threading
 import pytz
@@ -14,15 +15,6 @@ from . import camera
 from . import detection
 
 from picode import pi_publisher
-
-dashboard_video_configuration_settings = {
-    "bounding_box_overlay": "on", # by default, bounding box overlay is on
-}
-
-objects_detected_settings = {
-    "people": "on",
-    "bike": "on",
-}
 
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
@@ -66,9 +58,29 @@ def dashboard_view(request):
         folium.Marker(robo_coords).add_to(m)
 
         # get html representation of map object
-        m = m._repr_html_()
-
-        # render map in context for template
+        m = m._repr_html_()        
+        
+        # On a new application version, AWS clears all data on the instance (including database)
+        # Add setting records to db only once
+        try:
+            bounding_box = DashboardVideoSettings.objects.get(name_id="Bounding Box Overlay (object detection model)")
+        except DashboardVideoSettings.DoesNotExist:
+            obj = DashboardVideoSettings(name_id="Bounding Box Overlay (object detection model)", setting="bounding_box_overlay", switch=True)
+            obj.save()
+            
+        try:
+            person_detect = DashboardModelSettings.objects.get(name_id="Person")
+            bike_detect = DashboardModelSettings.objects.get(name_id="Bike")
+            angle_grinder_detect = DashboardModelSettings.objects.get(name_id="Angle Grinders")
+            bolt_cutter_detect = DashboardModelSettings.objects.get(name_id="Bolt Cutters")
+        except DashboardModelSettings.DoesNotExist:
+            new_name_ids = ["Person", "Bike", "Angle Grinders", "Bolt Cutters"]
+            new_setting_names = ["detect_people", "detect_bike", "detect_angle_grinders", "detect_bolt_cutters"]
+            for i in range(len(new_name_ids)):
+                obj = DashboardModelSettings(name_id=new_name_ids[i], setting=new_setting_names[i], switch=True)
+                obj.save()
+                
+        # Pass in context for rendered template
         context = {
             "m": m,
         }
@@ -79,20 +91,21 @@ def dashboard_view(request):
 
 @login_required
 def dashboard_settings_view(request):
-    if request.method == "POST":
-        # request list of all CHECKED checkboxes
-        # will not show unchecked checkboxes after post submission
-        dashboard_settings = request.POST.getlist("dashboard_settings")
-        if "enable_bb_overlay" in dashboard_settings or dashboard_video_configuration_settings["bounding_box_overlay"] == "off":
-            # enable bounding box overlay checkbox was checked
-            dashboard_video_configuration_settings["bounding_box_overlay"] = "on"
-        else:
-            # disable bounding box overlay checkbox was unchecked
-            dashboard_video_configuration_settings["bounding_box_overlay"] = "off"
-            
-        return render(request, "pages/settings.html", {"db_settings": dashboard_video_configuration_settings})
+    if request.user.is_authenticated:
+        # Get video settings from database
+        video_settings = DashboardVideoSettings.objects.all()
         
-    return render(request, "pages/settings.html", {"db_settings": dashboard_video_configuration_settings})
+        # Get model settings from database
+        model_settings = DashboardModelSettings.objects.all()
+    
+        if request.method == "POST":
+            # Update settings accordingly...
+                
+            return render(request, "pages/settings.html", {"video_settings": video_settings, "model_settings": model_settings})
+        
+        return render(request, "pages/settings.html", {"video_settings": video_settings, "model_settings": model_settings})
+    else:
+        return redirect("/")
 
 def dashboard_robot_manual_view(request):
     if request.method == "POST":
