@@ -112,13 +112,10 @@ header a {
     color: white;
 }
 
-.dash-logout-button {
-    background-color: #3b3b3b;
-    cursor: pointer;
-    color: white;
-    padding: 10px;
-    text-decoration: none;
-    padding-right: 50px;
+.btn-secondary {
+    margin: 5px;
+    background-color: #1f1d1d !important;
+    color: white !important;
 }
 
 .btn {
