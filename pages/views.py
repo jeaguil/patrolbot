@@ -2,6 +2,7 @@ from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import DashboardModelSettings, DashboardVideoSettings
+from django.contrib import messages
 import folium
 import threading
 import pytz
@@ -115,6 +116,7 @@ def dashboard_settings_view(request):
             for i in model_settings_id_list:
                 DashboardModelSettings.objects.filter(name_id=i).update(switch=True)
             
+            messages.success(request, "Settings updated successfully!")
             return render(request, "pages/settings.html", {"video_settings": video_settings, "model_settings": model_settings})
         
         return render(request, "pages/settings.html", {"video_settings": video_settings, "model_settings": model_settings})

@@ -12,6 +12,13 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        setTimeout(function() {
+            if ($('#msg').length > 0) {
+                $('#msg').remove();
+            }
+        }, 2000) // 2000 milliseconds
+    </script>
 </head>
 
 <div class="dash-sidenav">
@@ -99,6 +106,15 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div class="container">
+                {% if messages %}
+                    {% for message in messages%}
+                        <div id="msg" class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert" style="position:fixed; left: 50%; bottom: 60px; transform: translate(-50%, -50%); margin: 0 auto;">
+                            {{message}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
             <button type="submit" class="btn btn-light" style="position:fixed; left: 50%; bottom: 20px; transform: translate(-50%, -50%); margin: 0 auto;">Save changes</button>
         </form>
