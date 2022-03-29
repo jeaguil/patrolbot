@@ -1,5 +1,9 @@
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
 .wc-body {
-    background: #3b3c9b;
+    background: white;
     height: 100%;
     position: relative;
     left:0;
@@ -13,12 +17,11 @@
 }
 
 .wc-main-text {
-    color: #fff;
+    color: rgb(0, 0, 0);
     font-size: 6rem;
     font-weight: 700;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-left: 20px;
     margin-right: 70%; 
 }
 
@@ -27,8 +30,12 @@
     padding-right: 70px;
 }
 
+h1 span {
+    color: #3b3c9b;
+}
+
 .button {
-    background-color: #111;
+    background-color: #3b3c9b;
     border: none;
     color: white;
     padding: 14px;
@@ -41,21 +48,5 @@
 }
 
 .wc-login-bttn {
-    border-radius: 20px;
-}
-
-.button2 {
-    background-color: white;
-    border: none;
-    color: black;
-    padding: 14px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 700;
-    margin-left: 20px;
-}
-
-.wc-login-bttn2 {
-    border-radius: 20px;
+    border-radius: 10px;
 }
