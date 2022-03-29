@@ -6,6 +6,7 @@ from django.contrib import messages
 import folium
 import threading
 import pytz
+import torch
 from datetime import datetime
 import numpy as np
 from . import loggers
@@ -165,3 +166,14 @@ def kinesis_stream_view(request):
         gen(detection.KinesisStream(url, yolo, COLORS)),
         content_type="multipart/x-mixed-replace;boundary=frame",
     )
+
+def model_meta_data(request):
+    # Secret page that renders model meta data
+    is_cuda_available = torch.cuda.is_available()
+    device_name = torch.cuda.get_device_name(0) if is_cuda_available else "cpu"
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    return render(request, "pages/model_meta_data.html", {
+        "is_cuda_available": is_cuda_available,
+        "device_name": device_name,
+        "device": device,
+    })
