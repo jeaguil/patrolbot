@@ -18,6 +18,8 @@ from . import detection
 
 from picode import pi_publisher
 
+
+
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
 
@@ -42,7 +44,19 @@ def action_logs(request):
     return JsonResponse(data_for_request)
 
 def refresh_map_view(request):
-    m = None
+    # [latitude, longitude]
+    new_robot_location = [48.864716, 2.349014]
+    f = folium.Figure(width="100%", height="100%")
+    m = folium.Map(
+        location=new_robot_location,
+        zoom_start=20,
+        dragging=False,
+        scrollWheelZoom=False,
+        attributionControl=False,
+        zoom_control=False,
+    ).add_to(f)
+    folium.Marker(new_robot_location).add_to(m)
+    m = m._repr_html_()
     return JsonResponse({"map": m})
 
 

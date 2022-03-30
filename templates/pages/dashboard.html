@@ -55,7 +55,8 @@
             $.ajax({
                 url: "{% url 'refresh_map' %}",
                 success: function (data) {
-                    alert(data.m);
+                    var tag_id = document.getElementById("map");
+                    tag_id.innerHTML = data.map;
                 },
                 error: function (data) {
                     alert("Unable to refresh map. Please try again later.")
@@ -131,7 +132,7 @@
         </article>
         <article>
             <h1>GPS Location<a href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh" style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
-            <div class="gps-map">
+            <div id="map" class="gps-map">
                 {{m|safe}}
             </div>
         </article>
