@@ -47,7 +47,7 @@ def dashboard_view(request):
     if request.user.is_authenticated:
         robo_coords = [39.54244129476235, -119.81597984878438]
 
-        f = folium.Figure(width="100%", height=700)
+        f = folium.Figure(width="100%", height="100%")
         # create map object
         m = folium.Map(
             location=robo_coords,

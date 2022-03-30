@@ -27,12 +27,11 @@
     </div>
 </div>
 
-<body class="dash-main">
-    <header>
-        <div class="dash-logout">
-            <a href="/accounts/logout" class="btn btn-secondary">Sign out</a>
-        </div>
-    </header>
+<header>
+    <a href="/accounts/logout" class="button">Sign out</a>
+</header>
+
+<section class="page-content">
     <div class="robot-controls-container">
         <form method="post">
             {% csrf_token %}
@@ -42,4 +41,4 @@
             <button type="submit" class="button feed-buttons" name="turn_right_command">Turn Right</button>
         </form>
     </div>
-</body>
+</section>

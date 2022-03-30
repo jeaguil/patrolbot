@@ -1,15 +1,30 @@
+/* BASE RULES
+--------------------------------------------------- */
+
 :root {
     --side-nav-size: 150px;
     --font-color-sidenav: #5a5a5a;
     --font-color-dash: #ffffff;
     --dash-font: "Roboto";
-    --container-background-color: #181818;
+    --container-background-color: #242e42;
     --container-main-background-color: #252525; 
     --contianer-border-color: #2e2e2e;
     --header-background-color: #181818;
+    --page-content-txtColor: #171616;
+    --page-content-blockColor: #fff;
+    --page-content-bgColor: #f0f1f6;
 }
 
-/* The sidebar menu */
+* {
+    font: 16px/1.5 "Lato", sans-serif;
+}
+
+button {
+    background-color: white;
+}
+
+/* The sidebar menu 
+---------------------------------------------------*/
 .dash-sidenav {
     width: var(--side-nav-size);
     height: 100%;
@@ -19,7 +34,6 @@
     background-color: var(--container-background-color);
     overflow-x: hidden;
     padding-top: 70px;
-    font-family: var(--dash-font);
 }
 
 .dash-sidenav-content {
@@ -59,23 +73,12 @@ of the sidebar (less padding and a smaller font size) */
     .dash-sidenav a {font-size: 18px;}
 }
 
-
-/* Style page content */
-.dash-main {
-    margin-left: var(--side-nav-size);
-    background: var(--container-main-background-color);
-    margin-top: 50px;
-}
-
-header span {
-    color: rgb(131, 131, 131);
-    font-family: var(--dash-font);
-    padding-left: 10px;
-}
+/* HEADER
+---------------------------------------------------*/
 
 header {
-    background-color: var(--header-background-color);
-    position: fixed;
+    margin-left: var(--side-nav-size);
+    position: absolute;
     top:0;
     right: 0;
     width: 100%;
@@ -87,18 +90,22 @@ header a {
     float: right;
 }
 
+/* BUTTONS
+--------------------------------------------------- */
+
 .button {
-    background-color: rgb(53, 53, 53);
+    background-color: #242e42;
     border: none;
     color: white;
-    padding: 8px;
+    padding: 14px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 14px;
     font-weight: 700;
     margin: 10px 4px;
-    font-family: var(--dash-font);
+    border-radius: 10px;
+    margin-right: 30px;
 }
 
 .button:hover {
@@ -106,181 +113,70 @@ header a {
     cursor: pointer;
 }
 
-.log-dropdown-button {
-    background-color: #3b3b3b;
-    cursor: pointer;
-    color: white;
-}
-
-.btn-secondary {
-    margin: 5px;
-    background-color: #1f1d1d !important;
-    color: white !important;
-}
-
-.btn {
-    font-family: var(--dash-font);
-}
-
-.btn:hover {
-    background-color: #474747;
-}
-
-.feed-buttons { 
-    border-radius: 10px;
-    margin-top: 0;
-    margin-left: 0;
-    color: rgb(255, 255, 255);
-}
-
-.logs-buttons { 
-    background-color: #3b3b3b;
-    cursor: pointer;
-    color: white;
-}
-
-.mode-buttons {
-    border-radius: 10px;
-    margin-top: 0;
-    margin-left: 0;
-    color: rgb(255, 255, 255);
-}
-
-.dash-main .main-content {
+/* PAGE CONTENT
+ ---------------------------------------------------*/
+ .page-content {
     position: relative;
+    left: var(--side-nav-size);
+    width: calc(100% - var(--side-nav-size));
+    min-height: 100vh;
+    padding: 30px;
+    color: var(--page-content-txtColor);
+    background: var(--page-content-bgColor);
+}
+
+.page-content .grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 30px;
+}
+
+.page-content .grid > article {
+    display: flex;
+    height: 600px;
+    background: var(--page-content-blockColor);
+    border-radius: 4px;
+    box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.075);
+}
+
+.page-content .grid > article h1 {
+    margin: 10px;
+    display: inline-block;
+    position: absolute;
+}
+
+.page-content .grid > article:first-child{
+    grid-column: span 2;
+    margin-top: 50px;
+}
+
+.page-content-camera-child {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+/* SETTINGS TABLES
+ ---------------------------------------------------*/
+
+.settings-tables {
     padding: 0;
-    margin: 0;
-    height: 800px;
-}
-
-.main-content-robomode {
-    border: var(--contianer-border-color) 2px solid;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-.main-content-robomode button { 
+    width: 100%;
+    height: 500px;
     text-align: center;
+    margin-top: 100px;
 }
 
-.enter-manual-mode {
-    background-color: #3b3b3b;
-    cursor: pointer;
-    color: white;
-}
-
-.main-content-robomode-button-container {
-    padding:0;
-}
-
-.main-content-robomode h2 {
-    border-bottom: var(--contianer-border-color) 0.5px solid;
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.main-content-camera {
-    height: 800px;
-    border: var(--contianer-border-color) 2px solid;
-    padding: 10px;
-    padding-top: 0;
-    margin-bottom: 10px;
-}
-
-.main-content-camera h2 {
-    border-bottom: var(--contianer-border-color) 0.5px solid;
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.camera-content-contain {
-    height:100%;
-}
-
-.main-content-camera-feed {
-    margin-right: 510px;
-    height: 500px;
-}
-
-.camera-feed-child {
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.camera-feed-child h4{
-    padding: 0;
-    height: 100%;
-    width:70%;
-}
-
-.main-content-loggers {
-    float: right;
-    height: 500px;
-}
-
-.main-content-maps {
-    height: 770px;
-    border: var(--contianer-border-color) 2px solid;
-    padding: 20px;
-    padding-top: 0;
-}
+/* GPS MAP
+--------------------------------------------------- */
 
 .gps-map {
     padding: 0;
-}
-
-.main-content-maps h2 {
-    border-bottom: var(--contianer-border-color) 0.5px solid;
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.camera-settings-container{
-    border: var(--contianer-border-color) 2px solid;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-.camera-settings-container h2{
-    border-bottom: var(--contianer-border-color) 0.5px solid;
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.model-settings-container {
-    border: var(--contianer-border-color) 2px solid;
-    padding: 10px;
+    margin: 60px;
+    width: 100%;
     height: 500px;
-}
-
-.mds-child {
-    float:left;
-    width:100%;
-}
-
-.mds-child-text p {
-    font-style: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.model-settings-container h2{
-    border-bottom: var(--contianer-border-color) 0.5px solid;
-    font-family: var(--dash-font);
-    color: var(--font-color-dash);
-}
-
-.model-settings-container h4{
-    font-style: var(--dash-font);
-    color: var(--font-color-dash);
-    float: left;
-    width: 20%;
-}
-
-.model-settings-container p{
-    font-style: var(--dash-font);
-    color: var(--font-color-dash);
-    position: relative;
-    padding: 0;
-    margin: 0;
-    width: 30%;
+    border: 4px #f0f1f6 solid;
+    border-radius: 4px;
+    text-align: center;
 }
