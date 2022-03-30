@@ -11,4 +11,5 @@ urlpatterns = [
     path("action_log_data", views.action_logs, name="action_log_data"),
     path("security_log_data", views.security_logs, name="security_log_data"),
     path("model_meta_data", views.model_meta_data, name="model_meta_data"),
+    path("refresh_map", views.refresh_map_view, name="refresh_map"),
 ]

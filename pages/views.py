@@ -41,6 +41,10 @@ def action_logs(request):
     }
     return JsonResponse(data_for_request)
 
+def refresh_map_view(request):
+    m = None
+    return JsonResponse({"map": m})
+
 
 @login_required
 def dashboard_view(request):
