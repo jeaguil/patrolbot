@@ -28,7 +28,7 @@ ACCESS_KEY = "AKIAST56MMSDTPOIKMTM"
 SECRET_KEY = "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"
 
 model_weights = os.path.join(
-    settings.BASE_DIR, "model_weights/BoltCutterUpdateWeights.pt"
+    settings.BASE_DIR, "model_weights/patrolNanoWeights.pt"
 )
 
 pacific_tz = pytz.timezone('US/Pacific')
