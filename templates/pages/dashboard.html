@@ -97,10 +97,9 @@
     </div>
 </div>
 
-
 <section class="page-content">
     <section class="grid">
-        <article style="height: 50px">
+        <article>
             <div class="dropdown">
                 <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false" style="margin: 6px;">
@@ -111,7 +110,23 @@
                     <button class="dropdown-item" onclick="outputLogs(1)">Security Threats</button>
                 </div>
             </div>
-            <div id="joy2Div" style="width:70px;height:70px;margin:10px;position:relative;bottom:20px;left:50px;">
+        </article>
+        <article>
+            <h1>Rover on-premises camera feed</h1>
+            <div class="page-content-camera-child">
+                <img src="{% url 'kinesis_stream' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="500px"></img>
+            </div>
+        </article>
+        <article>
+            <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh"
+                        style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
+            <div id="map" class="gps-map">
+                {{m|safe}}
+            </div>
+        </article>
+        <article>
+            <h3>Robot manual traversal joystick</h3>
+            <div id="joy2Div" style="width:70px;height:70px;margin:10px;position:relative;bottom:20px;">
             </div>
             <script type="text/javascript">
                 var joy2Param = { "title": "joystick2", "autoReturnToCenter": true };
@@ -129,19 +144,6 @@
                 setInterval(function () { joy2X.value = Joy2.GetX(); }, 50);
                 setInterval(function () { joy2Y.value = Joy2.GetY(); }, 50);
             </script>
-        </article>
-        <article>
-            <h1>Video Feed</h1>
-            <div class="page-content-camera-child">
-                <img src="{% url 'kinesis_stream' %}" alt="No Video Feed" width="500px" height="500px"></img>
-            </div>
-        </article>
-        <article>
-            <h1>GPS Location<a href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh"
-                        style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
-            <div id="map" class="gps-map">
-                {{m|safe}}
-            </div>
-        </article>
+        </aticle>
     </section>
 </section>
