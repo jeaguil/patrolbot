@@ -32,7 +32,7 @@ model_weights = os.path.join(
 )
 
 action_weights = os.path.join(
-    settingss.BASE_DIR, "model_weights/ActionDetection.params"
+    settings.BASE_DIR, "model_weights/ActionDetection.params"
 )
 
 pacific_tz = pytz.timezone('US/Pacific')

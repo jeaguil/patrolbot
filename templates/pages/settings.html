@@ -103,11 +103,11 @@
     <div class="container">
         {% if messages %}
             {% for message in messages%}
-                <div id="msg" class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert" style="position:fixed; left: 50%; bottom: 60px; transform: translate(-50%, -50%); margin: 0 auto;">
+                <div id="msg" class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert" style="position:fixed; left: calc(50% + 70px); bottom: 60px; transform: translate(-50%, -50%); margin: 0 auto;">
                     {{message}}
                 </div>
             {% endfor %}
         {% endif %}
     </div>
-    <button type="submit" class="btn btn-light" style="position:fixed; left: 50%; bottom: 20px; transform: translate(-50%, -50%); margin: 0 auto;">Save changes</button>
+    <button type="submit" class="btn btn-light" style="position:fixed; left: calc(50% + 70px); bottom: 20px; transform: translate(-50%, -50%); margin: 0 auto;">Save changes</button>
 </form>
