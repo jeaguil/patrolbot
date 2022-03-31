@@ -182,7 +182,7 @@ def run_action_detection(url, net):
 
                 #actionClasses = net.classes
                 actionClasses = ['normal', 'abnormal']
-                topK = 5
+                topK = 2
                 ind = nd.topk(pred, k=topK)[0].astype("int")
                 predictions = []
 
