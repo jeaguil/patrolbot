@@ -95,11 +95,11 @@ def get_yolo():
 def get_action_model():
     # code adapted from https://cv.gluon.ai/build/examples_action_recognition/demo_slowfast_kinetics400.html
     # Load trained Slow Fast Model
-    #model_name = "slowfast_4x16_resnet50_kinetics400"
-    model_name = 'i3d_resnet50_v1_custom'
-    #net = get_model(model_name, nclass=400, pretrained=True)
-    net = get_model(model_name, nclass=2, pretrained = False)
-    net.load_parameters(action_weights)
+    model_name = "slowfast_4x16_resnet50_kinetics400"
+    #model_name = 'i3d_resnet50_v1_custom'
+    net = get_model(model_name, nclass=400, pretrained=True)
+    #net = get_model(model_name, nclass=2, pretrained = False)
+    #net.load_parameters(action_weights)
     print("%s model is successfully loaded." % model_name)
     return net
 
@@ -121,7 +121,7 @@ def run_action_detection(url, net):
     slow_input = []
 
     # make a list of all potentially dangerous actions to detect
-    dangerousActions = ['abnormal']
+    dangerousActions = ['punching_bag', 'punching_person_-boxing', 'wrestling', 'headbutting', 'drop_kicking', 'crying']
 
     while True:
         vcap = cv2.VideoCapture(url)
@@ -180,9 +180,9 @@ def run_action_detection(url, net):
                 # make the prediction based on the frames
                 pred = net(nd.array(clip_input))
 
-                #actionClasses = net.classes
-                actionClasses = ['normal', 'abnormal']
-                topK = 2
+                actionClasses = net.classes
+                #actionClasses = ['normal', 'abnormal']
+                topK = 5
                 ind = nd.topk(pred, k=topK)[0].astype("int")
                 predictions = []
 
