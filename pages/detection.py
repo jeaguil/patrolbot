@@ -31,6 +31,10 @@ model_weights = os.path.join(
     settings.BASE_DIR, "model_weights/patrolNanoWeights.pt"
 )
 
+action_weights = os.path.join(
+    settingss.BASE_DIR, "model_weights/ActionDetection.params"
+)
+
 pacific_tz = pytz.timezone('US/Pacific')
 
 
