@@ -1,4 +1,4 @@
-# ROS control with AWS commands
+# ROS control with AWS commands and GPS publishing
 
 import time
 import sys
