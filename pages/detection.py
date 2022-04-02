@@ -121,7 +121,7 @@ def run_action_detection(url, net):
     slow_input = []
 
     # make a list of all potentially dangerous actions to detect
-    dangerousActions = ['punching_bag', 'punching_person_-boxing',
+    dangerousActions = ['punching_bag', 'punching_person_-boxing-',
                         'wrestling', 'headbutting', 'drop_kicking', 'crying']
     vcap = cv2.VideoCapture(url)
     while True:
