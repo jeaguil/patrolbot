@@ -207,10 +207,9 @@ def run_action_detection(url, net):
                     time_of_event = datetime.now(
                         pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
                     seconds = int(datetime.today().timestamp() % 10)
-                    if seconds == 0:
-                        # every 10 seconds append to the log form
-                        loggers.security_notices.append(
-                            [time_of_event, bestAction + " with confidence level of: " + str(bestConfidence)])
+
+                    loggers.security_notices.append(
+                        [time_of_event, bestAction + " with confidence level of: " + str(bestConfidence)])
 
                 # print out best action for stats
                 print(bestAction, " with confidence ", bestConfidence)
