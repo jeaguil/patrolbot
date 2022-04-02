@@ -231,9 +231,6 @@ def gen(url):
         ret, frame = vcap.read()
 
         if ret:
-            #global framesList
-            # if len(framesList) > 0:
-            #frame = framesList.pop(0)
 
             # Flip video frame, so it isn't reversed
             image = cv2.flip(frame, 1)
@@ -250,14 +247,14 @@ def gen(url):
             y_shape = image.shape[0]
 
             # Apply the Torch YoloV5 model to this frame
-            #results = yolo(image)
+            results = yolo(image)
 
             # Extract the labels and coordinates of the bounding boxes
-            # labels, cords = (
-            #    results.xyxyn[0][:, -1].numpy(),
-            #    results.xyxyn[0][:, :-1].numpy(),
-            # )
-            labels = ""
+            labels, cords = (
+                results.xyxyn[0][:, -1].numpy(),
+                results.xyxyn[0][:, :-1].numpy(),
+            )
+            
             numberOfLabels = len(labels)
 
             # declare empty array of objects found
