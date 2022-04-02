@@ -28,6 +28,7 @@ ACCESS_KEY = "AKIAST56MMSDTPOIKMTM"
 # secrety key assigned to stream
 SECRET_KEY = "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"
 
+enable_model = True
 bounding_boxes = DashboardVideoSettings.objects.get(name_id="Bounding Box Overlay (object detection model)")
 person_detect = DashboardModelSettings.objects.get(name_id="Person")
 bike_detect = DashboardModelSettings.objects.get(name_id="Bike")
@@ -232,6 +233,13 @@ def run_action_detection(url, net):
 
 # run yolo based on video stream from kinesis
 def runYolo(url, model, colors):
+    global enable_model
+    global bounding_boxes
+    global person_detect
+    global bike_detect
+    global angle_grinder_detect
+    global bolt_cutter_detect
+    
     vcap = cv2.VideoCapture(url)
 
     # Extract the names of the classes for trained the YoloV5 model
@@ -249,84 +257,84 @@ def runYolo(url, model, colors):
 
         # If model is turned on and the object is initialized
         # run object detection on each frame
+        if enable_model == True:
+            ################################################################
+            # TORCH OBJECT DETECTION
+            ################################################################
 
-        ################################################################
-        # TORCH OBJECT DETECTION
-        ################################################################
+            # Get dimensions of the current video frame
+            x_shape = image.shape[1]
+            y_shape = image.shape[0]
 
-        # Get dimensions of the current video frame
-        x_shape = image.shape[1]
-        y_shape = image.shape[0]
+            # Apply the Torch YoloV5 model to this frame
+            results = model(image)
 
-        # Apply the Torch YoloV5 model to this frame
-        results = model(image)
+            # Extract the labels and coordinates of the bounding boxes
+            labels, cords = (
+                results.xyxyn[0][:, -1].numpy(),
+                results.xyxyn[0][:, :-1].numpy(),
+            )
 
-        # Extract the labels and coordinates of the bounding boxes
-        labels, cords = (
-            results.xyxyn[0][:, -1].numpy(),
-            results.xyxyn[0][:, :-1].numpy(),
-        )
+            numberOfLabels = len(labels)
 
-        numberOfLabels = len(labels)
+            # declare empty array of objects found
+            objectsFound = []
 
-        # declare empty array of objects found
-        objectsFound = []
+            for i in range(numberOfLabels):
+                row = cords[i]
+                # Get the class number of current label
+                class_number = int(labels[i])
+                # Index colors list with current label number
+                color = COLORS[class_ids[class_number]]
 
-        for i in range(numberOfLabels):
-            row = cords[i]
-            # Get the class number of current label
-            class_number = int(labels[i])
-            # Index colors list with current label number
-            color = COLORS[class_ids[class_number]]
+                # If confidence level is greater than 0.2
+                if row[4] >= 0.4:
+                    # Get label to send to dashbaord
+                    label = classes[class_number]
+                    x1, y1, x2, y2 = (
+                        int(row[0] * x_shape),
+                        int(row[1] * y_shape),
+                        int(row[2] * x_shape),
+                        int(row[3] * y_shape),
+                    )
 
-            # If confidence level is greater than 0.2
-            if row[4] >= 0.4:
-                # Get label to send to dashbaord
-                label = classes[class_number]
-                x1, y1, x2, y2 = (
-                    int(row[0] * x_shape),
-                    int(row[1] * y_shape),
-                    int(row[2] * x_shape),
-                    int(row[3] * y_shape),
-                )
+                    # if malicious item detected, send alert
+                    if label == "Angle Grinder" or label == "Bolt Cutters":
+                        # send an alert to the alerts log
+                        time_of_event = datetime.now(
+                            pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
+                        seconds = int(datetime.today().timestamp() % 10)
+                        if seconds == 0:
+                            # every 10 seconds append to the log form
+                            loggers.objects_detected.append(
+                                [time_of_event, "Malicious item detected: " + label])
 
-                # if malicious item detected, send alert
-                if label == "Angle Grinder" or label == "Bolt Cutters":
-                    # send an alert to the alerts log
+                    # append coords and label so it can be analyzed
+                    objectsFound.append([x1, y1, x2, y2, label])
+
+                    # If global enable flag is set true then show boxes
+                    # Draw bounding box
+                    cv2.rectangle(image, (int(x1), int(y1)),
+                                (int(x2), int(y2)), color, 2)
+                    # Give bounding box a text label
+                    cv2.putText(
+                        image,
+                        str(classes[int(labels[i])]),
+                        (int(x1) - 10, int(y1) - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        2,
+                        color,
+                        2,
+                    )
+
+                    # send objected detected to log page
                     time_of_event = datetime.now(
                         pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
                     seconds = int(datetime.today().timestamp() % 10)
                     if seconds == 0:
                         # every 10 seconds append to the log form
                         loggers.objects_detected.append(
-                            [time_of_event, "Malicious item detected: " + label])
-
-                # append coords and label so it can be analyzed
-                objectsFound.append([x1, y1, x2, y2, label])
-
-                # If global enable flag is set true then show boxes
-                # Draw bounding box
-                cv2.rectangle(image, (int(x1), int(y1)),
-                              (int(x2), int(y2)), color, 2)
-                # Give bounding box a text label
-                cv2.putText(
-                    image,
-                    str(classes[int(labels[i])]),
-                    (int(x1) - 10, int(y1) - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    2,
-                    color,
-                    2,
-                )
-
-                # send objected detected to log page
-                time_of_event = datetime.now(
-                    pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
-                seconds = int(datetime.today().timestamp() % 10)
-                if seconds == 0:
-                    # every 10 seconds append to the log form
-                    loggers.objects_detected.append(
-                        [time_of_event, "Object detected: " + label])
+                            [time_of_event, "Object detected: " + label])
 
         # ensure there are enough objects for action detection algorithm
         if len(objectsFound) >= 2:
