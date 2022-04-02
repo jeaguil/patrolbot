@@ -28,6 +28,12 @@ ACCESS_KEY = "AKIAST56MMSDTPOIKMTM"
 # secrety key assigned to stream
 SECRET_KEY = "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"
 
+bounding_boxes = DashboardVideoSettings.objects.get(name_id="")
+person_detect = DashboardModelSettings.objects.get(name_id="Person")
+bike_detect = DashboardModelSettings.objects.get(name_id="Bike")
+angle_grinder_detect = DashboardModelSettings.objects.get(name_id="Angle Grinders")
+bolt_cutter_detect = DashboardModelSettings.objects.get(name_id="Bolt Cutters")
+
 model_weights = os.path.join(
     settings.BASE_DIR, "model_weights/patrolNanoWeights.pt"
 )
