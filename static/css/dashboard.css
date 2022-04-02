@@ -161,11 +161,7 @@ header a {
     height: 50px;
 }
 
-<<<<<<< HEAD
-.page-content .grid > article:last-child {
-=======
 .page-content .grid .home-joystick-container {
->>>>>>> 3f8a1ba96c7a9eb8c666544fadb557383a870782
     grid-column: span 1;
     height: 50px;
 }
@@ -203,9 +199,5 @@ header a {
     display: block;
     margin: auto;
     margin-top: 60px;
-<<<<<<< HEAD
-    border: 2px #f0f1f6 solid;
-=======
->>>>>>> 3f8a1ba96c7a9eb8c666544fadb557383a870782
     width: 85%;
 }
