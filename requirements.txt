@@ -11,7 +11,6 @@ gluoncv==0.10.4
 idna==3.3
 Jinja2==3.0.3
 MarkupSafe==2.1.0
--f https://dist.mxnet.io/python/all
 mxnet==1.9.0
 numpy==1.21.5
 opencv-python-headless==4.5.4.58
@@ -20,4 +19,6 @@ PyYAML==6.0
 requests==2.27.1
 seaborn==0.11.2
 sqlparse==0.4.2
+torch==1.7.0
+torchvision==0.8.1
 urllib3==1.26.8
