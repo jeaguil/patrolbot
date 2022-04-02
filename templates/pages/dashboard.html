@@ -116,36 +116,40 @@
                     <button class="dropdown-item" onclick="outputLogs(1)">Security Threats</button>
                 </div>
             </div>
-            <div id="joy2Div" style="width:70px;height:70px;margin:10px;position:relative;bottom:20px;left:50px;">
-            </div>
-            <script type="text/javascript">
-                var joy2Param = { "title": "joystick2", "autoReturnToCenter": true };
-                var Joy2 = new JoyStick('joy2Div', joy2Param);
-                var joy2InputPosX = Joy2.GetPosX();
-                var joy2InputPosY = Joy2.GetPosY();
-                var joy2Direzione = Joy2.GetDir();
-                var joy2X = Joy2.GetX();
-                var joy2Y = Joy2.GetY();
-                setInterval(function () { joy2InputPosX = Joy2.GetPosX(); }, 500);
-                setInterval(function () { joy2InputPosY = Joy2.GetPosY(); }, 500);
-                setInterval(function () { joy2Direzione = Joy2.GetDir(); }, 500);
-                setInterval(function () { joy2X = Joy2.GetX(); }, 500);
-                setInterval(function () { joy2Y = Joy2.GetY(); }, 500);
-                setInterval(function () { getDirection(joy2Direzione); }, 500);
-            </script>
         </article>
         <article>
-            <h1>Video Feed</h1>
+            <h1>Rover On-Premises Camera Feed</h1>
             <div class="page-content-camera-child">
-                <img src="{% url 'kinesis_stream' %}" alt="No Video Feed" width="500px" height="500px"></img>
+                {% comment %} <img src="{% url 'kinesis_stream' %}" alt="[Unable To Retrieve Video]" width="100%" height="500px"></img> {% endcomment %}
             </div>
         </article>
         <article>
-            <h1>GPS Location<a href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh"
-                        style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
+            <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh"
+                style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
             <div id="map" class="gps-map">
                 {{m|safe}}
             </div>
         </article>
+        <article class="home-joystick-container">
+            <h3>Rover Manual Traversal Joystick</h3>
+            <div id="joy2Div" style="width:70px;height:70px;margin:10px;position:relative;bottom:20px;">
+            </div>
+            <script type="text/javascript">
+                var joy2Param = { "title": "joystick2", "autoReturnToCenter": true };
+                var Joy2 = new JoyStick('joy2Div', joy2Param);
+
+                var joy2InputPosX = document.getElementById("joy2PosizioneX");
+                var joy2InputPosY = document.getElementById("joy2PosizioneY");
+                var joy2Direzione = document.getElementById("joy2Direzione");
+                var joy2X = document.getElementById("joy2X");
+                var joy2Y = document.getElementById("joy2Y");
+
+                setInterval(function () { joy2InputPosX.value = Joy2.GetPosX(); }, 50);
+                setInterval(function () { joy2InputPosY.value = Joy2.GetPosY(); }, 50);
+                setInterval(function () { joy2Direzione.value = Joy2.GetDir(); }, 50);
+                setInterval(function () { joy2X.value = Joy2.GetX(); }, 50);
+                setInterval(function () { joy2Y.value = Joy2.GetY(); }, 50);
+            </script>
+        </aticle>
     </section>
 </section>

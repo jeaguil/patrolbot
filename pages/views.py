@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import folium
 import threading
 import pytz
-import torch
+# import torch
 from datetime import datetime
 import numpy as np
 from . import loggers

@@ -4,7 +4,7 @@ import boto3
 # import items for object detection
 import cv2
 import os
-import torch
+# import torch
 import pytz
 import numpy as np
 

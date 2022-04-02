@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     # Production domain name:
     "pbdash-env.eba-ewszhepd.us-west-2.elasticbeanstalk.com",
     "patrolbotdash.com",
+    "www.patrolbotdash.com"
 ]
 
 
