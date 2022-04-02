@@ -70,6 +70,11 @@
                 },
             })
         }
+        function getDirection(direction) {
+            var URL = "{% url 'get_direction' %}"
+            var dict_direction = { 'direction': direction };
+            $.post(URL, dict_direction);
+        }
     </script>
 </head>
 
@@ -112,20 +117,35 @@
             </div>
         </article>
         <article>
+<<<<<<< HEAD
             <h1>Rover on-premises camera feed</h1>
             <div class="page-content-camera-child">
                 <img src="{% url 'kinesis_stream' %}" alt="No Video Feed" onerror=this.src="{% static 'img/no_video_feed.jpg' %}" width="100%" height="500px"></img>
+=======
+            <h1>Rover On-Premises Camera Feed</h1>
+            <div class="page-content-camera-child">
+                {% comment %} <img src="{% url 'kinesis_stream' %}" alt="[Unable To Retrieve Video]" width="100%" height="500px"></img> {% endcomment %}
+>>>>>>> 3f8a1ba96c7a9eb8c666544fadb557383a870782
             </div>
         </article>
         <article>
             <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh"
+<<<<<<< HEAD
                         style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
+=======
+                style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
+>>>>>>> 3f8a1ba96c7a9eb8c666544fadb557383a870782
             <div id="map" class="gps-map">
                 {{m|safe}}
             </div>
         </article>
+<<<<<<< HEAD
         <article>
             <h3>Robot manual traversal joystick</h3>
+=======
+        <article class="home-joystick-container">
+            <h3>Rover Manual Traversal Joystick</h3>
+>>>>>>> 3f8a1ba96c7a9eb8c666544fadb557383a870782
             <div id="joy2Div" style="width:70px;height:70px;margin:10px;position:relative;bottom:20px;">
             </div>
             <script type="text/javascript">

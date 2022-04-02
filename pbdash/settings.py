@@ -24,12 +24,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "*!zrl!r8s)gb+vh+%00^ei)j+yrhvam(20s4ot#l@&vt&e24l="
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     # Production domain name:
     "pbdash-env.eba-ewszhepd.us-west-2.elasticbeanstalk.com",
     "patrolbotdash.com",
+    "www.patrolbotdash.com"
 ]
 
 
