@@ -14,6 +14,7 @@ from gluoncv.model_zoo import get_model
 import torchvision.transforms as T
 
 from django.conf import settings
+from .models import DashboardModelSettings, DashboardVideoSettings
 
 # import items for updating action and security loggers
 from . import loggers
