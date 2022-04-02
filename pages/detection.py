@@ -99,7 +99,7 @@ def get_action_model():
     #model_name = 'i3d_resnet50_v1_custom'
     net = get_model(model_name, nclass=400, pretrained=True)
     #net = get_model(model_name, nclass=2, pretrained = False)
-    #net.load_parameters(action_weights)
+    # net.load_parameters(action_weights)
     print("%s model is successfully loaded." % model_name)
     return net
 
@@ -121,10 +121,11 @@ def run_action_detection(url, net):
     slow_input = []
 
     # make a list of all potentially dangerous actions to detect
-    dangerousActions = ['punching_bag', 'punching_person_-boxing', 'wrestling', 'headbutting', 'drop_kicking', 'crying']
-
+    dangerousActions = ['punching_bag', 'punching_person_-boxing',
+                        'wrestling', 'headbutting', 'drop_kicking', 'crying']
+    vcap = cv2.VideoCapture(url)
     while True:
-        vcap = cv2.VideoCapture(url)
+
         # Capture frame-by-frame
         ret, frame = vcap.read()
 
@@ -203,11 +204,13 @@ def run_action_detection(url, net):
                 # if a dangerous action is detected
                 if bestAction in dangerousActions and bestConfidence >= .5:
                     # send the alert to the alerts page
-                    time_of_event = datetime.now(pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
+                    time_of_event = datetime.now(
+                        pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
                     seconds = int(datetime.today().timestamp() % 10)
                     if seconds == 0:
                         # every 10 seconds append to the log form
-                        loggers.security_notices.append([time_of_event, bestAction + " with confidence level of: " + str(bestConfidence)])
+                        loggers.security_notices.append(
+                            [time_of_event, bestAction + " with confidence level of: " + str(bestConfidence)])
 
                 # print out best action for stats
                 print(bestAction, " with confidence ", bestConfidence)
@@ -284,11 +287,13 @@ def runYolo(url, model, colors):
                 # if malicious item detected, send alert
                 if label == "Angle Grinder" or label == "Bolt Cutters":
                     # send an alert to the alerts log
-                    time_of_event = datetime.now(pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
+                    time_of_event = datetime.now(
+                        pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
                     seconds = int(datetime.today().timestamp() % 10)
                     if seconds == 0:
                         # every 10 seconds append to the log form
-                        loggers.objects_detected.append([time_of_event, "Malicious item detected: " + label])
+                        loggers.objects_detected.append(
+                            [time_of_event, "Malicious item detected: " + label])
 
                 # append coords and label so it can be analyzed
                 objectsFound.append([x1, y1, x2, y2, label])
@@ -309,11 +314,13 @@ def runYolo(url, model, colors):
                 )
 
                 # send objected detected to log page
-                time_of_event = datetime.now(pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
+                time_of_event = datetime.now(
+                    pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
                 seconds = int(datetime.today().timestamp() % 10)
                 if seconds == 0:
                     # every 10 seconds append to the log form
-                    loggers.objects_detected.append([time_of_event, "Object detected: " + label])
+                    loggers.objects_detected.append(
+                        [time_of_event, "Object detected: " + label])
 
         # ensure there are enough objects for action detection algorithm
         if len(objectsFound) >= 2:
@@ -334,10 +341,12 @@ def runYolo(url, model, colors):
                             iou = iou(box1, box2)
                             if iou >= 0.05:
                                 time_of_event = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                                seconds = int(datetime.today().timestamp() % 10)
+                                seconds = int(
+                                    datetime.today().timestamp() % 10)
                                 if seconds == 0:
                                     # every 10 seconds append to the log form
-                                    loggers.security_notices.append([time_of_event, "Potential Threat computed with confidence level of " + iou + ": " + label1 + " and " + label2 + " detected"])
+                                    loggers.security_notices.append(
+                                        [time_of_event, "Potential Threat computed with confidence level of " + iou + ": " + label1 + " and " + label2 + " detected"])
 
         # return the resulting image
         _, jpeg = cv2.imencode(".jpg", image)
