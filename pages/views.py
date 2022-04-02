@@ -21,8 +21,6 @@ from picode import pi_publisher
 
 import os
 import cv2
-from . import loggers
-from datetime import datetime
 from django.conf import settings
 pacific_tz = pytz.timezone('US/Pacific')
 model_weights = os.path.join(
