@@ -28,7 +28,7 @@ ACCESS_KEY = "AKIAST56MMSDTPOIKMTM"
 # secrety key assigned to stream
 SECRET_KEY = "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"
 
-bounding_boxes = DashboardVideoSettings.objects.get(name_id="")
+bounding_boxes = DashboardVideoSettings.objects.get(name_id="Bounding Box Overlay (object detection model)")
 person_detect = DashboardModelSettings.objects.get(name_id="Person")
 bike_detect = DashboardModelSettings.objects.get(name_id="Bike")
 angle_grinder_detect = DashboardModelSettings.objects.get(name_id="Angle Grinders")
