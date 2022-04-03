@@ -103,9 +103,11 @@ if __name__ == '__main__':
                 latitude = coords[1]
                 print("latlong:" + str(longitude) + "," + str(latitude))
                 TOPIC = "robot/location"
-                MESSAGE = str(longitude) + "," + str(latitude)
-                data = "{} [{}]".format(MESSAGE, 0)
-                message = {"message" : data}
+                MESSAGE1 = str(longitude)# + "," + str(latitude)
+		MESSAGE2 = str(latitude)
+                data1 = "{}".format(MESSAGE1)
+		data2 = "{}".format(MESSAGE2)
+                message = {"lon" : data1, "lat" : data2}
                 myMQTTClient.publish(TOPIC, json.dumps(message), 1)
                 print("Printed '" + json.dumps(message) + "' to the topic: " + TOPIC)
                 #adjust sleep time for frequency of readings
