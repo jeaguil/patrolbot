@@ -18,6 +18,7 @@ from . import camera
 from . import detection
 
 from picode import pi_publisher
+from picode import pi_subscriber
 
 import os
 import cv2
@@ -30,6 +31,17 @@ yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
 
+# robot movement
+import time
+commandTime = int(time.time())
+pendingCommand = False
+commandDelay = 4
+movementDirection = 'none'
+
+# robot gps
+longitude = 48.864716
+latitude = 2.349014
+import json
 
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
@@ -59,7 +71,17 @@ def action_logs(request):
 
 def refresh_map_view(request):
     # [latitude, longitude]
-    new_robot_location = [48.864716, 2.349014]
+
+    global latitude
+    global longitude
+
+    subscriber = pi_subscriber.Subscriber()
+    subscriber.subscribe("robot/location", gps_callback)
+    print("lat read in refresh_map_view")
+    print(latitude)
+    print("lon read in refresh_map_view")
+    print(longitude)
+    new_robot_location = [latitude, longitude]
     f = folium.Figure(width="100%", height="100%")
     m = folium.Map(
         location=new_robot_location,
@@ -76,25 +98,81 @@ def refresh_map_view(request):
 
 @csrf_exempt
 def get_direction_data(request):
+    global commandTime
+    global pendingCommand
+    global commandDelay
+    global movementDirection
     if request.method == "POST":
         direction = request.POST["direction"]
         if direction == "N" or direction == "NE" or direction == "NW":
-            print("forward")
+            if pendingCommand == False:
+                commandTime = int(time.time())
+                #print("forward")
+                pendingCommand = True
+                movementDirection = "f"
         elif direction == "S" or direction == "SE" or direction == "SW":
-            print("backward")
+            if pendingCommand == False:
+                #print("backward")
+                commandTime = int(time.time())
+                pendingCommand = True
+                movementDirection = "b"
         elif direction == "W":
-            print("left")
+            if pendingCommand == False:
+                #print("left")
+                commandTime = int(time.time())
+                pendingCommand = True
+                movementDirection = "l"
         elif direction == "E":
-            print("right")
-        else:
-            print("No Movement")
+            if pendingCommand == False:
+                #print("right")
+                commandTime = int(time.time())
+                pendingCommand = True
+                movementDirection = "r"
+
+        if int(time.time()) >= commandTime + commandDelay and pendingCommand == True:
+            print("execution time")
+            commandTime = int(time.time())
+            pendingCommand = False
+
+            if(movementDirection == 'f'):
+                #print(movementDirection)
+                pi_publisher.forward()
+            elif(movementDirection == 'b'):
+                #print(movementDirection)
+                pi_publisher.backward()
+            elif(movementDirection == 'l'):
+                #print(movementDirection)
+                pi_publisher.turn_left()
+            elif(movementDirection == 'r'):
+                #print(movementDirection)
+                pi_publisher.turn_right()
+
+        # handle sending commands here
         return render(request, "pages/dashboard.html", {})
+
+def gps_callback(self, params, packet):
+    global longitude
+    global latitude
+    payload = json.loads(packet.payload)
+    lat = payload["lat"]
+    lon = payload["lon"]
+    longitude = lon
+    latitude = lat
+    print("gps callback issued")
+    print("payload lat:")
+    print(lat)
+    print("payload lon")
+    print(lon)
+    print("read lat")
+    print(latitude)
+    print("read lon")
+    print(longitude)
 
 
 @login_required
 def dashboard_view(request):
     if request.user.is_authenticated:
-        robo_coords = [39.54244129476235, -119.81597984878438]
+        robo_coords = [longitude, latitude]
 
         f = folium.Figure(width="100%", height="100%")
         # create map object
@@ -205,17 +283,17 @@ def dashboard_settings_view(request):
         return redirect("/")
 
 
-def dashboard_robot_manual_view(request):
-    if request.method == "POST":
-        if "forward_command" in request.POST:
-            pi_publisher.forward()
-        elif "backward_command" in request.POST:
-            pi_publisher.backward()
-        elif "turn_left_command" in request.POST:
-            pi_publisher.turn_left()
-        elif "turn_right_command" in request.POST:
-            pi_publisher.turn_right()
-    return render(request, "pages/robot_manual.html", {})
+#def dashboard_robot_manual_view(request):
+#    if request.method == "POST":
+#        if "forward_command" in request.POST:
+#            pi_publisher.forward()
+#        elif "backward_command" in request.POST:
+#            pi_publisher.backward()
+#        elif "turn_left_command" in request.POST:
+#            pi_publisher.turn_left()
+#        elif "turn_right_command" in request.POST:
+#            pi_publisher.turn_right()
+#    return render(request, "pages/robot_manual.html", {})
 
 
 def gen(url):
