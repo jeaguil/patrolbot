@@ -43,6 +43,10 @@ longitude = 48.864716
 latitude = 2.349014
 import json
 
+# model settings
+model_settings = {"Bounding Box Overlay (object detection model)" : True, "Person" : True, "Bike" : True,
+                  "Bolt Cutters" : True, "Angle Grinders" : True}
+
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
 
@@ -251,6 +255,10 @@ def dashboard_settings_view(request):
             # Uncheck all settings
             DashboardModelSettings.objects.all().order_by("id").update(switch=False)
             DashboardVideoSettings.objects.all().order_by("id").update(switch=False)
+            
+            # Set all global settings to false
+            for key in global model_settings:
+                global model_settings[key] = False
 
             # Get list of checkbed box id's
             video_settings_id_list = request.POST.getlist(
@@ -262,9 +270,11 @@ def dashboard_settings_view(request):
             for i in video_settings_id_list:
                 DashboardVideoSettings.objects.filter(
                     name_id=i).update(switch=True)
+                global model_settings[i] = True
             for i in model_settings_id_list:
                 DashboardModelSettings.objects.filter(
                     name_id=i).update(switch=True)
+                global model_settings[i] = True
 
             messages.success(request, "Settings updated successfully!")
             return render(
