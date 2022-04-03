@@ -249,7 +249,7 @@ def runYolo(url, model, colors):
 
         # If model is turned on and the object is initialized
         # run object detection on each frame
-        if enable_model == True:
+        if global enable_model == True:
             ################################################################
             # TORCH OBJECT DETECTION
             ################################################################
