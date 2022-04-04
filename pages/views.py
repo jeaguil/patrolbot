@@ -45,7 +45,7 @@ import json
 
 # model settings
 model_settings = {"Bounding Box Overlay (object detection model)" : True, "Person" : True, "Bike" : True,
-                  "Bolt Cutters" : True, "Angle Grinders" : True}
+                  "Bolt Cutters" : True, "Angle Grinder" : True}
 
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
