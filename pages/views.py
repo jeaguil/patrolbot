@@ -290,7 +290,7 @@ def dashboard_settings_view(request):
         return render(
             request,
             "pages/settings.html",
-            {"video_settings": video_settings, "model_settings": model_settings},
+            {"video_settings": video_settings, "model_settings": model_setting},
         )
     else:
         return redirect("/")
