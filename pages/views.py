@@ -32,6 +32,7 @@ model_weight_path = model_weights
 yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
+runActionDetection = False
 
 # robot movement
 commandTime = int(time.time())
@@ -244,6 +245,7 @@ def dashboard_view(request):
 
 @login_required
 def dashboard_settings_view(request):
+    detection.toggle_detection()
     global model_settings
     if request.user.is_authenticated:
         # Get video settings from database
@@ -471,15 +473,12 @@ def phone_feed_view(request):
 def kinesis_stream_view(request):
     # retrieves url on hls stream
     url = detection.hls_stream()
-    # create yolo model
-    #yolo = detection.get_yolo()
-    #classes = yolo.names
-    #COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
     # create action detection model
     action = detection.get_action_model()
     # create thread to run action detection
+    detection.toggle_detection()
     thread = threading.Thread(
-        target=detection.run_action_detection, args=(url, action))
+        target=detection.run_action_detection, args=(url, action, request))
     thread.start()
     return StreamingHttpResponse(
         gen(url),
