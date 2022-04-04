@@ -40,6 +40,9 @@ action_weights = os.path.join(
 
 pacific_tz = pytz.timezone('US/Pacific')
 
+# variable to stop execution of the thread
+runActionDetection = False
+
 
 class KinesisStream(object):
     def __init__(self, url, yolo, colors):
@@ -107,8 +110,17 @@ def get_action_model():
     return net
 
 
+def toggle_detection():
+    global runActionDetection
+    if runActionDetection == True:
+        runActionDetection = False
+    else:
+        runActionDetection = True
+
 # run action detection based on video stream from kinesis
-def run_action_detection(url, net):
+
+
+def run_action_detection(url, net, request):
     # get list of frame numbers for fast portion of neural network
     fast_frame_id_list = range(0, 64, 2)
     # get list of frame numbers for slow portion of neural network
@@ -127,7 +139,8 @@ def run_action_detection(url, net):
     dangerousActions = ['punching_bag', 'punching_person_-boxing-',
                         'wrestling', 'headbutting', 'drop_kicking', 'crying']
     vcap = cv2.VideoCapture(url)
-    while True:
+    global runActionDetection
+    while runActionDetection == True:
 
         # Capture frame-by-frame
         ret, frame = vcap.read()
