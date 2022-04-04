@@ -273,7 +273,7 @@ def runYolo(url, model, colors):
             objectsFound = []
 
             for i in range(numberOfLabels):
-                if global model_settings[labels[i]] == True:
+                if model_settings[labels[i]] == True:
                     row = cords[i]
                     # Get the class number of current label
                     class_number = int(labels[i])
