@@ -1,3 +1,5 @@
+import json
+import time
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -32,7 +34,6 @@ classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
 
 # robot movement
-import time
 commandTime = int(time.time())
 pendingCommand = False
 commandDelay = 4
@@ -41,11 +42,11 @@ movementDirection = 'none'
 # robot gps
 longitude = 48.864716
 latitude = 2.349014
-import json
 
 # model settings
-model_settings = {"Bounding Box Overlay (object detection model)" : True, "Person" : True, "Bike" : True,
-                  "Bolt Cutters" : True, "Angle Grinder" : True}
+model_settings = {"Bounding Box Overlay (object detection model)": True, "Person": True, "Bike": True,
+                  "Bolt Cutters": True, "Angle Grinder": True}
+
 
 def welcome_view(request):
     return render(request, "pages/welcome.html", {})
@@ -111,24 +112,24 @@ def get_direction_data(request):
         if direction == "N" or direction == "NE" or direction == "NW":
             if pendingCommand == False:
                 commandTime = int(time.time())
-                #print("forward")
+                # print("forward")
                 pendingCommand = True
                 movementDirection = "f"
         elif direction == "S" or direction == "SE" or direction == "SW":
             if pendingCommand == False:
-                #print("backward")
+                # print("backward")
                 commandTime = int(time.time())
                 pendingCommand = True
                 movementDirection = "b"
         elif direction == "W":
             if pendingCommand == False:
-                #print("left")
+                # print("left")
                 commandTime = int(time.time())
                 pendingCommand = True
                 movementDirection = "l"
         elif direction == "E":
             if pendingCommand == False:
-                #print("right")
+                # print("right")
                 commandTime = int(time.time())
                 pendingCommand = True
                 movementDirection = "r"
@@ -139,20 +140,21 @@ def get_direction_data(request):
             pendingCommand = False
 
             if(movementDirection == 'f'):
-                #print(movementDirection)
+                # print(movementDirection)
                 pi_publisher.forward()
             elif(movementDirection == 'b'):
-                #print(movementDirection)
+                # print(movementDirection)
                 pi_publisher.backward()
             elif(movementDirection == 'l'):
-                #print(movementDirection)
+                # print(movementDirection)
                 pi_publisher.turn_left()
             elif(movementDirection == 'r'):
-                #print(movementDirection)
+                # print(movementDirection)
                 pi_publisher.turn_right()
 
         # handle sending commands here
         return render(request, "pages/dashboard.html", {})
+
 
 def gps_callback(self, params, packet):
     global longitude
@@ -256,7 +258,7 @@ def dashboard_settings_view(request):
             # Uncheck all settings
             DashboardModelSettings.objects.all().order_by("id").update(switch=False)
             DashboardVideoSettings.objects.all().order_by("id").update(switch=False)
-            
+
             # Set all global settings to false
             for key in model_settings:
                 model_settings[key] = False
@@ -294,7 +296,7 @@ def dashboard_settings_view(request):
         return redirect("/")
 
 
-#def dashboard_robot_manual_view(request):
+# def dashboard_robot_manual_view(request):
 #    if request.method == "POST":
 #        if "forward_command" in request.POST:
 #            pi_publisher.forward()
@@ -349,7 +351,8 @@ def gen(url):
             objectsFound = []
 
             for i in range(numberOfLabels):
-                if model_settings[labels[i]] == True:
+                # If global enable flag is set true then show boxes
+                if model_settings["Bounding Box Overlay (object detection model)"] == True:
                     row = cords[i]
                     # Get the class number of current label
                     class_number = int(labels[i])
@@ -389,12 +392,10 @@ def gen(url):
                             # every 10 seconds append to the log form
                             loggers.objects_detected.append(
                                 [time_of_event, "Object detected: " + label])
-                        
-                        # If global enable flag is set true then show boxes
-                        if model_settings["Bounding Box Overlay (object detection model)"] == True:
+                        if model_settings[label] == True:
                             # Draw bounding box
                             cv2.rectangle(image, (int(x1), int(y1)),
-                                        (int(x2), int(y2)), color, 2)
+                                          (int(x2), int(y2)), color, 2)
                             # Give bounding box a text label
                             cv2.putText(
                                 image,
