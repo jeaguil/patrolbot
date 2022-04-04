@@ -119,12 +119,13 @@
         <article>
             <h1>Rover On-Premises Camera Feed</h1>
             <div class="page-content-camera-child">
-                <img src="{% url 'kinesis_stream' %}" alt="[Unable To Retrieve Video]" width="100%" height="500px"></img>
+                <img src="{% url 'kinesis_stream' %}" alt="[Unable To Retrieve Video]" width="100%"
+                    height="500px"></img>
             </div>
         </article>
         <article>
             <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh"
-                style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
+                        style="font-size:20px; color: #242e42; margin: 5px;"></i></a></h1>
             <div id="map" class="gps-map">
                 {{m|safe}}
             </div>
@@ -147,8 +148,9 @@
                 setInterval(function () { joy2Direzione = Joy2.GetDir(); }, 500);
                 setInterval(function () { joy2X = Joy2.GetX(); }, 500);
                 setInterval(function () { joy2Y = Joy2.GetY(); }, 500);
-                setInterval(function () { getDirection(joy2Direzione); }, 500);
+        //uncomment line below to enable joystick/robot communication
+                //setInterval(function () { getDirection(joy2Direzione); }, 500);
             </script>
-        </aticle>
+            </aticle>
     </section>
 </section>
