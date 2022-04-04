@@ -242,6 +242,7 @@ def dashboard_view(request):
 
 @login_required
 def dashboard_settings_view(request):
+    global model_settings
     if request.user.is_authenticated:
         # Get video settings from database
         video_settings = DashboardVideoSettings.objects.all()
@@ -257,8 +258,8 @@ def dashboard_settings_view(request):
             DashboardVideoSettings.objects.all().order_by("id").update(switch=False)
             
             # Set all global settings to false
-            for key in global model_settings:
-                global model_settings[key] = False
+            for key in model_settings:
+                model_settings[key] = False
 
             # Get list of checkbed box id's
             video_settings_id_list = request.POST.getlist(
@@ -270,11 +271,11 @@ def dashboard_settings_view(request):
             for i in video_settings_id_list:
                 DashboardVideoSettings.objects.filter(
                     name_id=i).update(switch=True)
-                global model_settings[i] = True
+                model_settings[i] = True
             for i in model_settings_id_list:
                 DashboardModelSettings.objects.filter(
                     name_id=i).update(switch=True)
-                global model_settings[i] = True
+                model_settings[i] = True
 
             messages.success(request, "Settings updated successfully!")
             return render(
@@ -307,6 +308,7 @@ def dashboard_settings_view(request):
 
 
 def gen(url):
+    global model_settings
     vcap = cv2.VideoCapture(url)
     while True:
 
@@ -347,7 +349,7 @@ def gen(url):
             objectsFound = []
 
             for i in range(numberOfLabels):
-                if global model_settings[labels[i]] == True:
+                if model_settings[labels[i]] == True:
                     row = cords[i]
                     # Get the class number of current label
                     class_number = int(labels[i])
