@@ -73,7 +73,9 @@
         function getDirection(direction) {
             var URL = "{% url 'get_direction' %}"
             var dict_direction = { 'direction': direction };
-            $.post(URL, dict_direction);
+            if (direction != 'C') {
+                $.post(URL, dict_direction);
+            }
         }
     </script>
 </head>
@@ -148,8 +150,7 @@
                 setInterval(function () { joy2Direzione = Joy2.GetDir(); }, 500);
                 setInterval(function () { joy2X = Joy2.GetX(); }, 500);
                 setInterval(function () { joy2Y = Joy2.GetY(); }, 500);
-        //uncomment line below to enable joystick/robot communication
-                //setInterval(function () { getDirection(joy2Direzione); }, 500);
+                setInterval(function () { getDirection(joy2Direzione); }, 500);
             </script>
             </aticle>
     </section>
