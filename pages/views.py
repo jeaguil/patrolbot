@@ -247,7 +247,7 @@ def dashboard_settings_view(request):
         video_settings = DashboardVideoSettings.objects.all()
 
         # Get model settings from database
-        model_settings = DashboardModelSettings.objects.all()
+        model_setting = DashboardModelSettings.objects.all()
 
         if request.method == "POST":
             # Update settings accordingly...
@@ -281,7 +281,7 @@ def dashboard_settings_view(request):
                 request,
                 "pages/settings.html",
                 {"video_settings": video_settings,
-                    "model_settings": model_settings},
+                    "model_settings": model_setting},
             )
 
         return render(
