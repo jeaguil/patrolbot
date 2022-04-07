@@ -15,3 +15,7 @@ class DashboardModelSettings(models.Model):
     
     def __str__(self):
         return self.name_id
+    
+class Appearance(models.Model):
+    appearance = models.CharField(max_length=10, blank=False, default='theme', unique=True)
+    theme = models.BooleanField('theme', default=True)
