@@ -251,7 +251,8 @@ def dashboard_view(request):
 
 @login_required
 def dashboard_settings_view(request):
-    detection.toggle_detection()
+    # turn off action detection flag so it doesn't run in background
+    detection.turn_off_detection()
     global model_settings    
     if request.user.is_authenticated:
         # Get video settings from database
@@ -482,10 +483,11 @@ def kinesis_stream_view(request):
     url = detection.hls_stream()
     # create action detection model
     action = detection.get_action_model()
+    # turn on action detection flag
+    detection.turn_on_detection()
     # create thread to run action detection
-    detection.toggle_detection()
     thread = threading.Thread(
-        target=detection.run_action_detection, args=(url, action, request))
+        target=detection.run_action_detection, args=(url, action))
     thread.start()
     return StreamingHttpResponse(
         gen(url),
