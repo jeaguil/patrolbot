@@ -109,18 +109,18 @@ def get_action_model():
     print("%s model is successfully loaded." % model_name)
     return net
 
-
-def toggle_detection():
+# turn on action detection flag
+def turn_on_detection():
     global runActionDetection
-    if runActionDetection == True:
-        runActionDetection = False
-    else:
-        runActionDetection = True
+    runActionDetection = True
+
+# turn off action detection flag
+def turn_off_detection():
+    global runActionDetection
+    runActionDetection = False
 
 # run action detection based on video stream from kinesis
-
-
-def run_action_detection(url, net, request):
+def run_action_detection(url, net):
     # get list of frame numbers for fast portion of neural network
     fast_frame_id_list = range(0, 64, 2)
     # get list of frame numbers for slow portion of neural network
@@ -140,6 +140,7 @@ def run_action_detection(url, net, request):
                         'wrestling', 'headbutting', 'drop_kicking', 'crying']
     vcap = cv2.VideoCapture(url)
     global runActionDetection
+    # while action detection flag is on
     while runActionDetection == True:
 
         # Capture frame-by-frame
