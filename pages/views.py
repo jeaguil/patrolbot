@@ -3,7 +3,7 @@ import time
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import DashboardModelSettings, DashboardVideoSettings
+from .models import DashboardModelSettings, DashboardVideoSettings, Appearance
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 import folium
@@ -233,6 +233,12 @@ def dashboard_view(request):
                     name_id=new_name_ids[i], setting=new_setting_names[i], switch=True
                 )
                 obj.save()
+                
+        try:
+            theme = Appearance.objects.get(appearance="theme")
+        except Appearance.DoesNotExist:
+            obj = Appearance(appearance="theme", theme=True)
+            obj.save()
 
         # Pass in context for rendered template
         context = {
@@ -246,7 +252,7 @@ def dashboard_view(request):
 @login_required
 def dashboard_settings_view(request):
     detection.toggle_detection()
-    global model_settings
+    global model_settings    
     if request.user.is_authenticated:
         # Get video settings from database
         video_settings = DashboardVideoSettings.objects.all()
@@ -288,11 +294,12 @@ def dashboard_settings_view(request):
                 {"video_settings": video_settings,
                     "model_settings": model_setting},
             )
-
+            
+        theme = Appearance.objects.get(appearance="theme")
         return render(
             request,
             "pages/settings.html",
-            {"video_settings": video_settings, "model_settings": model_setting},
+            {"video_settings": video_settings, "model_settings": model_setting, "theme": theme.theme},
         )
     else:
         return redirect("/")
