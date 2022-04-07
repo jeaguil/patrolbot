@@ -174,7 +174,26 @@ def gps_callback(self, params, packet):
     print(latitude)
     print("read lon")
     print(longitude)
-
+    
+@csrf_exempt
+def change_theme(request):
+    # Used for a POST Call to change the theme to light/dark.
+    # Updates the session variable in the database to light/dark,
+    # This permits the theme to persist across sessions, changing from page to page constantly.
+    t = Appearance.objects.get(appearance="theme")
+    
+    theme = request.POST["theme"]
+    if theme == "light":
+        t.theme = True # light
+    elif theme == "dark":
+        t.theme = False # dark
+        
+    t.save()
+    
+    response = {
+        "theme": Appearance.objects.get(appearance="theme").theme
+    }
+    return JsonResponse(response)
 
 @login_required
 def dashboard_view(request):

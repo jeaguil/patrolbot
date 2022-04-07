@@ -19,13 +19,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script>
         setTimeout(function() {
             if ($('#msg').length > 0) {
                 $('#msg').remove();
             }
         }, 2000) // 2000 milliseconds
+    </script>
+
+    <script type="text/javascript">
+        function changeTheme(theme) {
+            $.post("{% url 'change_theme' %}", { 'theme': theme });
+        }
     </script>
 </head>
 
@@ -57,8 +63,8 @@
                         Dashboard Appearance
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <button class="dropdown-item">Light</button>
-                        <button class="dropdown-item">Dark</button>
+                        <a type="button" class="dropdown-item" href="javascript:changeTheme('light')">Light</a>
+                        <a type="button" class="dropdown-item" href="javascript:changeTheme('dark')">Dark</a>
                     </div>
                 </div>
             </article>
