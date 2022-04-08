@@ -226,7 +226,7 @@ def run_action_detection(url, net):
                     seconds = int(datetime.today().timestamp() % 10)
 
                     loggers.security_notices.append(
-                        [time_of_event, bestAction + " with confidence level of: " + str(bestConfidence)])
+                        [time_of_event, "Low Security Alert (aggressive behavior): " + bestAction + " with confidence level of: " + str(bestConfidence)])
 
                 # print out best action for stats
                 print(bestAction, " with confidence ", bestConfidence)
