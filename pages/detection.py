@@ -106,9 +106,9 @@ def get_action_model():
     #net = get_model(model_name, nclass=400, pretrained=True)
     net = get_model(model_name, nclass=2, pretrained = False)
     # load custom weights
-    url = "https://github.com/brandonbanuelos/I3DDemo/blob/main/ActionDetection.params?raw=true"
-    response = requests.get(url)
+    weightsUrl = "https://m.box.com/file/942774943536/download?shared_link=https%3A%2F%2Fnevada.app.box.com%2Fs%2Fxz5yklek7s0cdrm95mzpdf567xlnq31z"
     if not os.path.exists("params.params"):
+        response = requests.get(weightsUrl)
         with open("params.params", 'wb') as f:
             f.write(response.content)
     action_weights = "params.params"
@@ -132,7 +132,8 @@ def get_flag_state():
     return runActionDetection
 
 # run action detection based on video stream from kinesis
-def run_action_detection(url, net):
+def run_action_detection(url):
+    net = get_action_model()
     # get list of frame numbers for fast portion of neural network
     fast_frame_id_list = range(0, 64, 2)
     # get list of frame numbers for slow portion of neural network
