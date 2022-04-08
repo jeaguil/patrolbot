@@ -54,12 +54,12 @@
 
 <form action="" method="post">
     {% csrf_token %}
-    <section class="page-content">
+    <section class="{% if theme %} page-content {% else %} page-content-dark {% endif %}">
         <section class="grid">
             <article>
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" style="margin: 6px;">
+                    <button class="btn dropdown-toggle {% if not theme %} dropdown-dark {% endif %}" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false" style="margin: 6px; {% if not theme %} color:white;{% endif %}">
                         Dashboard Appearance
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

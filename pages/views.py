@@ -258,10 +258,12 @@ def dashboard_view(request):
         except Appearance.DoesNotExist:
             obj = Appearance(appearance="theme", theme=True)
             obj.save()
+            theme = Appearance.objects.get(appearance="theme")
 
         # Pass in context for rendered template
         context = {
             "m": m,
+            "theme": theme.theme,
         }
         return render(request, "pages/dashboard.html", context)
     else:
@@ -307,12 +309,13 @@ def dashboard_settings_view(request):
                     name_id=i).update(switch=True)
                 model_settings[i] = True
 
+            theme = Appearance.objects.get(appearance="theme")
             messages.success(request, "Settings updated successfully!")
             return render(
                 request,
                 "pages/settings.html",
                 {"video_settings": video_settings,
-                    "model_settings": model_setting},
+                    "model_settings": model_setting, "theme": theme.theme},
             )
             
         theme = Appearance.objects.get(appearance="theme")

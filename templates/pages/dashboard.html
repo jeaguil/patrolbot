@@ -104,11 +104,11 @@
     </div>
 </div>
 
-<section class="page-content">
+<section class="{% if theme %} page-content {% else %} page-content-dark {% endif %}">
     <section class="grid">
         <article>
             <div class="dropdown">
-                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                <button class="btn dropdown-toggle {% if not theme %} dropdown-dark {% endif %}" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false" style="margin: 6px;">
                     Request logs
                 </button>
@@ -126,7 +126,7 @@
             </div>
         </article>
         <article>
-            <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh refresh-icon"
+            <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh {% if theme %} refresh-icon {% else %} refresh-icon-dark {% endif %}"
                         style="font-size:20px; margin: 5px;"></i></a></h1>
             <div id="map" class="gps-map">
                 {{m|safe}}
