@@ -30,13 +30,13 @@ SECRET_KEY = "sb/fCFIq35x9XWi8Rpl9x7P9wppV3zIrxngr2tkh"
 # enable model flag
 enable_model = True
 
+
+
 model_weights = os.path.join(
     settings.BASE_DIR, "model_weights/patrolNanoWeights.pt"
 )
 
-action_weights = os.path.join(
-    settings.BASE_DIR, "model_weights/ActionDetection.params"
-)
+import requests
 
 pacific_tz = pytz.timezone('US/Pacific')
 
@@ -101,11 +101,18 @@ def get_yolo():
 def get_action_model():
     # code adapted from https://cv.gluon.ai/build/examples_action_recognition/demo_slowfast_kinetics400.html
     # Load trained Slow Fast Model
-    model_name = "slowfast_4x16_resnet50_kinetics400"
-    #model_name = 'i3d_resnet50_v1_custom'
-    net = get_model(model_name, nclass=400, pretrained=True)
-    #net = get_model(model_name, nclass=2, pretrained = False)
-    # net.load_parameters(action_weights)
+    #model_name = "slowfast_4x16_resnet50_kinetics400"
+    model_name = 'i3d_resnet50_v1_custom'
+    #net = get_model(model_name, nclass=400, pretrained=True)
+    net = get_model(model_name, nclass=2, pretrained = False)
+    # load custom weights
+    url = "https://github.com/brandonbanuelos/I3DDemo/blob/main/ActionDetection.params?raw=true"
+    response = requests.get(url)
+    if not os.path.exists("params.params"):
+        with open("params.params", 'wb') as f:
+            f.write(response.content)
+    action_weights = "params.params"
+    net.load_parameters(action_weights)
     print("%s model is successfully loaded." % model_name)
     return net
 
@@ -141,8 +148,11 @@ def run_action_detection(url, net):
     slow_input = []
 
     # make a list of all potentially dangerous actions to detect
+    '''
     dangerousActions = ['punching_bag', 'punching_person_-boxing-',
                         'wrestling', 'headbutting', 'drop_kicking', 'crying']
+    '''
+    dangerousActions = ['abnormal']
     vcap = cv2.VideoCapture(url)
     global runActionDetection
     # while action detection flag is on
@@ -203,9 +213,9 @@ def run_action_detection(url, net):
                 # make the prediction based on the frames
                 pred = net(nd.array(clip_input))
 
-                actionClasses = net.classes
-                #actionClasses = ['normal', 'abnormal']
-                topK = 5
+                #actionClasses = net.classes
+                actionClasses = ['normal', 'abnormal']
+                topK = 2
                 ind = nd.topk(pred, k=topK)[0].astype("int")
                 predictions = []
 
