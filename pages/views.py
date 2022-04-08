@@ -508,14 +508,12 @@ def iouCalc(boxA, boxB):
 def kinesis_stream_view(request):
     # retrieves url on hls stream
     url = detection.hls_stream()
-    # create action detection model
-    action = detection.get_action_model()
     # make sure previous threads are off
     actionDetectionOn = detection.get_flag_state()
     if actionDetectionOn == False:
 	    # create thread to run action detection
 	    thread = threading.Thread(
-		target=detection.run_action_detection, args=(url, action))
+		target=detection.run_action_detection, args=(url,))
 	    # turn on action detection flag
 	    detection.turn_on_detection()
 	    thread.start()
