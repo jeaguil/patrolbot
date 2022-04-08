@@ -119,6 +119,11 @@ def turn_off_detection():
     global runActionDetection
     runActionDetection = False
 
+# return action detection flag
+def get_flag_state():
+    global runActionDetection
+    return runActionDetection
+
 # run action detection based on video stream from kinesis
 def run_action_detection(url, net):
     # get list of frame numbers for fast portion of neural network
