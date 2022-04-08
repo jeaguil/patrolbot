@@ -174,26 +174,28 @@ def gps_callback(self, params, packet):
     print(latitude)
     print("read lon")
     print(longitude)
-    
+
+
 @csrf_exempt
 def change_theme(request):
     # Used for a POST Call to change the theme to light/dark.
     # Updates the session variable in the database to light/dark,
     # This permits the theme to persist across sessions, changing from page to page constantly.
     t = Appearance.objects.get(appearance="theme")
-    
+
     theme = request.POST["theme"]
     if theme == "light":
-        t.theme = True # light
+        t.theme = True  # light
     elif theme == "dark":
-        t.theme = False # dark
-        
+        t.theme = False  # dark
+
     t.save()
-    
+
     response = {
         "theme": Appearance.objects.get(appearance="theme").theme
     }
     return JsonResponse(response)
+
 
 @login_required
 def dashboard_view(request):
@@ -252,7 +254,7 @@ def dashboard_view(request):
                     name_id=new_name_ids[i], setting=new_setting_names[i], switch=True
                 )
                 obj.save()
-                
+
         try:
             theme = Appearance.objects.get(appearance="theme")
         except Appearance.DoesNotExist:
@@ -274,7 +276,7 @@ def dashboard_view(request):
 def dashboard_settings_view(request):
     # turn off action detection flag so it doesn't run in background
     detection.turn_off_detection()
-    global model_settings    
+    global model_settings
     if request.user.is_authenticated:
         # Get video settings from database
         video_settings = DashboardVideoSettings.objects.all()
@@ -317,12 +319,13 @@ def dashboard_settings_view(request):
                 {"video_settings": video_settings,
                     "model_settings": model_setting, "theme": theme.theme},
             )
-            
+
         theme = Appearance.objects.get(appearance="theme")
         return render(
             request,
             "pages/settings.html",
-            {"video_settings": video_settings, "model_settings": model_setting, "theme": theme.theme},
+            {"video_settings": video_settings,
+                "model_settings": model_setting, "theme": theme.theme},
         )
     else:
         return redirect("/")
@@ -410,8 +413,8 @@ def gen(url):
                             seconds = int(datetime.today().timestamp() % 10)
                             if seconds == 0:
                                 # every 10 seconds append to the log form
-                                loggers.objects_detected.append(
-                                    [time_of_event, "Malicious item detected: " + label])
+                                loggers.security_notices.append(
+                                    [time_of_event, "Medium Security Alert (Malicious item detected): " + label])
 
                         # append coords and label so it can be analyzed
                         objectsFound.append([x1, y1, x2, y2, label])
@@ -455,7 +458,7 @@ def gen(url):
                                 box2 = [x3, y3, x4, y4]
                                 # if interseciton is greater than 50 percent
                                 # send a threat alert to alert logs
-                                iou = iou(box1, box2)
+                                iou = iouCalc(box1, box2)
                                 if iou >= 0.05:
                                     time_of_event = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                                     seconds = int(
@@ -464,7 +467,7 @@ def gen(url):
                                         # every 10 seconds append to the log form
 
                                         loggers.security_notices.append(
-                                            [time_of_event, "Potential Threat computed with confidence level of " + iou + ": " + label1 + " and " + label2 + " detected"])
+                                            [time_of_event, "High Security Alert (malcious item on bike): Confidence level of " + iou + ": " + label1 + " and " + label2 + " detected"])
 
             # return the resulting image
             _, jpeg = cv2.imencode(".jpg", image)
@@ -480,24 +483,26 @@ def phone_feed_view(request):
     )
 
 # code from https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
-    def iou(self, boxA, boxB):
-        # determine the (x, y)-coordinates of the intersection rectangle
-        xA = max(boxA[0], boxB[0])
-        yA = max(boxA[1], boxB[1])
-        xB = min(boxA[2], boxB[2])
-        yB = min(boxA[3], boxB[3])
-        # compute the area of intersection rectangle
-        interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
-        # compute the area of both the prediction and ground-truth
-        # rectangles
-        boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-        boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
-        # compute the intersection over union by taking the intersection
-        # area and dividing it by the sum of prediction + ground-truth
-        # areas - the interesection area
-        iou = interArea / float(boxAArea + boxBArea - interArea)
-        # return the intersection over union value
-        return iou
+
+
+def iouCalc(boxA, boxB):
+    # determine the (x, y)-coordinates of the intersection rectangle
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
+    # compute the area of intersection rectangle
+    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+    # compute the area of both the prediction and ground-truth
+    # rectangles
+    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the interesection area
+    iou = interArea / float(boxAArea + boxBArea - interArea)
+    # return the intersection over union value
+    return iou
 
 
 def kinesis_stream_view(request):
