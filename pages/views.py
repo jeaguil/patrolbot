@@ -510,12 +510,15 @@ def kinesis_stream_view(request):
     url = detection.hls_stream()
     # create action detection model
     action = detection.get_action_model()
-    # turn on action detection flag
-    detection.turn_on_detection()
-    # create thread to run action detection
-    thread = threading.Thread(
-        target=detection.run_action_detection, args=(url, action))
-    thread.start()
+    # make sure previous threads are off
+    actionDetectionOn = detection.get_flag_state()
+    if actionDetectionOn == False:
+	    # create thread to run action detection
+	    thread = threading.Thread(
+		target=detection.run_action_detection, args=(url, action))
+	    # turn on action detection flag
+	    detection.turn_on_detection()
+	    thread.start()
     return StreamingHttpResponse(
         gen(url),
         content_type="multipart/x-mixed-replace;boundary=frame",
