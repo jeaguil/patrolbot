@@ -19,3 +19,10 @@ class DashboardModelSettings(models.Model):
 class Appearance(models.Model):
     appearance = models.CharField(max_length=10, blank=False, default='theme', unique=True)
     theme = models.BooleanField('theme', default=True)
+
+class Recordings(models.Model):
+    timestamp = models.DateTimeField()
+    description = models.CharField(max_length=100, default="")
+    
+    # file will be uploaded to django.conf.settings.MEDIA_ROOT/recordings/
+    media = models.FileField(upload_to='recordings/')
