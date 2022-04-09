@@ -326,6 +326,14 @@ def dashboard_settings_view(request):
         )
     else:
         return redirect("/")
+    
+@login_required
+def recordings_view(request):
+    theme = Appearance.objects.get(appearance="theme")
+    context = {
+        "theme": theme.theme,
+    }
+    return render(request, "pages/recordings.html", context=context)
 
 def gen(url):
     global model_settings

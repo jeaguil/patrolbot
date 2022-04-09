@@ -9,6 +9,7 @@ urlpatterns = [
         views.dashboard_settings_view,
         name="settings",
     ),
+    path("dashboard/recordings/", views.recordings_view, name="recordings"),
     path("kinesis_stream", views.kinesis_stream_view, name="kinesis_stream"),
     path("action_log_data", views.action_logs, name="action_log_data"),
     path("security_log_data", views.security_logs, name="security_log_data"),
