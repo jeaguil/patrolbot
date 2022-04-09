@@ -1,6 +1,4 @@
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -25,5 +23,3 @@ urlpatterns = [
     path("get_direction", views.get_direction_data, name="get_direction"),
     path("change_theme", views.change_theme, name="change_theme")
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
