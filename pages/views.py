@@ -5,7 +5,12 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
-from .models import DashboardModelSettings, DashboardVideoSettings, Appearance
+from .models import (
+    DashboardModelSettings,
+    DashboardVideoSettings,
+    Appearance,
+    Recordings,
+)
 from . import loggers
 from . import detection
 
@@ -330,8 +335,10 @@ def dashboard_settings_view(request):
 @login_required
 def recordings_view(request):
     theme = Appearance.objects.get(appearance="theme")
+    recordings = Recordings.objects.all()
     context = {
         "theme": theme.theme,
+        "recordings": recordings,
     }
     return render(request, "pages/recordings.html", context=context)
 

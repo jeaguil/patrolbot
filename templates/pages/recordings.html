@@ -32,6 +32,26 @@
 
 <section class="{% if theme %} page-content {% else %} page-content-dark {% endif %}">
     <section class="grid">
-        <article></article>
+        <article style="opacity: 0;"></article>
+        <article class="recordings-table-container">
+            <table class="table {% if theme %} table-light {% else %} table-dark {% endif %} table-striped table-bordered" style="margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 10%">Timestamp</th>
+                        <th scope="col" style="width: 20%">Brief Description</th>
+                        <th scope="col" style="width: 10%">Recording</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for recording in recordings %}
+                    <tr>
+                        <td>{{ recording.timestamp }}</td>
+                        <td>{{ recording.description }}</td>
+                        <td><a href="/media/{{ recording.media }}" target="_blank">Download</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
     </section>
 </section>

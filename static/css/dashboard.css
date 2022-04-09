@@ -275,6 +275,18 @@ header a {
     margin-top: 100px;
 }
 
+/* RECORDINGS TABLES
+ ---------------------------------------------------*/
+.recordings-table-container {
+    grid-column: span 2;
+}
+
+.recordings-table-container table {
+    padding: 0;
+    text-align: center;
+    margin: auto;
+}
+
 /* GPS MAP
 --------------------------------------------------- */
 
