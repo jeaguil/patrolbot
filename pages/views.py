@@ -1,30 +1,27 @@
-import json
-import time
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import DashboardModelSettings, DashboardVideoSettings, Appearance
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
+from .models import DashboardModelSettings, DashboardVideoSettings, Appearance
+from . import loggers
+from . import detection
+
+import os
+import cv2
+import json
+import time
 import folium
 import threading
 import pytz
 import torch
 from datetime import datetime
 import numpy as np
-from . import loggers
-from . import camera
 
-# mxnet and gluoncv must be built from source
-# install CPU version of mxnet and gluoncv before running this
-from . import detection
+from picode import pi_publisher, pi_subscriber
 
-from picode import pi_publisher
-from picode import pi_subscriber
-
-import os
-import cv2
-from django.conf import settings
 pacific_tz = pytz.timezone('US/Pacific')
 model_weights = os.path.join(
     settings.BASE_DIR, "model_weights/patrolNanoWeights.pt")
@@ -330,20 +327,6 @@ def dashboard_settings_view(request):
     else:
         return redirect("/")
 
-
-# def dashboard_robot_manual_view(request):
-#    if request.method == "POST":
-#        if "forward_command" in request.POST:
-#            pi_publisher.forward()
-#        elif "backward_command" in request.POST:
-#            pi_publisher.backward()
-#        elif "turn_left_command" in request.POST:
-#            pi_publisher.turn_left()
-#        elif "turn_right_command" in request.POST:
-#            pi_publisher.turn_right()
-#    return render(request, "pages/robot_manual.html", {})
-
-
 def gen(url):
     global model_settings
     vcap = cv2.VideoCapture(url)
@@ -475,13 +458,6 @@ def gen(url):
             # return frame
             yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n\r\n")
 
-
-def phone_feed_view(request):
-    return StreamingHttpResponse(
-        gen(camera.IPPhoneCamera()),
-        content_type="multipart/x-mixed-replace;boundary=frame",
-    )
-
 # code from https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
 
 
@@ -511,29 +487,13 @@ def kinesis_stream_view(request):
     # make sure previous threads are off
     actionDetectionOn = detection.get_flag_state()
     if actionDetectionOn == False:
-	    # create thread to run action detection
-	    thread = threading.Thread(
-		target=detection.run_action_detection, args=(url,))
-	    # turn on action detection flag
-	    detection.turn_on_detection()
-	    thread.start()
+        # create thread to run action detection
+        thread = threading.Thread(target=detection.run_action_detection, args=(url,))
+        # turn on action detection flag
+        detection.turn_on_detection()
+        thread.start()
     return StreamingHttpResponse(
         gen(url),
         content_type="multipart/x-mixed-replace;boundary=frame",
     )
 
-
-def model_meta_data(request):
-    # Secret page that renders model meta data
-    is_cuda_available = torch.cuda.is_available()
-    device_name = torch.cuda.get_device_name(0) if is_cuda_available else "cpu"
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    return render(
-        request,
-        "pages/model_meta_data.html",
-        {
-            "is_cuda_available": is_cuda_available,
-            "device_name": device_name,
-            "device": device,
-        },
-    )
