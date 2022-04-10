@@ -358,6 +358,11 @@ def gen(url):
         # Capture frame-by-frame
         ret, frame = vcap.read()
 
+        # check if number of records is more than 9
+        query_set = Recordings.objects.all()
+        if query_set.count() > 9:
+            query_set[0].delete() # delete the oldest record in the table
+
         if ret:
 
             # Flip video frame, so it isn't reversed
