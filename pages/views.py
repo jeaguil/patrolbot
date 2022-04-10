@@ -34,7 +34,8 @@ model_weight_path = model_weights
 yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
-runActionDetection = False
+
+from django.core.files import File
 
 # robot movement
 commandTime = int(time.time())
@@ -331,9 +332,12 @@ def dashboard_settings_view(request):
         )
     else:
         return redirect("/")
-    
+
+
 @login_required
 def recordings_view(request):
+    # turn off action detection flag so it doesn't run in background
+    detection.turn_off_detection()
     theme = Appearance.objects.get(appearance="theme")
     recordings = Recordings.objects.all()
     context = {
@@ -341,6 +345,7 @@ def recordings_view(request):
         "recordings": recordings,
     }
     return render(request, "pages/recordings.html", context=context)
+
 
 def gen(url):
     global model_settings
@@ -410,17 +415,29 @@ def gen(url):
                                 pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
                             seconds = int(datetime.today().timestamp() % 10)
                             if seconds == 0:
-                                # every 10 seconds append to the log form
                                 loggers.security_notices.append(
                                     [time_of_event, "Medium Security Alert (Malicious item detected): " + label])
+                                # save current frame to a local file
+                                cv2.imwrite("frame.jpg", frame)
+                                # set current time to now
+                                d = datetime.now(tz = pacific_tz)
+                                # set description for the recording
+                                description = "Malicious object detected"
+                                # retrieve local file using Django's file reading
+                                media = File(open("frame.jpg", "rb"))
+                                # declare new record with this information and save to database
+                                obj = Recordings(timestamp = d, description = description, media = media)
+                                obj.save()
+
+
 
                         # append coords and label so it can be analyzed
                         objectsFound.append([x1, y1, x2, y2, label])
 
                         # send objected detected to log page
-                        time_of_event = datetime.now(
+                        time_of_event=datetime.now(
                             pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
-                        seconds = int(datetime.today().timestamp() % 10)
+                        seconds=int(datetime.today().timestamp() % 10)
                         if seconds == 0:
                             # every 10 seconds append to the log form
                             loggers.objects_detected.append(
@@ -450,16 +467,16 @@ def gen(url):
                         # check if it is bike was detected in same frame
                         for index2 in range(len(objectsFound)):
                             if objectsFound[index2][4] == 'Bike':
-                                x1, y1, x2, y2, label1 = objectsFound[index]
-                                x3, y3, x4, y4, label2 = objectsFound[index2]
-                                box1 = [x1, y1, x2, y2]
-                                box2 = [x3, y3, x4, y4]
+                                x1, y1, x2, y2, label1=objectsFound[index]
+                                x3, y3, x4, y4, label2=objectsFound[index2]
+                                box1=[x1, y1, x2, y2]
+                                box2=[x3, y3, x4, y4]
                                 # if interseciton is greater than 50 percent
                                 # send a threat alert to alert logs
-                                iou = iouCalc(box1, box2)
+                                iou=iouCalc(box1, box2)
                                 if iou >= 0.05:
-                                    time_of_event = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                                    seconds = int(
+                                    time_of_event=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                                    seconds=int(
                                         datetime.today().timestamp() % 10)
                                     if seconds == 0:
                                         # every 10 seconds append to the log form
@@ -468,8 +485,8 @@ def gen(url):
                                             [time_of_event, "High Security Alert (malcious item on bike): Confidence level of " + iou + ": " + label1 + " and " + label2 + " detected"])
 
             # return the resulting image
-            _, jpeg = cv2.imencode(".jpg", image)
-            frame = jpeg.tobytes()
+            _, jpeg=cv2.imencode(".jpg", image)
+            frame=jpeg.tobytes()
             # return frame
             yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n\r\n")
 
@@ -478,37 +495,37 @@ def gen(url):
 
 def iouCalc(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
-    xA = max(boxA[0], boxB[0])
-    yA = max(boxA[1], boxB[1])
-    xB = min(boxA[2], boxB[2])
-    yB = min(boxA[3], boxB[3])
+    xA=max(boxA[0], boxB[0])
+    yA=max(boxA[1], boxB[1])
+    xB=min(boxA[2], boxB[2])
+    yB=min(boxA[3], boxB[3])
     # compute the area of intersection rectangle
-    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+    interArea=max(0, xB - xA + 1) * max(0, yB - yA + 1)
     # compute the area of both the prediction and ground-truth
     # rectangles
-    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+    boxAArea=(boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+    boxBArea=(boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
     # compute the intersection over union by taking the intersection
     # area and dividing it by the sum of prediction + ground-truth
     # areas - the interesection area
-    iou = interArea / float(boxAArea + boxBArea - interArea)
+    iou=interArea / float(boxAArea + boxBArea - interArea)
     # return the intersection over union value
     return iou
 
 
 def kinesis_stream_view(request):
     # retrieves url on hls stream
-    url = detection.hls_stream()
+    url=detection.hls_stream()
     # make sure previous threads are off
-    actionDetectionOn = detection.get_flag_state()
+    actionDetectionOn=detection.get_flag_state()
     if actionDetectionOn == False:
         # create thread to run action detection
-        thread = threading.Thread(target=detection.run_action_detection, args=(url,))
+        thread=threading.Thread(
+            target = detection.run_action_detection, args = (url,))
         # turn on action detection flag
         detection.turn_on_detection()
         thread.start()
     return StreamingHttpResponse(
         gen(url),
-        content_type="multipart/x-mixed-replace;boundary=frame",
+        content_type = "multipart/x-mixed-replace;boundary=frame",
     )
-
