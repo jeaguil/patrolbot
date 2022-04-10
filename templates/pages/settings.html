@@ -5,6 +5,43 @@
     <title>Dashboard Settings - PatrolBot</title>
     <meta charset="utf-8">
 
+    <style>
+        {% comment %} Inspired from: https://www.w3schools.com/howto/howto_js_snackbar.asp {% endcomment %}
+        #snackbar {
+          visibility: hidden;
+          min-width: 250px;
+          margin-left: -125px;
+          background-color: white;
+          color: black;
+          text-align: center;
+          border-radius: 6px;
+          padding: 8px;
+          position: fixed;
+          z-index: 1;
+          left: calc(50% + 70px);
+          top: 12px;
+          font-size: 17px;
+          font-family: 'Source Sans Pro', sans-serif;
+          box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.1);
+        }
+        
+        #snackbar.show {
+          visibility: visible;
+          -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+          animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        
+        @-webkit-keyframes fadein {
+          from {top: 0; opacity: 0;} 
+          to {top: 12px; opacity: 1;}
+        }
+        
+        @keyframes fadein {
+          from {top: 0; opacity: 0;}
+          to {top: 12px; opacity: 1;}
+        }
+    </style>
+
     {% comment %} CSS LINKS {% endcomment %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -30,6 +67,9 @@
 
     <script type="text/javascript">
         function changeTheme(theme) {
+            var snackbar = document.getElementById("snackbar");
+            snackbar.className = "show";
+            setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 2000);
             $.post("{% url 'change_theme' %}", { 'theme': theme });
         }
     </script>
@@ -38,6 +78,8 @@
 <header>
     <a href="/accounts/logout" class="button">Sign out</a>
 </header>
+
+<div id="snackbar">Save Changes for New Theme</div>
 
 <div class="dash-sidenav">
     <div class="dash-sidenav-content">
