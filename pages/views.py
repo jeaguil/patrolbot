@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.core.files import File
 
 from .models import (
     DashboardModelSettings,
@@ -34,8 +35,6 @@ model_weight_path = model_weights
 yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
-
-from django.core.files import File
 
 # robot movement
 commandTime = int(time.time())
