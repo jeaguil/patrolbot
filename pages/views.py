@@ -48,7 +48,7 @@ latitude = 2.349014
 
 # model settings
 model_settings = {"Bounding Box Overlay": True, "Person": True, "Bike": True,
-                  "Bolt Cutters": True, "Angle Grinder": True}
+                  "Bolt Cutters": True, "Angle Grinder": True, "Object Detection": True}
 
 
 def welcome_view(request):
@@ -382,14 +382,21 @@ def gen(url):
             x_shape = image.shape[1]
             y_shape = image.shape[0]
 
-            # Apply the Torch YoloV5 model to this frame
-            results = yolo(image)
+            # if flag to run yolo is true apply
+            if model_settings["Object Detection"] == True:
 
-            # Extract the labels and coordinates of the bounding boxes
-            labels, cords = (
-                results.xyxyn[0][:, -1].numpy(),
-                results.xyxyn[0][:, :-1].numpy(),
-            )
+                # Apply the Torch YoloV5 model to this frame
+                results = yolo(image)
+
+                # Extract the labels and coordinates of the bounding boxes
+                labels, cords = (
+                    results.xyxyn[0][:, -1].numpy(),
+                    results.xyxyn[0][:, :-1].numpy(),
+                )
+
+            # otherwise nothing was found in image
+            else:
+                labels = ""
 
             numberOfLabels = len(labels)
 
