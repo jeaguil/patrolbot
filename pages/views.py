@@ -47,7 +47,7 @@ longitude = 48.864716
 latitude = 2.349014
 
 # model settings
-model_settings = {"Bounding Box Overlay (object detection model)": True, "Person": True, "Bike": True,
+model_settings = {"Bounding Box Overlay": True, "Person": True, "Bike": True,
                   "Bolt Cutters": True, "Angle Grinder": True}
 
 
@@ -223,15 +223,19 @@ def dashboard_view(request):
         # Add setting records to db only once
         try:
             bounding_box = DashboardVideoSettings.objects.get(
-                name_id="Bounding Box Overlay (object detection model)"
+                name_id="Bounding Box Overlay"
+            )
+            obj_detection = DashboardVideoSettings.objects.get(
+                name_id="Object Detection"
             )
         except DashboardVideoSettings.DoesNotExist:
-            obj = DashboardVideoSettings(
-                name_id="Bounding Box Overlay (object detection model)",
-                setting="bounding_box_overlay",
-                switch=True,
-            )
-            obj.save()
+            new_name_id = ["Bounding Box Overlay", "Object Detection"]
+            new_setting_names = ["bounding_box_overlay", "object_detection"]
+            for i in range(len(new_name_id)):
+                obj = DashboardVideoSettings(
+                    name_id=new_name_id[i], setting=new_setting_names[i], switch=True
+                )
+                obj.save()
 
         try:
             person_detect = DashboardModelSettings.objects.get(
@@ -394,7 +398,7 @@ def gen(url):
 
             for i in range(numberOfLabels):
                 # If global enable flag is set true then show boxes
-                if model_settings["Bounding Box Overlay (object detection model)"] == True:
+                if model_settings["Bounding Box Overlay"] == True:
                     row = cords[i]
                     # Get the class number of current label
                     class_number = int(labels[i])
