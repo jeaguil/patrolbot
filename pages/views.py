@@ -553,7 +553,8 @@ def sendEmail():
     # define sending password
     sourcePass = 'dashPatrolsmtp5'
     # retrieve recipient email from database
-    recipientEmail = "brandonbanuelos@nevada.unr.edu"
+    email_preference = EmailPreferences.objects.get(id=1)
+    recipientEmail = email_preference.email
     
     # set up MIME
     message = MIMEMultipart()
@@ -567,21 +568,22 @@ def sendEmail():
     fp = open('frame.jpg', 'rb')
     image = MIMEImage(fp.read(), name = "MaliciousObject")
     message.attach(image)
-
-    # create Gmail session
-    session = smtplib.SMTP('smtp.gmail.com', 587)
-    # add security
-    session.starttls()
-    # login
-    session.login(emailSource, sourcePass)
     
     # ensure email is defined in database
     if recipientEmail != "":
+
+        # create Gmail session
+        session = smtplib.SMTP('smtp.gmail.com', 587, timeout = 2)
+        # add security
+        session.starttls()
+        # login
+        session.login(emailSource, sourcePass)
+
         session.sendmail(emailSource, recipientEmail,
                     message.as_string())
         print("Email sent")
+        session.quit()
 
-    session.quit()
     
 # code from https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
 def iouCalc(boxA, boxB):
