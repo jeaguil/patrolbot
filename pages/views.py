@@ -535,7 +535,7 @@ def sendEmail():
     text = MIMEText('PatrolBot detected a malicious object. Check the logs now')
     message.attach(text)
     fp = open('frame.jpg', 'rb')
-    image = MIMEImage(fp.read())
+    image = MIMEImage(fp.read(), name = "MaliciousObject")
     message.attach(image)
 
     # create Gmail session
