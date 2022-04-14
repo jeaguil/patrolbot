@@ -5,12 +5,14 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.files import File
+from django.db import IntegrityError
 
 from .models import (
     DashboardModelSettings,
     DashboardVideoSettings,
     Appearance,
     Recordings,
+    EmailPreferences,
 )
 from . import loggers
 from . import detection
@@ -272,6 +274,15 @@ def dashboard_view(request):
             obj = Appearance(appearance="theme", theme=True)
             obj.save()
             theme = Appearance.objects.get(appearance="theme")
+            
+        try:
+            email_preference = EmailPreferences.objects.get(id=1)
+        except EmailPreferences.DoesNotExist:
+            try:
+                obj = EmailPreferences(id=1, email="")
+                obj.save()
+            except IntegrityError:
+                pass
 
         # Pass in context for rendered template
         context = {
@@ -294,7 +305,10 @@ def dashboard_settings_view(request):
 
         # Get model settings from database
         model_setting = DashboardModelSettings.objects.all()
-
+        
+        # Get email preference from database
+        email_preference = EmailPreferences.objects.all()
+                    
         if request.method == "POST":
             # Update settings accordingly...
 
@@ -311,6 +325,16 @@ def dashboard_settings_view(request):
                 "dashboard_video_settings")
             model_settings_id_list = request.POST.getlist(
                 "dashboard_model_settings")
+            
+            # Get email preference and add it to the database
+            email_update = request.POST.getlist("emails")
+            try:
+                if email_preference.count() > 1:
+                    email_preference[0].delete()
+                EmailPreferences.objects.filter(id=1).update(email=email_update[0])
+                
+            except IntegrityError:
+                pass
 
             # Update the database
             for i in video_settings_id_list:
@@ -327,16 +351,22 @@ def dashboard_settings_view(request):
             return render(
                 request,
                 "pages/settings.html",
-                {"video_settings": video_settings,
-                    "model_settings": model_setting, "theme": theme.theme},
+                {
+                    "video_settings": video_settings,
+                    "model_settings": model_setting,
+                    "theme": theme.theme,
+                    "email_preference": email_preference[0].email},
             )
 
         theme = Appearance.objects.get(appearance="theme")
         return render(
             request,
             "pages/settings.html",
-            {"video_settings": video_settings,
-                "model_settings": model_setting, "theme": theme.theme},
+            {
+                "video_settings": video_settings,
+                "model_settings": model_setting,
+                "theme": theme.theme,
+                "email_preference": email_preference[0].email},
         )
     else:
         return redirect("/")

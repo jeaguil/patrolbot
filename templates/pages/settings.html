@@ -121,7 +121,7 @@
                 <div class="verticle"></div>
                 <div class="email-preferences-option">
                     <label for="emails" style="{% if theme %} color: black {% else %} color: white; {% endif %}">Email Notifications</label>
-                    <input type="email" id="emails" name="emails" style="{% if not theme %} background: #242526; color: white;{% else %} background: white; {% endif %}">
+                    <input type="email" id="emails" name="emails" style="{% if not theme %} background: #242526; color: white;{% else %} background: white; {% endif %}" value={{email_preference}}>
                 </div>
             </article>
             <article>
