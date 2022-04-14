@@ -36,6 +36,8 @@ yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
 
+import smtplib
+
 # robot movement
 commandTime = int(time.time())
 pendingCommand = False
@@ -443,7 +445,8 @@ def gen(url):
                                 # declare new record with this information and save to database
                                 obj = Recordings(timestamp = d, description = description, media = media)
                                 obj.save()
-
+                                # send email with notification
+                                sendEmail()
 
 
                         # append coords and label so it can be analyzed
@@ -484,7 +487,7 @@ def gen(url):
                             if objectsFound[index2][4] == 'Bike':
                                 x1, y1, x2, y2, label1=objectsFound[index]
                                 x3, y3, x4, y4, label2=objectsFound[index2]
-                                box1=[x1, y1, x2, y2]
+                                box1=[x1, y1, x2, y2]#
                                 box2=[x3, y3, x4, y4]
                                 # if interseciton is greater than 50 percent
                                 # send a threat alert to alert logs
@@ -505,9 +508,21 @@ def gen(url):
             # return frame
             yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n\r\n")
 
+
+# function to send email to user's email
+def sendEmail():
+    # define gmail smtp server
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    # login into patrol bot gmail
+    server.login('patrolbotdash@gmail.com', 'dashPatrolsmtp5')
+    # retrieve recipient email from database
+    recipientEmail = "brandonbanuelos@nevada.unr.edu"
+    # ensure email is defined in database
+    if recipientEmail != "":
+        server.sendmail('patrolbotdash@gmail.com',recipientEmail,
+                    'Malicious object detected! Check logs')
+    
 # code from https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
-
-
 def iouCalc(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
     xA=max(boxA[0], boxB[0])
@@ -526,7 +541,6 @@ def iouCalc(boxA, boxB):
     iou=interArea / float(boxAArea + boxBArea - interArea)
     # return the intersection over union value
     return iou
-
 
 def kinesis_stream_view(request):
     # retrieves url on hls stream
