@@ -37,6 +37,9 @@ classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
 
 import smtplib
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 
 # robot movement
 commandTime = int(time.time())
@@ -445,8 +448,11 @@ def gen(url):
                                 # declare new record with this information and save to database
                                 obj = Recordings(timestamp = d, description = description, media = media)
                                 obj.save()
-                                # send email with notification
-                                sendEmail()
+                                # try to send email with notification
+                                try:
+                                    sendEmail()
+                                except:
+                                    print("Couldn't send email")
 
 
                         # append coords and label so it can be analyzed
@@ -487,7 +493,7 @@ def gen(url):
                             if objectsFound[index2][4] == 'Bike':
                                 x1, y1, x2, y2, label1=objectsFound[index]
                                 x3, y3, x4, y4, label2=objectsFound[index2]
-                                box1=[x1, y1, x2, y2]#
+                                box1=[x1, y1, x2, y2]
                                 box2=[x3, y3, x4, y4]
                                 # if interseciton is greater than 50 percent
                                 # send a threat alert to alert logs
@@ -510,17 +516,42 @@ def gen(url):
 
 
 # function to send email to user's email
+# code adapted from https://www.tutorialspoint.com/send-mail-from-your-gmail-account-using-python
 def sendEmail():
-    # define gmail smtp server
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    # login into patrol bot gmail
-    server.login('patrolbotdash@gmail.com', 'dashPatrolsmtp5')
+    # define sending email
+    emailSource = 'patrolbotdash@gmail.com'
+    # define sending password
+    sourcePass = 'dashPatrolsmtp5'
     # retrieve recipient email from database
     recipientEmail = "brandonbanuelos@nevada.unr.edu"
+    
+    # set up MIME
+    message = MIMEMultipart()
+    message['From'] = emailSource
+    message['To'] = recipientEmail
+    message['Subject'] = 'PatrolBot Security Alert'
+    
+    # attach email content
+    text = MIMEText('PatrolBot detected a malicious object. Check the logs now')
+    message.attach(text)
+    fp = open('frame.jpg', 'rb')
+    image = MIMEImage(fp.read())
+    message.attach(image)
+
+    # create Gmail session
+    session = smtplib.SMTP('smtp.gmail.com', 587)
+    # add security
+    session.starttls()
+    # login
+    session.login(emailSource, sourcePass)
+    
     # ensure email is defined in database
     if recipientEmail != "":
-        server.sendmail('patrolbotdash@gmail.com',recipientEmail,
-                    'Malicious object detected! Check logs')
+        session.sendmail(emailSource, recipientEmail,
+                    message.as_string())
+        print("Email sent")
+
+    session.quit()
     
 # code from https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
 def iouCalc(boxA, boxB):
