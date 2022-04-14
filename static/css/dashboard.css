@@ -35,6 +35,12 @@ button {
     background-color: white;
 }
 
+input {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+}
+
 /* The sidebar menu 
 ---------------------------------------------------*/
 .dash-sidenav {
@@ -273,6 +279,22 @@ header a {
     height: 500px;
     text-align: center;
     margin-top: 100px;
+}
+
+/* EMAIL PREFERENCES
+ ---------------------------------------------------*/
+
+.email-preferences-option {
+    color: black;
+    font-weight: 500;
+}
+
+.email-preferences-option label {
+    padding: 12px;
+}
+
+.email-preferences-option input {
+    padding: 5px;
 }
 
 /* RECORDINGS TABLES

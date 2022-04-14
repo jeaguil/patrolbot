@@ -40,6 +40,12 @@
           from {top: 0; opacity: 0;}
           to {top: 12px; opacity: 1;}
         }
+
+        .verticle {
+            border-left: 1px solid #ccc;
+            height: 30px;
+            margin: 10px;
+        }
     </style>
 
     {% comment %} CSS LINKS {% endcomment %}
@@ -111,6 +117,11 @@
                         <a type="button" class="dropdown-item" href="javascript:changeTheme('light')">Light</a>
                         <a type="button" class="dropdown-item" href="javascript:changeTheme('dark')">Dark</a>
                     </div>
+                </div>
+                <div class="verticle"></div>
+                <div class="email-preferences-option">
+                    <label for="emails" style="{% if theme %} color: black {% else %} color: white; {% endif %}">Email Notifications</label>
+                    <input type="email" id="emails" name="emails" style="{% if not theme %} background: #242526; color: white;{% else %} background: white; {% endif %}">
                 </div>
             </article>
             <article>
