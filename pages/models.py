@@ -26,3 +26,6 @@ class Recordings(models.Model):
     
     # file will be uploaded to django.conf.settings.MEDIA_ROOT/recordings/
     media = models.FileField(upload_to='recordings/')
+    
+class EmailPreferences(models.Model):
+    email = models.EmailField(max_length=254)
