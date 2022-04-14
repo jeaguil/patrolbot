@@ -1,6 +1,17 @@
 from django.contrib import admin
-from .models import DashboardVideoSettings, DashboardModelSettings, Appearance, Recordings
+from .models import (
+    DashboardVideoSettings,
+    DashboardModelSettings,
+    Appearance,
+    Recordings,
+    EmailPreferences,
+)
 
-# Register your models here.
-for i in [DashboardVideoSettings, DashboardModelSettings, Appearance, Recordings]:
+for i in [
+    DashboardVideoSettings,
+    DashboardModelSettings,
+    Appearance,
+    Recordings,
+    EmailPreferences,
+]:
     admin.site.register(i)

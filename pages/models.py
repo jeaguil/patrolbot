@@ -28,4 +28,4 @@ class Recordings(models.Model):
     media = models.FileField(upload_to='recordings/')
     
 class EmailPreferences(models.Model):
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=254, unique=True, default='')
