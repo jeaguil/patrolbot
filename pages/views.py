@@ -532,11 +532,9 @@ def gen(url):
                                     time_of_event=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                                     seconds=int(
                                         datetime.today().timestamp() % 10)
-                                    if seconds == 0:
-                                        # every 10 seconds append to the log form
 
-                                        loggers.security_notices.append(
-                                            [time_of_event, "High Security Alert (malcious item on bike): " + label1 + " and " + label2 + " detected"])
+                                    loggers.security_notices.append(
+                                            [time_of_event, "High Security Alert (malcious item on bike): " + label1 + " near " + label2])
 
             # return the resulting image
             _, jpeg=cv2.imencode(".jpg", image)
