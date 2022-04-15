@@ -78,6 +78,17 @@
                 $.post(URL, dict_direction);
             }
         }
+        function getPanning(panning) {
+            var URL = "{% url 'get_panning' %}"
+            if (panning == 0) {
+                panning = "left";
+            }
+            if (panning == 1) {
+                panning = "right";
+            }
+            var pan_direction = { 'panning': panning };
+            $.post(URL, pan_direction);
+        }
     </script>
 </head>
 
@@ -95,9 +106,11 @@
                 <path fill-rule="evenodd"
                     d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z" />
             </svg></i><span>Overview</span></a>
-        <a href="recordings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-video" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5zm11.5 5.175 3.5 1.556V4.269l-3.5 1.556v4.35zM2 4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H2z"/>
-          </svg></i><span>Recordings</span></a>
+        <a href="recordings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-camera-video" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5zm11.5 5.175 3.5 1.556V4.269l-3.5 1.556v4.35zM2 4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H2z" />
+            </svg></i><span>Recordings</span></a>
         <a href="settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-gear" viewBox="0 0 16 16">
                 <path
@@ -112,8 +125,9 @@
     <section class="grid">
         <article>
             <div class="dropdown">
-                <button class="btn dropdown-toggle {% if not theme %} dropdown-dark {% endif %}" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false" style="margin: 6px;">
+                <button class="btn dropdown-toggle {% if not theme %} dropdown-dark {% endif %}" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    style="margin: 6px;">
                     Request logs
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -130,7 +144,8 @@
             </div>
         </article>
         <article>
-            <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i class="fa fa-refresh {% if theme %} refresh-icon {% else %} refresh-icon-dark {% endif %}"
+            <h1>GPS Tracker<a id="refresh-a" href="javascript:refreshMap()" title="Refresh Map"><i
+                        class="fa fa-refresh {% if theme %} refresh-icon {% else %} refresh-icon-dark {% endif %}"
                         style="font-size:20px; margin: 5px;"></i></a></h1>
             <div id="map" class="gps-map">
                 {{m|safe}}
@@ -156,6 +171,12 @@
                 setInterval(function () { joy2Y = Joy2.GetY(); }, 500);
                 setInterval(function () { getDirection(joy2Direzione); }, 500);
             </script>
+            <div>
+                <button type="button" class="btn btn-light" onclick="getPanning(0)" style="margin:10px">Pan
+                    Left</button>
+                <button type="button" class="btn btn-light" onclick="getPanning(1)" style="margin:10px">Pan
+                    Right</button>
+            </div>
             </aticle>
     </section>
 </section>

@@ -30,9 +30,8 @@ import numpy as np
 
 from picode import pi_publisher, pi_subscriber
 
-pacific_tz = pytz.timezone('US/Pacific')
-model_weights = os.path.join(
-    settings.BASE_DIR, "model_weights/patrolNanoWeights.pt")
+pacific_tz = pytz.timezone("US/Pacific")
+model_weights = os.path.join(settings.BASE_DIR, "model_weights/patrolNanoWeights.pt")
 model_weight_path = model_weights
 yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
@@ -47,15 +46,21 @@ from email.mime.multipart import MIMEMultipart
 commandTime = int(time.time())
 pendingCommand = False
 commandDelay = 4
-movementDirection = 'none'
+movementDirection = "none"
 
 # robot gps
 longitude = 48.864716
 latitude = 2.349014
 
 # model settings
-model_settings = {"Bounding Box Overlay": True, "Person": True, "Bike": True,
-                  "Bolt Cutters": True, "Angle Grinder": True, "Object Detection": True}
+model_settings = {
+    "Bounding Box Overlay": True,
+    "Person": True,
+    "Bike": True,
+    "Bolt Cutters": True,
+    "Angle Grinder": True,
+    "Object Detection": True,
+}
 
 
 def welcome_view(request):
@@ -149,21 +154,32 @@ def get_direction_data(request):
             commandTime = int(time.time())
             pendingCommand = False
 
-            if(movementDirection == 'f'):
+            if movementDirection == "f":
                 # print(movementDirection)
                 pi_publisher.forward()
-            elif(movementDirection == 'b'):
+            elif movementDirection == "b":
                 # print(movementDirection)
                 pi_publisher.backward()
-            elif(movementDirection == 'l'):
+            elif movementDirection == "l":
                 # print(movementDirection)
                 pi_publisher.turn_left()
-            elif(movementDirection == 'r'):
+            elif movementDirection == "r":
                 # print(movementDirection)
                 pi_publisher.turn_right()
 
         # handle sending commands here
         return render(request, "pages/dashboard.html", {})
+
+
+@csrf_exempt
+def get_panning_data(request):
+    if request.method == "POST":
+        panning = request.POST["panning"]
+        if panning == "left":
+            print("Left")
+        if panning == "right":
+            print("Right")
+    return render(request, "pages/dashboard.html", {})
 
 
 def gps_callback(self, params, packet):
@@ -200,9 +216,7 @@ def change_theme(request):
 
     t.save()
 
-    response = {
-        "theme": Appearance.objects.get(appearance="theme").theme
-    }
+    response = {"theme": Appearance.objects.get(appearance="theme").theme}
     return JsonResponse(response)
 
 
@@ -245,8 +259,7 @@ def dashboard_view(request):
                 obj.save()
 
         try:
-            person_detect = DashboardModelSettings.objects.get(
-                name_id="Person")
+            person_detect = DashboardModelSettings.objects.get(name_id="Person")
             bike_detect = DashboardModelSettings.objects.get(name_id="Bike")
             angle_grinder_detect = DashboardModelSettings.objects.get(
                 name_id="Angle Grinders"
@@ -274,7 +287,7 @@ def dashboard_view(request):
             obj = Appearance(appearance="theme", theme=True)
             obj.save()
             theme = Appearance.objects.get(appearance="theme")
-            
+
         try:
             email_preference = EmailPreferences.objects.get(id=1)
         except EmailPreferences.DoesNotExist:
@@ -305,10 +318,10 @@ def dashboard_settings_view(request):
 
         # Get model settings from database
         model_setting = DashboardModelSettings.objects.all()
-        
+
         # Get email preference from database
         email_preference = EmailPreferences.objects.all()
-                    
+
         if request.method == "POST":
             # Update settings accordingly...
 
@@ -321,29 +334,25 @@ def dashboard_settings_view(request):
                 model_settings[key] = False
 
             # Get list of checkbed box id's
-            video_settings_id_list = request.POST.getlist(
-                "dashboard_video_settings")
-            model_settings_id_list = request.POST.getlist(
-                "dashboard_model_settings")
-            
+            video_settings_id_list = request.POST.getlist("dashboard_video_settings")
+            model_settings_id_list = request.POST.getlist("dashboard_model_settings")
+
             # Get email preference and add it to the database
             email_update = request.POST.getlist("emails")
             try:
                 if email_preference.count() > 1:
                     email_preference[0].delete()
                 EmailPreferences.objects.filter(id=1).update(email=email_update[0])
-                
+
             except IntegrityError:
                 pass
 
             # Update the database
             for i in video_settings_id_list:
-                DashboardVideoSettings.objects.filter(
-                    name_id=i).update(switch=True)
+                DashboardVideoSettings.objects.filter(name_id=i).update(switch=True)
                 model_settings[i] = True
             for i in model_settings_id_list:
-                DashboardModelSettings.objects.filter(
-                    name_id=i).update(switch=True)
+                DashboardModelSettings.objects.filter(name_id=i).update(switch=True)
                 model_settings[i] = True
 
             theme = Appearance.objects.get(appearance="theme")
@@ -355,7 +364,8 @@ def dashboard_settings_view(request):
                     "video_settings": video_settings,
                     "model_settings": model_setting,
                     "theme": theme.theme,
-                    "email_preference": email_preference[0].email},
+                    "email_preference": email_preference[0].email,
+                },
             )
 
         theme = Appearance.objects.get(appearance="theme")
@@ -366,7 +376,8 @@ def dashboard_settings_view(request):
                 "video_settings": video_settings,
                 "model_settings": model_setting,
                 "theme": theme.theme,
-                "email_preference": email_preference[0].email},
+                "email_preference": email_preference[0].email,
+            },
         )
     else:
         return redirect("/")
@@ -399,7 +410,7 @@ def gen(url):
         # check if number of records is more than 9
         query_set = Recordings.objects.all()
         if query_set.count() > 9:
-            query_set[0].delete() # delete the oldest record in the table
+            query_set[0].delete()  # delete the oldest record in the table
 
         if ret:
 
@@ -461,22 +472,30 @@ def gen(url):
                         # if malicious item detected, send alert
                         if label == "Angle Grinder" or label == "Bolt Cutters":
                             # send an alert to the alerts log
-                            time_of_event = datetime.now(
-                                pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
+                            time_of_event = datetime.now(pacific_tz).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            )
                             seconds = int(datetime.today().timestamp() % 10)
                             if seconds == 0:
                                 loggers.security_notices.append(
-                                    [time_of_event, "Medium Security Alert (Malicious item detected): " + label])
+                                    [
+                                        time_of_event,
+                                        "Medium Security Alert (Malicious item detected): "
+                                        + label,
+                                    ]
+                                )
                                 # save current frame to a local file
                                 cv2.imwrite("frame.jpg", frame)
                                 # set current time to now
-                                d = datetime.now(tz = pacific_tz)
+                                d = datetime.now(tz=pacific_tz)
                                 # set description for the recording
                                 description = "Malicious object detected"
                                 # retrieve local file using Django's file reading
                                 media = File(open("frame.jpg", "rb"))
                                 # declare new record with this information and save to database
-                                obj = Recordings(timestamp = d, description = description, media = media)
+                                obj = Recordings(
+                                    timestamp=d, description=description, media=media
+                                )
                                 obj.save()
                                 # try to send email with notification
                                 try:
@@ -484,22 +503,24 @@ def gen(url):
                                 except:
                                     print("Couldn't send email")
 
-
                         # append coords and label so it can be analyzed
                         objectsFound.append([x1, y1, x2, y2, label])
 
                         # send objected detected to log page
-                        time_of_event=datetime.now(
-                            pacific_tz).strftime("%Y-%m-%d %H:%M:%S")
-                        seconds=int(datetime.today().timestamp() % 10)
+                        time_of_event = datetime.now(pacific_tz).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        )
+                        seconds = int(datetime.today().timestamp() % 10)
                         if seconds == 0:
                             # every 10 seconds append to the log form
                             loggers.objects_detected.append(
-                                [time_of_event, "Object detected: " + label])
+                                [time_of_event, "Object detected: " + label]
+                            )
                         if model_settings[label] == True:
                             # Draw bounding box
-                            cv2.rectangle(image, (int(x1), int(y1)),
-                                          (int(x2), int(y2)), color, 2)
+                            cv2.rectangle(
+                                image, (int(x1), int(y1)), (int(x2), int(y2)), color, 2
+                            )
                             # Give bounding box a text label
                             cv2.putText(
                                 image,
@@ -516,106 +537,118 @@ def gen(url):
                 # iterate over items found
                 for index in range(len(objectsFound)):
                     # check if first object is malicious
-                    if objectsFound[index][4] == 'Angle Grinder' or objectsFound[index][4] == 'Bolt Cutters':
+                    if (
+                        objectsFound[index][4] == "Angle Grinder"
+                        or objectsFound[index][4] == "Bolt Cutters"
+                    ):
 
                         # check if it is bike was detected in same frame
                         for index2 in range(len(objectsFound)):
-                            if objectsFound[index2][4] == 'Bike':
-                                x1, y1, x2, y2, label1=objectsFound[index]
-                                x3, y3, x4, y4, label2=objectsFound[index2]
-                                box1=[x1, y1, x2, y2]
-                                box2=[x3, y3, x4, y4]
+                            if objectsFound[index2][4] == "Bike":
+                                x1, y1, x2, y2, label1 = objectsFound[index]
+                                x3, y3, x4, y4, label2 = objectsFound[index2]
+                                box1 = [x1, y1, x2, y2]
+                                box2 = [x3, y3, x4, y4]
                                 # if interseciton is greater than 50 percent
                                 # send a threat alert to alert logs
-                                iou=iouCalc(box1, box2)
+                                iou = iouCalc(box1, box2)
                                 if iou >= 0.05:
-                                    time_of_event=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                                    seconds=int(
-                                        datetime.today().timestamp() % 10)
+                                    time_of_event = datetime.now().strftime(
+                                        "%Y-%m-%d %H:%M:%S"
+                                    )
+                                    seconds = int(datetime.today().timestamp() % 10)
 
                                     loggers.security_notices.append(
-                                            [time_of_event, "High Security Alert (malcious item on bike): " + label1 + " near " + label2])
+                                        [
+                                            time_of_event,
+                                            "High Security Alert (malcious item on bike): "
+                                            + label1
+                                            + " near "
+                                            + label2,
+                                        ]
+                                    )
 
             # return the resulting image
-            _, jpeg=cv2.imencode(".jpg", image)
-            frame=jpeg.tobytes()
+            _, jpeg = cv2.imencode(".jpg", image)
+            frame = jpeg.tobytes()
             # return frame
-            yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n\r\n")
+            yield (
+                b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n\r\n"
+            )
 
 
 # function to send email to user's email
 # code adapted from https://www.tutorialspoint.com/send-mail-from-your-gmail-account-using-python
 def sendEmail():
     # define sending email
-    emailSource = 'patrolbotdash@gmail.com'
+    emailSource = "patrolbotdash@gmail.com"
     # define sending password
-    sourcePass = 'dashPatrolsmtp5'
+    sourcePass = "dashPatrolsmtp5"
     # retrieve recipient email from database
     email_preference = EmailPreferences.objects.get(id=1)
     recipientEmail = email_preference.email
-    
+
     # set up MIME
     message = MIMEMultipart()
-    message['From'] = emailSource
-    message['To'] = recipientEmail
-    message['Subject'] = 'PatrolBot Security Alert'
-    
+    message["From"] = emailSource
+    message["To"] = recipientEmail
+    message["Subject"] = "PatrolBot Security Alert"
+
     # attach email content
-    text = MIMEText('PatrolBot detected a malicious object. Check the logs now')
+    text = MIMEText("PatrolBot detected a malicious object. Check the logs now")
     message.attach(text)
-    fp = open('frame.jpg', 'rb')
-    image = MIMEImage(fp.read(), name = "MaliciousObject")
+    fp = open("frame.jpg", "rb")
+    image = MIMEImage(fp.read(), name="MaliciousObject")
     message.attach(image)
-    
+
     # ensure email is defined in database
     if recipientEmail != "":
 
         # create Gmail session
-        session = smtplib.SMTP('smtp.gmail.com', 587, timeout = 2)
+        session = smtplib.SMTP("smtp.gmail.com", 587, timeout=2)
         # add security
         session.starttls()
         # login
         session.login(emailSource, sourcePass)
 
-        session.sendmail(emailSource, recipientEmail,
-                    message.as_string())
+        session.sendmail(emailSource, recipientEmail, message.as_string())
         print("Email sent")
         session.quit()
 
-    
+
 # code from https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
 def iouCalc(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
-    xA=max(boxA[0], boxB[0])
-    yA=max(boxA[1], boxB[1])
-    xB=min(boxA[2], boxB[2])
-    yB=min(boxA[3], boxB[3])
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
     # compute the area of intersection rectangle
-    interArea=max(0, xB - xA + 1) * max(0, yB - yA + 1)
+    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
     # compute the area of both the prediction and ground-truth
     # rectangles
-    boxAArea=(boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-    boxBArea=(boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
     # compute the intersection over union by taking the intersection
     # area and dividing it by the sum of prediction + ground-truth
     # areas - the interesection area
-    iou=interArea / float(boxAArea + boxBArea - interArea)
+    iou = interArea / float(boxAArea + boxBArea - interArea)
     # return the intersection over union value
     return iou
 
+
 def kinesis_stream_view(request):
     # retrieves url on hls stream
-    url=detection.hls_stream()
+    url = detection.hls_stream()
     # make sure previous threads are off
-    actionDetectionOn=detection.get_flag_state()
+    actionDetectionOn = detection.get_flag_state()
     if actionDetectionOn == False:
         # create thread to run action detection
-        thread=threading.Thread(
-            target = detection.run_action_detection, args = (url,))
+        thread = threading.Thread(target=detection.run_action_detection, args=(url,))
         # turn on action detection flag
         detection.turn_on_detection()
         thread.start()
     return StreamingHttpResponse(
         gen(url),
-        content_type = "multipart/x-mixed-replace;boundary=frame",
+        content_type="multipart/x-mixed-replace;boundary=frame",
     )

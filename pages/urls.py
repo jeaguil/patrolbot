@@ -15,5 +15,6 @@ urlpatterns = [
     path("security_log_data", views.security_logs, name="security_log_data"),
     path("refresh_map", views.refresh_map_view, name="refresh_map"),
     path("get_direction", views.get_direction_data, name="get_direction"),
-    path("change_theme", views.change_theme, name="change_theme")
+    path("get_panning", views.get_panning_data, name="get_panning"),
+    path("change_theme", views.change_theme, name="change_theme"),
 ]
