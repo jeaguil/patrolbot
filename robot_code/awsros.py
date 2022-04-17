@@ -35,6 +35,10 @@ class PatrolBotMovement:
     def panRight(self):
         self.movement_manager.set_max_angular_velocity(0.5)
         self.movement_manager.turn(8 * -1.35)
+
+    def moveTowardCoords(self):
+        self.movement_manager.set_max_linear_velocity(1)
+        self.movement_manager.move_straight(3)
         
 def handle_control(self, params, packet):
     payload = json.loads(packet.payload)
@@ -58,6 +62,9 @@ def handle_control(self, params, packet):
     elif moveCommand == 'panright':
         print('panning right')
         robot.panRight()
+    elif moveCommand == 'coords':
+        print('moving to coords')
+        robot.moveTowardCoords()
     else:
         print('error: unknown command')
 

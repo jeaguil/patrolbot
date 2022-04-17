@@ -202,6 +202,12 @@ def gps_callback(self, params, packet):
     print("read lon")
     print(longitude)
 
+@csrf_exempt
+def send_coordinates(request):
+    if request.method == "POST":
+        coords = request.POST["coordinates"].replace(",", "").split(' ')
+        pi_publisher.move_to_coordinates(coords[0], coords[1])
+    return render(request, "pages/dashboard.html", {})
 
 @csrf_exempt
 def change_theme(request):

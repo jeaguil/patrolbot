@@ -89,6 +89,11 @@
             var pan_direction = { 'panning': panning };
             $.post(URL, pan_direction);
         }
+        function sendCoordinates(coordinates) {
+            let URL = "{% url 'send_coordinates' %}";
+            let inputCoords = { 'coordinates' : document.getElementById("send_coordinates").value };
+            $.post(URL, inputCoords);
+        }
     </script>
 </head>
 
@@ -176,6 +181,10 @@
                     Left</button>
                 <button type="button" class="btn btn-light" onclick="getPanning(1)" style="margin:10px">Pan
                     Right</button>
+            </div>
+            <div>
+                <input type="text" placeholder="-119.8073781, 39.54233331" id="send_coordinates">
+                <button type="button" onclick="sendCoordinates()">Send</button>
             </div>
             </aticle>
     </section>

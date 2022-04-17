@@ -137,3 +137,34 @@ def pan_right():
         QoS=1,
         payload='{"direction":"panright"}'
     )
+
+def move_to_coordinates(lat, long):
+    file_path = os.getcwd()
+    root_ca_path = file_path + root_ca_path1
+    private_key_path = file_path + private_key_path1
+    certificate_path = file_path + certificate_path1
+    myMQTTClient = AWSIoTMQTTClient("ServerClientID")
+
+    myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
+    myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
+    myMQTTClient.configureOfflinePublishQueueing(-1)
+    myMQTTClient.configureDrainingFrequency(2)
+    myMQTTClient.configureConnectDisconnectTimeout(10)
+    myMQTTClient.configureMQTTOperationTimeout(5)
+ 
+    print("initiating iot core topic")
+    myMQTTClient.connect()
+
+    #TOPIC = "robot/control"
+    #MESSAGE1 = str(lat) # + "," + str(latitude)
+    #MESSAGE2 = str(long)
+    #data1 = "{}".format(MESSAGE1)
+    #data2 = "{}".format(MESSAGE2)
+    #message = {"lat" : data1, "lon" : data2}
+    #myMQTTClient.publish(TOPIC, json.dumps(message), 1)
+
+    myMQTTClient.publish(
+        topic="robot/control",
+        QoS=1,
+        payload='{"direction":"coords"}'
+    )
