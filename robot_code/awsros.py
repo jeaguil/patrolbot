@@ -8,57 +8,56 @@ from movement import MovementManager
 from gps import *
 
 class PatrolBotMovement:
-	def __init__(self):
-		self.movement_manager = MovementManager()
+    def __init__(self):
+        self.movement_manager = MovementManager()
 	
-	def forward(self):
-		self.movement_manager.set_max_linear_velocity(0.5)
+    def forward(self):
+        self.movement_manager.set_max_linear_velocity(0.5)
 		# move forward 1 meter
-		self.movement_manager.move_straight(0.25)
-
-	def backward(self):
-		self.movement_manager.set_max_linear_velocity(0.5)
-		self.movement_manager.move_straight(-0.25)
-
-	def rotateClockwise(self):
-		self.movement_manager.set_max_angular_velocity(0.5)
-		self.movement_manager.turn(-1.35)
-
-	def rotateCounterClockwise(self):
-		self.movement_manager.set_max_angular_velocity(0.5)
-		self.movement_manager.turn(1.35)
-
-#class MsgSys:
-#    #robot = PatrolBotMovement()
+        self.movement_manager.move_straight(0.25)
+        
+    def backward(self):
+	    self.movement_manager.set_max_linear_velocity(0.5)
+	    self.movement_manager.move_straight(-0.25)
+        
+    def rotateClockwise(self):
+        self.movement_manager.set_max_angular_velocity(0.5)
+        self.movement_manager.turn(-1.35)
+        
+    def rotateCounterClockwise(self):
+        self.movement_manager.set_max_angular_velocity(0.5)
+        self.movement_manager.turn(1.35)
     
-#    def __init__(self):
-#        self.myMQTTClient = AWSIoTMQTTClient("clientid")
-#        self.myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883)
-#        self.myMQTTClient.configureCredentials("/home/ubuntu/AWSIoT/AmazonRootCA1.pem", "/home/ubuntu/AWSIoT/private.pem.key", "/home/ubuntu/AWSIoT/certificate.pem.crt") #Set path for Root CA and provisioning claim credentials
-#        self.myMQTTClient.configureOfflinePublishQueueing(-1)
-#        self.myMQTTClient.configureDrainingFrequency(2)
-#        self.myMQTTClient.configureConnectDisconnectTimeout(10)
-#        self.myMQTTClient.configureMQTTOperationTimeout(5)
-#        print ('Initiating IoT Core Topic ...')
-#        self.myMQTTClient.connect()
-#        self.myMQTTClient.subscribe("robot/control", 1, handle_control)
+    def panLeft(self):
+        self.movement_manager.set_max_angular_velocity(0.5)
+        self.movement_manager.turn(8 * 1.35)
+
+    def panRight(self):
+        self.movement_manager.set_max_angular_velocity(0.5)
+        self.movement_manager.turn(8 * -1.35)
         
 def handle_control(self, params, packet):
     payload = json.loads(packet.payload)
-    command = payload["direction"]
-    print(command)
-    if command == 'forward':
+    moveCommand = payload["direction"]
+    print(moveCommand)
+    if moveCommand == 'forward':
         print('moving forward')
         robot.forward()
-    elif command == 'backward':
+    elif moveCommand == 'backward':
         print('moving backward')
         robot.backward()
-    elif command == 'left':
+    elif moveCommand == 'left':
         print('rotating left')
-        robot.rotateClockwise()
-    elif command == 'right':
-        print('rotating right')
         robot.rotateCounterClockwise()
+    elif moveCommand == 'right':
+        print('rotating right')
+        robot.rotateClockwise()
+    elif moveCommand == 'panleft':
+        print('panning left')
+        robot.panLeft()
+    elif moveCommand == 'panright':
+        print('panning right')
+        robot.panRight()
     else:
         print('error: unknown command')
 
@@ -104,9 +103,9 @@ if __name__ == '__main__':
                 print("latlong:" + str(longitude) + "," + str(latitude))
                 TOPIC = "robot/location"
                 MESSAGE1 = str(longitude)# + "," + str(latitude)
-		MESSAGE2 = str(latitude)
+                MESSAGE2 = str(latitude)
                 data1 = "{}".format(MESSAGE1)
-		data2 = "{}".format(MESSAGE2)
+                data2 = "{}".format(MESSAGE2)
                 message = {"lon" : data1, "lat" : data2}
                 myMQTTClient.publish(TOPIC, json.dumps(message), 1)
                 print("Printed '" + json.dumps(message) + "' to the topic: " + TOPIC)

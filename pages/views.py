@@ -177,8 +177,10 @@ def get_panning_data(request):
         panning = request.POST["panning"]
         if panning == "left":
             print("Left")
+            pi_publisher.pan_left()
         if panning == "right":
             print("Right")
+            pi_publisher.pan_right()
     return render(request, "pages/dashboard.html", {})
 
 
