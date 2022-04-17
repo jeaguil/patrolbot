@@ -121,6 +121,7 @@ def get_direction_data(request):
     global commandTime
     global pendingCommand
     global commandDelay
+    commandDelay = 3
     global movementDirection
     if request.method == "POST":
         direction = request.POST["direction"]
@@ -166,9 +167,8 @@ def get_direction_data(request):
             elif movementDirection == "r":
                 # print(movementDirection)
                 pi_publisher.turn_right()
-
         # handle sending commands here
-        return render(request, "pages/dashboard.html", {})
+    return render(request, "pages/dashboard.html", {})
 
 
 @csrf_exempt
