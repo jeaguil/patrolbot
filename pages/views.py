@@ -131,11 +131,15 @@ def get_direction_data(request):
                 # print("forward")
                 pendingCommand = True
                 movementDirection = "f"
+            else:
+                movementDirection = "f"
         elif direction == "S" or direction == "SE" or direction == "SW":
             if pendingCommand == False:
                 # print("backward")
                 commandTime = int(time.time())
                 pendingCommand = True
+                movementDirection = "b"
+            else:
                 movementDirection = "b"
         elif direction == "W":
             if pendingCommand == False:
@@ -143,11 +147,15 @@ def get_direction_data(request):
                 commandTime = int(time.time())
                 pendingCommand = True
                 movementDirection = "l"
+            else:
+                movementDirection = "l"
         elif direction == "E":
             if pendingCommand == False:
                 # print("right")
                 commandTime = int(time.time())
                 pendingCommand = True
+                movementDirection = "r"
+            else:
                 movementDirection = "r"
 
         if int(time.time()) >= commandTime + commandDelay and pendingCommand == True:
@@ -156,16 +164,16 @@ def get_direction_data(request):
             pendingCommand = False
 
             if movementDirection == "f":
-                # print(movementDirection)
+                #print(movementDirection)
                 pi_publisher.forward()
             elif movementDirection == "b":
-                # print(movementDirection)
+                #print(movementDirection)
                 pi_publisher.backward()
             elif movementDirection == "l":
-                # print(movementDirection)
+                #print(movementDirection)
                 pi_publisher.turn_left()
             elif movementDirection == "r":
-                # print(movementDirection)
+                #print(movementDirection)
                 pi_publisher.turn_right()
         # handle sending commands here
     return render(request, "pages/dashboard.html", {})
