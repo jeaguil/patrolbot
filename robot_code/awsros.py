@@ -30,11 +30,15 @@ class PatrolBotMovement:
     
     def panLeft(self):
         self.movement_manager.set_max_angular_velocity(0.5)
-        self.movement_manager.turn(8 * 1.35)
+        self.movement_manager.turn(1.35)
+	time.sleep(2)
+	self.movement_manager.turn(-1.35)
 
     def panRight(self):
         self.movement_manager.set_max_angular_velocity(0.5)
-        self.movement_manager.turn(8 * -1.35)
+        self.movement_manager.turn(-1.35)
+	time.sleep(2)
+	self.movement_manager.turn(1.35)
 
     def moveTowardCoords(self):
         self.movement_manager.set_max_linear_velocity(1)
