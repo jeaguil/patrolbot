@@ -95,6 +95,14 @@
             $.post(URL, inputCoords);
         }
     </script>
+
+    <style>
+        .verticle {
+            border-left: 1px solid #ccc;
+            height: 30px;
+            margin: 10px;
+        }
+    </style>
 </head>
 
 <header>
@@ -156,8 +164,8 @@
                 {{m|safe}}
             </div>
         </article>
-        <article class="home-joystick-container">
-            <h3>Rover Manual Traversal Joystick</h3>
+        <article class="manual-traversal-controls">
+            <text style="margin:10px;padding:5px;" class="{% if not theme %} dropdown-dark {% endif %}">Manual Traversal Joystick</text>
             <div id="joy2Div" style="width:70px;height:70px;margin:10px;position:relative;bottom:20px;">
             </div>
             <script type="text/javascript">
@@ -176,15 +184,18 @@
                 setInterval(function () { joy2Y = Joy2.GetY(); }, 500);
                 setInterval(function () { getDirection(joy2Direzione); }, 500);
             </script>
+            <div class="verticle"></div>
             <div>
-                <button type="button" class="btn btn-light" onclick="getPanning(0)" style="margin:10px">Pan
+                <button type="button" class="btn {% if not theme %} dropdown-dark {% endif %}" onclick="getPanning(0)" style="margin: 6px;">Camera Pan
                     Left</button>
-                <button type="button" class="btn btn-light" onclick="getPanning(1)" style="margin:10px">Pan
+                <button type="button" class="btn {% if not theme %} dropdown-dark {% endif %}" onclick="getPanning(1)" style="margin: 6px;">Camera Pan
                     Right</button>
             </div>
+            <div class="verticle"></div>
             <div>
-                <input type="text" placeholder="-119.8073781, 39.54233331" id="send_coordinates">
-                <button type="button" onclick="sendCoordinates()">Send</button>
+                <input style="{% if not theme %} background: #242526; color: white;{% else %} background: white; {% endif %} padding: 10px;
+                width: 200px;" type="text" placeholder="-119.8073781, 39.54233331" id="send_coordinates">
+                <button type="button" class="btn {% if not theme %} dropdown-dark {% endif %}" onclick="sendCoordinates()">Send Navigation by GPS</button>
             </div>
             </aticle>
     </section>

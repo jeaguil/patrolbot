@@ -250,20 +250,15 @@ header a {
     position: absolute;
 }
 
-.page-content-dark .grid > article h3 {
-    margin: 10px;
-    display: inline-block;
-}
-
 .page-content-dark .grid > article:first-child {
     grid-column: span 2;
     margin-top: 50px;
     height: 50px;
 }
 
-.page-content-dark .grid .home-joystick-container {
-    grid-column: span 1;
-    height: 50px;
+.manual-traversal-controls {
+    grid-column: span 2;
+    height: 50px !important;
 }
 
 .refresh-icon-dark {
