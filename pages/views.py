@@ -31,7 +31,7 @@ import numpy as np
 from picode import pi_publisher, pi_subscriber
 
 pacific_tz = pytz.timezone("US/Pacific")
-model_weights = os.path.join(settings.BASE_DIR, "model_weights/patrolNanoWeights.pt")
+model_weights = os.path.join(settings.BASE_DIR, "model_weights/best.pt")
 model_weight_path = model_weights
 yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
