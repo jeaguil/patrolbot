@@ -17,5 +17,5 @@ urlpatterns = [
     path("get_direction", views.get_direction_data, name="get_direction"),
     path("get_panning", views.get_panning_data, name="get_panning"),
     path("change_theme", views.change_theme, name="change_theme"),
-    path("send_coordinates", views.send_coordinates, name="send_coordinates"),
+    path("send_distance", views.send_distance, name="send_distance"),
 ]

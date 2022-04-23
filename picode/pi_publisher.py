@@ -1,6 +1,7 @@
 import time
 import os
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+import json
 
 root_ca_path1 = '/certificates/AmazonRootCA1.pem'
 private_key_path1 = '/certificates/private.pem.key'
@@ -113,7 +114,7 @@ def pan_left():
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
-        payload='{"direction":"panleft"}'
+        payload='{"camera":"left"}'
     )
 
 def pan_right():
@@ -135,10 +136,10 @@ def pan_right():
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
-        payload='{"direction":"panright"}'
+        payload='{"camera":"right"}'
     )
 
-def move_to_coordinates(lat, long):
+def move_distance(distance):
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
@@ -155,16 +156,19 @@ def move_to_coordinates(lat, long):
     print("initiating iot core topic")
     myMQTTClient.connect()
 
-    #TOPIC = "robot/control"
+    TOPIC = "robot/control"
+    MESSAGE1 = str(distance)
     #MESSAGE1 = str(lat) # + "," + str(latitude)
     #MESSAGE2 = str(long)
-    #data1 = "{}".format(MESSAGE1)
+    data1 = "{}".format(MESSAGE1)
     #data2 = "{}".format(MESSAGE2)
+    message = {"distance": data1}
+    print(json.dumps(message))
     #message = {"lat" : data1, "lon" : data2}
-    #myMQTTClient.publish(TOPIC, json.dumps(message), 1)
+    myMQTTClient.publish(TOPIC, json.dumps(message), 1)
 
-    myMQTTClient.publish(
-        topic="robot/control",
-        QoS=1,
-        payload='{"direction":"coords"}'
-    )
+    #myMQTTClient.publish(
+    #    topic="robot/control",
+    #    QoS=0,
+    #    payload='{"movedistance":"coords"}'
+    #)

@@ -49,8 +49,8 @@ commandDelay = 4
 movementDirection = "none"
 
 # robot gps
-longitude = 48.864716
-latitude = 2.349014
+longitude = 39.539822
+latitude = -119.811992
 
 # model settings
 model_settings = {
@@ -116,7 +116,7 @@ def refresh_map_view(request):
     return JsonResponse({"map": m})
 
 
-@csrf_exempt
+'''@csrf_exempt
 def get_direction_data(request):
     global commandTime
     global pendingCommand
@@ -177,7 +177,26 @@ def get_direction_data(request):
                 pi_publisher.turn_right()
         # handle sending commands here
     return render(request, "pages/dashboard.html", {})
+'''
 
+@csrf_exempt
+def get_direction_data(request):
+    if request.method == "POST":
+        direction = request.POST["direction"]
+        if direction == "N" or direction == "NE" or direction == "NW":
+            pi_publisher.forward()
+            print("forward")
+        elif direction == "S" or direction == "SE" or direction == "SW":
+            pi_publisher.backward()
+            print("backward")
+        elif direction == "W":
+            pi_publisher.turn_left()
+            print("left")
+        elif direction == "E":
+            pi_publisher.turn_right()
+            print("right")
+        
+    return render(request, "pages/dashboard.html", {})
 
 @csrf_exempt
 def get_panning_data(request):
@@ -211,10 +230,17 @@ def gps_callback(self, params, packet):
     print(longitude)
 
 @csrf_exempt
-def send_coordinates(request):
+def send_distance(request):
     if request.method == "POST":
-        coords = request.POST["coordinates"].replace(",", "").split(' ')
-        pi_publisher.move_to_coordinates(coords[0], coords[1])
+        try:
+            distance = int(request.POST["distance"])#.replace(",", "").split(' ')
+            if distance > 0 and distance <= 10:
+                pi_publisher.move_distance(distance)
+                #pi_publisher.move_to_coordinates(coords[0], coords[1])
+            else:
+                print("error: send distance trying to send an invalid number")
+        except ValueError:
+            print("error: trying to send a non-int")
     return render(request, "pages/dashboard.html", {})
 
 @csrf_exempt
@@ -246,8 +272,8 @@ def dashboard_view(request):
         m = folium.Map(
             location=robo_coords,
             zoom_start=20,
-            dragging=False,
-            scrollWheelZoom=False,
+            dragging=True,
+            scrollWheelZoom=True,
             attributionControl=False,
             zoom_control=False,
         ).add_to(f)
