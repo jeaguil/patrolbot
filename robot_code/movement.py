@@ -71,6 +71,7 @@ class MovementManager:
         sendmsg.linear.x = 0
         #print self.xtraveled_last_movement
         self.tpub.publish(sendmsg)
+        return self.xtraveled_last_movement
 
     def turn(self, distance=0):
         self.xtraveled_last_movement = 0
@@ -87,3 +88,4 @@ class MovementManager:
         sendmsg.angular.z = 0
         sendmsg.linear.x = 0
         self.tpub.publish(sendmsg)
+        return self.xtraveled_last_movement
