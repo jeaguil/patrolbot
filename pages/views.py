@@ -42,12 +42,6 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
-# robot movement
-commandTime = int(time.time())
-pendingCommand = False
-commandDelay = 4
-movementDirection = "none"
-
 # robot gps
 longitude = 39.539822
 latitude = -119.811992
@@ -115,86 +109,22 @@ def refresh_map_view(request):
     m = m._repr_html_()
     return JsonResponse({"map": m})
 
-
-'''@csrf_exempt
-def get_direction_data(request):
-    global commandTime
-    global pendingCommand
-    global commandDelay
-    commandDelay = 3
-    global movementDirection
-    if request.method == "POST":
-        direction = request.POST["direction"]
-        if direction == "N" or direction == "NE" or direction == "NW":
-            if pendingCommand == False:
-                commandTime = int(time.time())
-                # print("forward")
-                pendingCommand = True
-                movementDirection = "f"
-            else:
-                movementDirection = "f"
-        elif direction == "S" or direction == "SE" or direction == "SW":
-            if pendingCommand == False:
-                # print("backward")
-                commandTime = int(time.time())
-                pendingCommand = True
-                movementDirection = "b"
-            else:
-                movementDirection = "b"
-        elif direction == "W":
-            if pendingCommand == False:
-                # print("left")
-                commandTime = int(time.time())
-                pendingCommand = True
-                movementDirection = "l"
-            else:
-                movementDirection = "l"
-        elif direction == "E":
-            if pendingCommand == False:
-                # print("right")
-                commandTime = int(time.time())
-                pendingCommand = True
-                movementDirection = "r"
-            else:
-                movementDirection = "r"
-
-        if int(time.time()) >= commandTime + commandDelay and pendingCommand == True:
-            print("execution time")
-            commandTime = int(time.time())
-            pendingCommand = False
-
-            if movementDirection == "f":
-                #print(movementDirection)
-                pi_publisher.forward()
-            elif movementDirection == "b":
-                #print(movementDirection)
-                pi_publisher.backward()
-            elif movementDirection == "l":
-                #print(movementDirection)
-                pi_publisher.turn_left()
-            elif movementDirection == "r":
-                #print(movementDirection)
-                pi_publisher.turn_right()
-        # handle sending commands here
-    return render(request, "pages/dashboard.html", {})
-'''
-
 @csrf_exempt
 def get_direction_data(request):
     if request.method == "POST":
         direction = request.POST["direction"]
         if direction == "N" or direction == "NE" or direction == "NW":
             pi_publisher.forward()
-            print("forward")
+            #print("forward")
         elif direction == "S" or direction == "SE" or direction == "SW":
             pi_publisher.backward()
-            print("backward")
+            #print("backward")
         elif direction == "W":
             pi_publisher.turn_left()
-            print("left")
+            #print("left")
         elif direction == "E":
             pi_publisher.turn_right()
-            print("right")
+            #print("right")
         
     return render(request, "pages/dashboard.html", {})
 
