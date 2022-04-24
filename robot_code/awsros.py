@@ -7,128 +7,167 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 from movement import MovementManager
 from gps import *
 
+
 class PatrolBotMovement:
     def __init__(self):
         self.movement_manager = MovementManager()
-	
+
     def forward(self):
         self.movement_manager.set_max_linear_velocity(0.5)
-		# move forward 1 meter
-        self.movement_manager.move_straight(0.25)
-        
+        distanceMoved = self.movement_manager.move_straight(0.25)
+        return distanceMoved
+
     def backward(self):
-	    self.movement_manager.set_max_linear_velocity(0.5)
-	    self.movement_manager.move_straight(-0.25)
-        
+        self.movement_manager.set_max_linear_velocity(0.5)
+        distanceMoved = self.movement_manager.move_straight(-0.25)
+        return distanceMoved
+
     def rotateClockwise(self):
         self.movement_manager.set_max_angular_velocity(0.5)
-        self.movement_manager.turn(-1.35)
-        
+        distanceMoved = self.movement_manager.turn(-1.35)
+        return distanceMoved
+
     def rotateCounterClockwise(self):
         self.movement_manager.set_max_angular_velocity(0.5)
-        self.movement_manager.turn(1.35)
-    
+        distanceMoved = self.movement_manager.turn(1.35)
+        return distanceMoved
+
     def panLeft(self):
         self.movement_manager.set_max_angular_velocity(0.5)
         self.movement_manager.turn(1.35)
         time.sleep(2)
         self.movement_manager.turn(-1.35)
+        return 1
 
     def panRight(self):
         self.movement_manager.set_max_angular_velocity(0.5)
         self.movement_manager.turn(-1.35)
         time.sleep(2)
         self.movement_manager.turn(1.35)
+        return 1
 
-    def moveTowardCoords(self):
-        self.movement_manager.set_max_linear_velocity(1)
-        self.movement_manager.move_straight(3)
-        
+
 def handle_control(self, params, packet):
     payload = json.loads(packet.payload)
-    moveCommand = payload["direction"]
-    print(moveCommand)
-    if moveCommand == 'forward':
-        print('moving forward')
-        robot.forward()
-    elif moveCommand == 'backward':
-        print('moving backward')
-        robot.backward()
-    elif moveCommand == 'left':
-        print('rotating left')
-        robot.rotateCounterClockwise()
-    elif moveCommand == 'right':
-        print('rotating right')
-        robot.rotateClockwise()
-    elif moveCommand == 'panleft':
-        print('panning left')
-        robot.panLeft()
-    elif moveCommand == 'panright':
-        print('panning right')
-        robot.panRight()
-    elif moveCommand == 'coords':
-        print('moving to coords')
-        robot.moveTowardCoords()
+    if "direction" in payload:
+        complete = False
+        moveCommand = payload["direction"]
+        if moveCommand == 'forward':
+            print("moving forward")
+            robot.forward()
+            print("movement complete")
+            complete = True
+        elif moveCommand == 'backward':
+            print("moving backward")
+            robot.backward()
+            print("movement complete")
+            complete = True
+        elif moveCommand == 'left':
+            print("moving left")
+            robot.rotateCounterClockwise()
+            print("movement complete")
+            complete = True
+        elif moveCommand == 'right':
+            print("moving right")
+            robot.rotateClockwise()
+            print("movement complete")
+            complete = True
+        else:
+            print("Unknown direction command")
+    elif "distance" in payload:
+        desiredDistance = int(payload["distance"])
+        complete = False
+        distanceTraveled = 0
+        while complete is not True:
+            distanceTraveled += robot.forward()
+            time.sleep(2)
+            if distanceTraveled >= desiredDistance:
+                complete = True
+    elif "camera" in payload:
+        cameraDirection = payload["camera"]
+        if cameraDirection == 'left':
+            robot.panLeft()
+            print("panning left")
+        elif cameraDirection == 'right':
+            print("panning right")
+            robot.panRight()
+        else:
+            print("Unknown panning direction")
     else:
-        print('error: unknown command')
+        print("Unknown key in payload")
+
 
 robot = PatrolBotMovement()
 
-def getLocation(gpsd):   
+
+def getLocation(gpsd):
     data = gpsd.next()
     if data['class'] == 'TPV':
         lon = getattr(data, 'lon', "Unknown")
         lat = getattr(data, 'lat', "Unknown")
         return lon, lat
 
+
 active = True
-gpsd = gps(mode=WATCH_ENABLE|WATCH_NEWSTYLE)
+gpsd = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
 
 if __name__ == '__main__':
-    #msg = MsgSys()
     myMQTTClient = AWSIoTMQTTClient("clientid")
-    myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883)
-    myMQTTClient.configureCredentials("/home/ubuntu/patrolbot/certificates/AmazonRootCA1.pem", "/home/ubuntu/patrolbot/certificates/private.pem.key", "/home/ubuntu/patrolbot/certificates/certificate.pem.crt") #Set path for Root CA and provisioning claim credentials
+    myMQTTClient.configureEndpoint(
+        "aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883)
+    myMQTTClient.configureCredentials("/home/ubuntu/patrolbot/certificates/AmazonRootCA1.pem", "/home/ubuntu/patrolbot/certificates/private.pem.key",
+                                      "/home/ubuntu/patrolbot/certificates/certificate.pem.crt")  # Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
     myMQTTClient.configureDrainingFrequency(2)
     myMQTTClient.configureConnectDisconnectTimeout(10)
     myMQTTClient.configureMQTTOperationTimeout(5)
-    print ('Initiating IoT Core Topic ...')
+    print('Initiating IoT Core Topic ...')
     myMQTTClient.connect()
     myMQTTClient.subscribe("robot/control", 1, handle_control)
-    
-    active = True
-    # handle gps publishing
-    try:
-        while(active):
-        #time.sleep(1)    
-            coords = getLocation(gpsd)
-        
-        #Handles faulty readings
-            if (coords == None):
-                print("No coords available!")
-                pass
-            else:
-                longitude = coords[0]
-                latitude = coords[1]
-                print("latlong:" + str(longitude) + "," + str(latitude))
-                TOPIC = "robot/location"
-                MESSAGE1 = str(longitude)# + "," + str(latitude)
-                MESSAGE2 = str(latitude)
-                data1 = "{}".format(MESSAGE1)
-                data2 = "{}".format(MESSAGE2)
-                message = {"lon" : data1, "lat" : data2}
-                myMQTTClient.publish(TOPIC, json.dumps(message), 1)
-                print("Printed '" + json.dumps(message) + "' to the topic: " + TOPIC)
-                #adjust sleep time for frequency of readings
-                time.sleep(10)
-            #myMQTTClient.publish(
-            #    topic="robot/location",
-            #    QoS=1,
-            #    payload='{"direction":"right"}'
-            #)
 
-        
-    except (KeyboardInterrupt):
-        active = False
-        print("Exiting") 
+    active = True
+
+    coordPublishTime = 0
+    coordPublishDelay = 10 # in seconds
+
+    gpsCheckTime = 0
+    gpsCheckDelay = 2 # in seconds
+
+    # handle gps publishing
+    while(active):
+        try:
+            #while(active):
+            if time.time() >= gpsCheckTime + gpsCheckDelay:
+                coords = getLocation(gpsd)
+                gpsCheckTime = time.time()
+
+            # Handles faulty readings
+            if time.time() >= coordPublishTime + coordPublishDelay and coords != None:
+                if (coords == None):
+                    print("No coords available")
+                else:
+                    longitude = coords[0]
+                    latitude = coords[1]
+                    #print("long: {}, lat: {}".format(str(longitude), str(latitude)))
+                    TOPIC = "robot/location"
+                    MESSAGE1 = str(longitude)# + "," + str(latitude)
+                    MESSAGE2 = str(latitude)
+                    data1 = "{}".format(MESSAGE1)
+                    data2 = "{}".format(MESSAGE2)
+                    message = {"lon" : data1, "lat" : data2}
+                    myMQTTClient.publish(TOPIC, json.dumps(message), 1)
+                    print("Printed '" + json.dumps(message) + "' to the topic: " + TOPIC)
+                    coordPublishTime = time.time()
+                    #print("publishing message at time {}".format(coordPublishTime))
+                    # adjust sleep time for frequency of readings
+                    #time.sleep(10)
+
+
+        except (KeyboardInterrupt):
+            active = False
+            print("Exiting")
+
+        except (AWSIoTPythonSDK.exception.AWSIoTExceptions.publishTimeoutException):
+            print("aws iot python sdk exception raised, giving robot a break")
+            time.sleep(5)
+            pass
