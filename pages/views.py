@@ -1,3 +1,17 @@
+""" 
+Aggregate implementations for:
+
+Camera Feed
+Object Detection Model
+Threat Algorithm
+Email
+Recordings
+Settings
+GPS
+Logs
+Robot Controls 
+"""
+
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -16,6 +30,7 @@ from .models import (
 )
 from . import loggers
 from . import detection
+from picode import pi_publisher, pi_subscriber
 
 import os
 import cv2
@@ -27,8 +42,10 @@ import pytz
 import torch
 from datetime import datetime
 import numpy as np
-
-from picode import pi_publisher, pi_subscriber
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 
 pacific_tz = pytz.timezone("US/Pacific")
 model_weights = os.path.join(settings.BASE_DIR, "model_weights/best.pt")
@@ -36,11 +53,6 @@ model_weight_path = model_weights
 yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
-
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
 
 # robot gps
 longitude = 39.539822
@@ -58,142 +70,14 @@ model_settings = {
 
 
 def welcome_view(request):
+    # Render template for welcome url.
     return render(request, "pages/welcome.html", {})
-
-
-def security_logs(request):
-    pacific_tz = pytz.timezone("US/Pacific")
-    time_of_request = datetime.now(pacific_tz).strftime("%Y-%M-%d")
-    data_for_request = {
-        "time_of_request": time_of_request,
-        "logs": loggers.security_notices,
-        "whichlogs": "threat_log",
-    }
-    return JsonResponse(data_for_request)
-
-
-def action_logs(request):
-    pacific_tz = pytz.timezone("US/Pacific")
-    time_of_request = datetime.now(pacific_tz).strftime("%Y-%M-%d")
-    data_for_request = {
-        "time_of_request": time_of_request,
-        "logs": loggers.objects_detected,
-        "whichlogs": "action_log",
-    }
-    return JsonResponse(data_for_request)
-
-
-def refresh_map_view(request):
-    # [latitude, longitude]
-
-    global latitude
-    global longitude
-
-    subscriber = pi_subscriber.Subscriber()
-    subscriber.subscribe("robot/location", gps_callback)
-    print("lat read in refresh_map_view")
-    print(latitude)
-    print("lon read in refresh_map_view")
-    print(longitude)
-    new_robot_location = [latitude, longitude]
-    f = folium.Figure(width="100%", height="100%")
-    m = folium.Map(
-        location=new_robot_location,
-        zoom_start=20,
-        dragging=False,
-        scrollWheelZoom=False,
-        attributionControl=False,
-        zoom_control=False,
-    ).add_to(f)
-    folium.Marker(new_robot_location).add_to(m)
-    m = m._repr_html_()
-    return JsonResponse({"map": m})
-
-@csrf_exempt
-def get_direction_data(request):
-    if request.method == "POST":
-        direction = request.POST["direction"]
-        if direction == "N" or direction == "NE" or direction == "NW":
-            pi_publisher.forward()
-            #print("forward")
-        elif direction == "S" or direction == "SE" or direction == "SW":
-            pi_publisher.backward()
-            #print("backward")
-        elif direction == "W":
-            pi_publisher.turn_left()
-            #print("left")
-        elif direction == "E":
-            pi_publisher.turn_right()
-            #print("right")
-        
-    return render(request, "pages/dashboard.html", {})
-
-@csrf_exempt
-def get_panning_data(request):
-    if request.method == "POST":
-        panning = request.POST["panning"]
-        if panning == "left":
-            print("Left")
-            pi_publisher.pan_left()
-        if panning == "right":
-            print("Right")
-            pi_publisher.pan_right()
-    return render(request, "pages/dashboard.html", {})
-
-
-def gps_callback(self, params, packet):
-    global longitude
-    global latitude
-    payload = json.loads(packet.payload)
-    lat = payload["lat"]
-    lon = payload["lon"]
-    longitude = lon
-    latitude = lat
-    print("gps callback issued")
-    print("payload lat:")
-    print(lat)
-    print("payload lon")
-    print(lon)
-    print("read lat")
-    print(latitude)
-    print("read lon")
-    print(longitude)
-
-@csrf_exempt
-def send_distance(request):
-    if request.method == "POST":
-        try:
-            distance = int(request.POST["distance"])#.replace(",", "").split(' ')
-            if distance > 0 and distance <= 10:
-                pi_publisher.move_distance(distance)
-                #pi_publisher.move_to_coordinates(coords[0], coords[1])
-            else:
-                print("error: send distance trying to send an invalid number")
-        except ValueError:
-            print("error: trying to send a non-int")
-    return render(request, "pages/dashboard.html", {})
-
-@csrf_exempt
-def change_theme(request):
-    # Used for a POST Call to change the theme to light/dark.
-    # Updates the session variable in the database to light/dark,
-    # This permits the theme to persist across sessions, changing from page to page constantly.
-    t = Appearance.objects.get(appearance="theme")
-
-    theme = request.POST["theme"]
-    if theme == "light":
-        t.theme = True  # light
-    elif theme == "dark":
-        t.theme = False  # dark
-
-    t.save()
-
-    response = {"theme": Appearance.objects.get(appearance="theme").theme}
-    return JsonResponse(response)
 
 
 @login_required
 def dashboard_view(request):
+    # Render dashboard home template for matching url.
+
     if request.user.is_authenticated:
         robo_coords = [longitude, latitude]
 
@@ -281,6 +165,8 @@ def dashboard_view(request):
 
 @login_required
 def dashboard_settings_view(request):
+    # Render dashboard settings template for matching url.
+
     # turn off action detection flag so it doesn't run in background
     detection.turn_off_detection()
     global model_settings
@@ -357,6 +243,8 @@ def dashboard_settings_view(request):
 
 @login_required
 def recordings_view(request):
+    # Render dashboard recordings template for matching url.
+
     # turn off action detection flag so it doesn't run in background
     detection.turn_off_detection()
     theme = Appearance.objects.get(appearance="theme")
@@ -366,6 +254,146 @@ def recordings_view(request):
         "recordings": recordings,
     }
     return render(request, "pages/recordings.html", context=context)
+
+
+def security_logs(request):
+    # An AJAX call retrieves the list of security threats and returns json.
+    pacific_tz = pytz.timezone("US/Pacific")
+    time_of_request = datetime.now(pacific_tz).strftime("%Y-%M-%d")
+    data_for_request = {
+        "time_of_request": time_of_request,
+        "logs": loggers.security_notices,
+        "whichlogs": "threat_log",
+    }
+    return JsonResponse(data_for_request)
+
+
+def action_logs(request):
+    # An AJAX call retrieves the list of model actions and returns json.
+    pacific_tz = pytz.timezone("US/Pacific")
+    time_of_request = datetime.now(pacific_tz).strftime("%Y-%M-%d")
+    data_for_request = {
+        "time_of_request": time_of_request,
+        "logs": loggers.objects_detected,
+        "whichlogs": "action_log",
+    }
+    return JsonResponse(data_for_request)
+
+
+def refresh_map_view(request):
+    # An AJAX call to refresh the map on the dashboard home page.
+    # Returns html representation of new map after a refresh click.
+
+    # [latitude, longitude]
+
+    global latitude
+    global longitude
+
+    subscriber = pi_subscriber.Subscriber()
+    subscriber.subscribe("robot/location", gps_callback)
+    print("lat read in refresh_map_view")
+    print(latitude)
+    print("lon read in refresh_map_view")
+    print(longitude)
+    new_robot_location = [latitude, longitude]
+    f = folium.Figure(width="100%", height="100%")
+    m = folium.Map(
+        location=new_robot_location,
+        zoom_start=20,
+        dragging=False,
+        scrollWheelZoom=False,
+        attributionControl=False,
+        zoom_control=False,
+    ).add_to(f)
+    folium.Marker(new_robot_location).add_to(m)
+    m = m._repr_html_()
+    return JsonResponse({"map": m})
+
+
+@csrf_exempt
+def get_direction_data(request):
+    if request.method == "POST":
+        direction = request.POST["direction"]
+        if direction == "N" or direction == "NE" or direction == "NW":
+            pi_publisher.forward()
+            # print("forward")
+        elif direction == "S" or direction == "SE" or direction == "SW":
+            pi_publisher.backward()
+            # print("backward")
+        elif direction == "W":
+            pi_publisher.turn_left()
+            # print("left")
+        elif direction == "E":
+            pi_publisher.turn_right()
+            # print("right")
+
+    return render(request, "pages/dashboard.html", {})
+
+
+@csrf_exempt
+def get_panning_data(request):
+    if request.method == "POST":
+        panning = request.POST["panning"]
+        if panning == "left":
+            print("Left")
+            pi_publisher.pan_left()
+        if panning == "right":
+            print("Right")
+            pi_publisher.pan_right()
+    return render(request, "pages/dashboard.html", {})
+
+
+def gps_callback(self, params, packet):
+    global longitude
+    global latitude
+    payload = json.loads(packet.payload)
+    lat = payload["lat"]
+    lon = payload["lon"]
+    longitude = lon
+    latitude = lat
+    print("gps callback issued")
+    print("payload lat:")
+    print(lat)
+    print("payload lon")
+    print(lon)
+    print("read lat")
+    print(latitude)
+    print("read lon")
+    print(longitude)
+
+
+@csrf_exempt
+def send_distance(request):
+    if request.method == "POST":
+        try:
+            distance = int(request.POST["distance"])  # .replace(",", "").split(' ')
+            if distance > 0 and distance <= 10:
+                pi_publisher.move_distance(distance)
+                # pi_publisher.move_to_coordinates(coords[0], coords[1])
+            else:
+                print("error: send distance trying to send an invalid number")
+        except ValueError:
+            print("error: trying to send a non-int")
+    return render(request, "pages/dashboard.html", {})
+
+
+@csrf_exempt
+def change_theme(request):
+    # Used for a POST Call to change the theme to light/dark.
+    # Updates the session variable in the database to light/dark,
+    # This permits the theme to persist across sessions, changing from page to page constantly.
+    t = Appearance.objects.get(appearance="theme")
+
+    theme = request.POST["theme"]
+    if theme == "light":
+        t.theme = True  # light
+    elif theme == "dark":
+        t.theme = False  # dark
+
+    t.save()
+
+    response = {"theme": Appearance.objects.get(appearance="theme").theme}
+    return JsonResponse(response)
 
 
 def gen(url):
