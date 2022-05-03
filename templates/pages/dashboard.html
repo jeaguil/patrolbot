@@ -59,6 +59,7 @@
             })
         }
 
+        // pulls location coordaintes from views.py and updates map with it
         function refreshMap() {
             $.ajax({
                 url: "{% url 'refresh_map' %}",
@@ -71,6 +72,7 @@
                 },
             })
         }
+        // connects dashboard html joystick to views.py to send panning command
         function getDirection(direction) {
             var URL = "{% url 'get_direction' %}"
             var dict_direction = { 'direction': direction };
@@ -78,6 +80,7 @@
                 $.post(URL, dict_direction);
             }
         }
+        // connects dashboard html button to views.py to send panning command
         function getPanning(panning) {
             var URL = "{% url 'get_panning' %}"
             if (panning == 0) {
@@ -89,8 +92,8 @@
             var pan_direction = { 'panning': panning };
             $.post(URL, pan_direction);
         }
+        // connects dashboard html button to views.py to send moveXDistance command
         function moveXDistance(distance) {
-            //console.debug("button clicked")
             let URL = "{% url 'send_distance' %}";
             let inputDistance = { 'distance' : document.getElementById("moveXDistance").value };
             $.post(URL, inputDistance);

@@ -1,4 +1,4 @@
-#Module to parse GPS Dongle input into latitude and longitude coordinates
+# Module to parse GPS Dongle input into latitude and longitude coordinates
 
 from gps import *
 import time

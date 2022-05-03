@@ -1,19 +1,23 @@
+# Handles AWS MQTT publishing from website to robot
 import time
 import os
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import json
 
+# certificate paths
 root_ca_path1 = '/certificates/AmazonRootCA1.pem'
 private_key_path1 = '/certificates/private.pem.key'
 certificate_path1 = '/certificates/certificate.pem.crt'
 
+# move forward
 def forward():
+    # find certificates
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
     certificate_path = file_path + certificate_path1
+    # establish server
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
-
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
     myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
@@ -23,6 +27,8 @@ def forward():
  
     print("initiating iot core topic")
     myMQTTClient.connect()
+
+    # send message
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
@@ -30,12 +36,13 @@ def forward():
     )
 
 def backward():
+    # find certificates
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
     certificate_path = file_path + certificate_path1
+    # establish server
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
-
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
     myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
@@ -45,6 +52,8 @@ def backward():
  
     print("initiating iot core topic")
     myMQTTClient.connect()
+
+    # send message
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
@@ -52,12 +61,13 @@ def backward():
     )
 
 def turn_left():
+    # find certificates
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
     certificate_path = file_path + certificate_path1
+    # establish server
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
-
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
     myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
@@ -67,6 +77,8 @@ def turn_left():
  
     print("initiating iot core topic")
     myMQTTClient.connect()
+
+    # send message
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
@@ -74,12 +86,13 @@ def turn_left():
     )
 
 def turn_right():
+    # find certificates
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
     certificate_path = file_path + certificate_path1
+    # establish server
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
-
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
     myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
@@ -89,6 +102,8 @@ def turn_right():
  
     print("initiating iot core topic")
     myMQTTClient.connect()
+
+    # send message
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
@@ -96,12 +111,13 @@ def turn_right():
     )
 
 def pan_left():
+    # find certificates
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
     certificate_path = file_path + certificate_path1
+    # establish server
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
-
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
     myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
@@ -111,6 +127,8 @@ def pan_left():
  
     print("initiating iot core topic")
     myMQTTClient.connect()
+
+    # send message
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
@@ -118,12 +136,13 @@ def pan_left():
     )
 
 def pan_right():
+    # find certificates
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
     certificate_path = file_path + certificate_path1
+    # establish server
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
-
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
     myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
@@ -133,6 +152,8 @@ def pan_right():
  
     print("initiating iot core topic")
     myMQTTClient.connect()
+
+    # send message
     myMQTTClient.publish(
         topic="robot/control",
         QoS=1,
@@ -140,12 +161,13 @@ def pan_right():
     )
 
 def move_distance(distance):
+    # find certificates
     file_path = os.getcwd()
     root_ca_path = file_path + root_ca_path1
     private_key_path = file_path + private_key_path1
     certificate_path = file_path + certificate_path1
+    # establish server
     myMQTTClient = AWSIoTMQTTClient("ServerClientID")
-
     myMQTTClient.configureEndpoint("aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883) #Provide your AWS IoT Core endpoint (Example: "abcdef12345-ats.iot.us-east-1.amazonaws.com")
     myMQTTClient.configureCredentials(root_ca_path, private_key_path, certificate_path) #Set path for Root CA and provisioning claim credentials
     myMQTTClient.configureOfflinePublishQueueing(-1)
@@ -156,19 +178,10 @@ def move_distance(distance):
     print("initiating iot core topic")
     myMQTTClient.connect()
 
+    # send message
     TOPIC = "robot/control"
     MESSAGE1 = str(distance)
-    #MESSAGE1 = str(lat) # + "," + str(latitude)
-    #MESSAGE2 = str(long)
     data1 = "{}".format(MESSAGE1)
-    #data2 = "{}".format(MESSAGE2)
     message = {"distance": data1}
     print(json.dumps(message))
-    #message = {"lat" : data1, "lon" : data2}
     myMQTTClient.publish(TOPIC, json.dumps(message), 1)
-
-    #myMQTTClient.publish(
-    #    topic="robot/control",
-    #    QoS=0,
-    #    payload='{"movedistance":"coords"}'
-    #)

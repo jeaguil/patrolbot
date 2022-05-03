@@ -11,26 +11,26 @@ class MovementManager:
         self.max_linear_speed = max_linear_speed
         self.max_angular_speed = max_angular_speed
 
-        # create node for communicating with the robot..
+        # create robot publisher
         self.tpub = rospy.Publisher('/managed/key', Twist, queue_size=1)
         rospy.init_node('movement_test')
 
-        # create node for listening to the robot
+        # create robot subscriber
         self.tsub = rospy.Subscriber('/odom', Odometry, self.callback)
         self.last_message_received_time = time.time()
         self.accumulated_time = 0
 
-        # meters
+        # data for travel by distance
         self.xtraveled_total = 0
         self.xtraveled_last_movement = 0
         self.last_x_linear = 0
-        # radians 
+        
+        # data for rotational movement
         self.ztraveled_total = 0 
         self.ztraveled_last_movement = 0
         self.last_z_angular = 0
 
     def callback(self, data):
-        
         # manage time
         current_message_time = (data.header.stamp.nsecs) * (10 ** -9) + data.header.stamp.secs 
         current_x_linear = data.twist.twist.linear.x
@@ -40,7 +40,7 @@ class MovementManager:
     
         dx = (current_x_linear + self.last_x_linear) * dt / 2
         dz = (current_z_angular + self.last_z_angular) * dt / 2
-        #print "dt ", dt , " dx ", dx
+
         self.xtraveled_last_movement += dx
         self.ztraveled_last_movement += dz
         self.accumulated_time += dt
@@ -69,8 +69,9 @@ class MovementManager:
 
         sendmsg.angular.z = 0
         sendmsg.linear.x = 0
-        #print self.xtraveled_last_movement
         self.tpub.publish(sendmsg)
+
+        # send traveled distance
         return self.xtraveled_last_movement
 
     def turn(self, distance=0):
@@ -88,4 +89,5 @@ class MovementManager:
         sendmsg.angular.z = 0
         sendmsg.linear.x = 0
         self.tpub.publish(sendmsg)
+        # send traveled distance
         return self.xtraveled_last_movement

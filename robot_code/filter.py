@@ -1,9 +1,11 @@
+# Kalman filter implementation
 from pykalman import KalmanFilter
 import numpy as np
 import sys
 from os.path import exists
 import matplotlib.pyplot as plt
 
+# KF class
 class KF:
     def __init__(self):
         self.initial_state_mean = [-119.807374818, 0, 39.542342345, 0]
@@ -54,8 +56,6 @@ class KF:
         measurement = np.asarray( (lat, long) )
         prev_state_mean = mean
         prev_state_cov = cov
-        #prev_state_mean = self.initial_state_mean
-        #prev_state_cov = self.initial_state_covariance
 
         state_mean, state_covariance = (
             self.kf.filter_update(prev_state_mean, prev_state_cov, measurement)
@@ -112,12 +112,14 @@ class KF:
 #     else:
 #         print("Error: incorrect num of args")
 
-
+# Run as subprocess filter
 if __name__ == '__main__':
     if len(sys.argv) == 3:
+        # change into correct type
         lat = float(sys.argv[1])
         long = float(sys.argv[2])
         kf = KF()
+        # check for existing data, if exists use it, otherwise generate it
         if exists('last_mean.npy') and exists('last_cov.npy'):
             mean, cov = kf.filterUpdate(lat, long, np.load('last_mean.npy'), np.load('last_cov.npy'))
         else:
@@ -129,6 +131,7 @@ if __name__ == '__main__':
         np.save('last_mean.npy', mean)
         np.save('last_cov.npy', cov)
 
+        # print lat, long to stdout, which is picked up by subprocess.checkoutput in awsros
         print("{}, {}".format(mean[0], mean[2]))
 
     else:

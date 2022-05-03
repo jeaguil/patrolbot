@@ -30,6 +30,8 @@ from .models import (
 )
 from . import loggers
 from . import detection
+
+# pub and sub for website
 from picode import pi_publisher, pi_subscriber
 
 import os
@@ -54,7 +56,7 @@ yolo = torch.hub.load("ultralytics/yolov5", "custom", model_weight_path)
 classes = yolo.names
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
 
-# robot gps
+# robot gps default (university campus)
 longitude = 39.539822
 latitude = -119.811992
 
@@ -279,7 +281,7 @@ def action_logs(request):
     }
     return JsonResponse(data_for_request)
 
-
+# pulls latitude and longitude from robot, then updates website map
 def refresh_map_view(request):
     # An AJAX call to refresh the map on the dashboard home page.
     # Returns html representation of new map after a refresh click.
@@ -309,7 +311,7 @@ def refresh_map_view(request):
     m = m._repr_html_()
     return JsonResponse({"map": m})
 
-
+# publishes desired movement direction to robot
 @csrf_exempt
 def get_direction_data(request):
     if request.method == "POST":
@@ -329,7 +331,7 @@ def get_direction_data(request):
 
     return render(request, "pages/dashboard.html", {})
 
-
+# publishes panning command to robot
 @csrf_exempt
 def get_panning_data(request):
     if request.method == "POST":
@@ -342,7 +344,7 @@ def get_panning_data(request):
             pi_publisher.pan_right()
     return render(request, "pages/dashboard.html", {})
 
-
+# updates global longitude and latitude variables and provides some console debugging
 def gps_callback(self, params, packet):
     global longitude
     global latitude
@@ -361,15 +363,14 @@ def gps_callback(self, params, packet):
     print("read lon")
     print(longitude)
 
-
+# publishes variable move distance to robot
 @csrf_exempt
 def send_distance(request):
     if request.method == "POST":
         try:
-            distance = int(request.POST["distance"])  # .replace(",", "").split(' ')
+            distance = int(request.POST["distance"])
             if distance > 0 and distance <= 10:
                 pi_publisher.move_distance(distance)
-                # pi_publisher.move_to_coordinates(coords[0], coords[1])
             else:
                 print("error: send distance trying to send an invalid number")
         except ValueError:

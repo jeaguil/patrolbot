@@ -8,7 +8,7 @@ from movement import MovementManager
 from gps import *
 import subprocess
 
-
+# robot movement control class, connects with ros in movement.py
 class PatrolBotMovement:
     def __init__(self):
         self.movement_manager = MovementManager()
@@ -47,8 +47,9 @@ class PatrolBotMovement:
         self.movement_manager.turn(1.35)
         return 1
 
-
+# aws subscriber callback handles calling robot functions
 def handle_control(self, params, packet):
+    # get packet from aws iot server
     payload = json.loads(packet.payload)
     if "direction" in payload:
         moveCommand = payload["direction"]
@@ -92,10 +93,10 @@ def handle_control(self, params, packet):
     else:
         print("Unknown key in payload")
 
-
+# global robot declaration
 robot = PatrolBotMovement()
 
-
+# handle gathering gps coordinates
 def getLocation(gpsd):
     data = gpsd.next()
     if data['class'] == 'TPV':
@@ -103,11 +104,13 @@ def getLocation(gpsd):
         lat = getattr(data, 'lat', "Unknown")
         return lon, lat
 
-
+# set global active variable for easy closing
 active = True
+# initialize gps modes
 gpsd = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
 
 if __name__ == '__main__':
+    # connect to aws server
     myMQTTClient = AWSIoTMQTTClient("clientid")
     myMQTTClient.configureEndpoint(
         "aa03kvhkub5ls-ats.iot.us-west-2.amazonaws.com", 8883)
@@ -121,8 +124,7 @@ if __name__ == '__main__':
     myMQTTClient.connect()
     myMQTTClient.subscribe("robot/control", 1, handle_control)
 
-    active = True
-
+    # create delay and time vars for timed command control
     coordPublishTime = 0
     coordPublishDelay = 10 # in seconds
 
@@ -132,47 +134,34 @@ if __name__ == '__main__':
     # handle gps publishing
     while(active):
         try:
-            #while(active):
             if time.time() >= gpsCheckTime + gpsCheckDelay:
-                coords = getLocation(gpsd)
+                coords = getLocation(gpsd) # get coords, dont check again for gpsCheckDelay seconds
                 gpsCheckTime = time.time()
-                #a = -119.807377167
-                #b = 39.542380667
-                #out = 
             # Handles faulty readings
             if time.time() >= coordPublishTime + coordPublishDelay and coords != None:
                 if (coords == None):
                     print("No coords available")
                 else:
-                    #longitude = coords[0]
-                    #latitude = coords[1]
-                    #print("lon: {}, lat: {}".format(longitude, latitude))
+                    # run filter, get output
                     filtered_coords = subprocess.check_output(args=["./run_filter.sh", "{} {}".format(coords[0], coords[1])])
-                    #print(a)
-                    #print(type(a))
+                    # parse filtered string
                     filtered_coords = tuple(filtered_coords.split (","))
                     longitude = filtered_coords[0]
                     latitude = filtered_coords[1]
-                    #print("formatted: {}, {}".format(filtered_coords[0], filtered_coords[1]))
-                    #print("og long {} og lat {}".format(coords[0], coords[1]))
 
+                    # establish data for publishing
                     TOPIC = "robot/location"
-                    MESSAGE1 = str(longitude)# + "," + str(latitude)
+                    MESSAGE1 = str(longitude)
                     MESSAGE2 = str(latitude)
                     data1 = "{}".format(MESSAGE1)
                     data2 = "{}".format(MESSAGE2)
                     message = {"lon" : data1, "lat" : data2}
+                    # publish to server
                     myMQTTClient.publish(TOPIC, json.dumps(message), 1)
                     print("Printed '" + json.dumps(message) + "' to the topic: " + TOPIC)
                     coordPublishTime = time.time()
-                    #adjust sleep time for frequency of readings
 
-
+        # if interrupt pressed, exit project
         except (KeyboardInterrupt):
             active = False
             print("Exiting")
-
-        #except (AWSIoTPythonSDK.exception.AWSIoTExceptions.publishTimeoutException):
-        #    print("aws iot python sdk exception raised, giving robot a break")
-        #    time.sleep(5)
-        #    pass
